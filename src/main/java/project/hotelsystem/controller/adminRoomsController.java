@@ -354,11 +354,79 @@ public class adminRoomsController {
 
         private void generateRooms(){
             roomsView.getChildren().clear();
+
             List<room> lr = roomController.getAllRooms();
             roomsView.getChildren().add(addRoom);
+            addRoom.setStyle("-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                    "-fx-background-color: #F6F5F2; " +
+                    "-fx-text-fill: #333333; " +
+                    "-fx-font-size: 16px; " +
+                    "-fx-font-weight: bold; " +
+                    "-fx-border-color: #cccccc; " +
+                    "-fx-border-radius: 10; " +
+                    "-fx-background-radius: 10; " +
+                    "-fx-padding: 10; " +
+                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);");
+            addRoom.setOnMouseEntered(e -> addRoom.setStyle(
+                    "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                            "-fx-background-color: #e0e0e0; " +
+                            "-fx-text-fill: #333333; " +
+                            "-fx-font-size: 16px; " +
+                            "-fx-font-weight: bold; " +
+                            "-fx-border-color: #aaaaaa; " +
+                            "-fx-border-radius: 10; " +
+                            "-fx-background-radius: 10; " +
+                            "-fx-padding: 10; " +
+                            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0.0, 0, 1);"));
+
+            addRoom.setOnMouseExited(e -> addRoom.setStyle(
+                    "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                            "-fx-background-color: #F6F5F2; " +
+                            "-fx-text-fill: #333333; " +
+                            "-fx-font-size: 16px; " +
+                            "-fx-font-weight: bold; " +
+                            "-fx-border-color: #cccccc; " +
+                            "-fx-border-radius: 10; " +
+                            "-fx-background-radius: 10; " +
+                            "-fx-padding: 10; " +
+                            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);"));
             for (room r : lr){
                 Button hotelrooms = new Button(r.getRoom_no());
-                hotelrooms.setStyle("-fx-pref-width: 150;"+"-fx-pref-height:90;");
+                hotelrooms.setStyle("-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                        "-fx-background-color: #F6F5F2; " +
+                        "-fx-text-fill: #333333; " +
+                        "-fx-font-size: 16px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-border-color: #cccccc; " +
+                        "-fx-border-radius: 10; " +
+                        "-fx-background-radius: 10; " +
+                        "-fx-padding: 10; " +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);");
+
+                hotelrooms.setOnMouseEntered(e -> hotelrooms.setStyle(
+                        "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                        "-fx-background-color: #e0e0e0; " +
+                                "-fx-text-fill: #333333; " +
+                                "-fx-font-size: 16px; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-border-color: #aaaaaa; " +
+                                "-fx-border-radius: 10; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-padding: 10; " +
+                                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0.0, 0, 1);"));
+
+                hotelrooms.setOnMouseExited(e -> hotelrooms.setStyle(
+                        "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                        "-fx-background-color: #F6F5F2; " +
+                                "-fx-text-fill: #333333; " +
+                                "-fx-font-size: 16px; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-border-color: #cccccc; " +
+                                "-fx-border-radius: 10; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-padding: 10; " +
+                                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);"));
+
                 hotelrooms.setOnAction(e->{editRoom(r);});
                 roomsView.getChildren().add(hotelrooms);
             }

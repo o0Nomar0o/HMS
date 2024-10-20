@@ -108,6 +108,32 @@ public class allBookingController {
             private final Button cancelButton = new Button("Cancel");
 
             {
+                cancelButton.setStyle(
+                        "-fx-background-color: #FF4C4C; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-border-color: #B22222; " +
+                                "-fx-border-radius: 5; " +
+                                "-fx-background-radius: 5; " +
+                                "-fx-padding: 10;"
+                );
+
+                cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
+                        "-fx-background-color: #FF0000; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-border-color: #B22222; " +
+                                "-fx-border-radius: 5; " +
+                                "-fx-background-radius: 5; " +
+                                "-fx-padding: 10;"
+                ));
+
+                cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
+                        "-fx-background-color: #FF4C4C; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-border-color: #B22222; " +
+                                "-fx-border-radius: 5; " +
+                                "-fx-background-radius: 5; " +
+                                "-fx-padding: 10;"
+                ));
                 cancelButton.setOnAction(event -> {
                     booking booking = getTableView().getItems().get(getIndex());
                     System.out.println("Cancel booking: " + booking.getBooking_id());
@@ -131,6 +157,32 @@ public class allBookingController {
             private final Button checkinButton = new Button("Check-In");
 
             {
+                checkinButton.setStyle(
+                        "-fx-background-color: #4CAF50; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-border-color: #388E3C; " +
+                                "-fx-border-radius: 5; " +
+                                "-fx-background-radius: 5; " +
+                                "-fx-padding: 10;"
+                );
+
+                checkinButton.setOnMouseEntered(e -> checkinButton.setStyle(
+                        "-fx-background-color: #45A049; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-border-color: #388E3C; " +
+                                "-fx-border-radius: 5; " +
+                                "-fx-background-radius: 5; " +
+                                "-fx-padding: 10;"
+                ));
+
+                checkinButton.setOnMouseExited(e -> checkinButton.setStyle(
+                        "-fx-background-color: #4CAF50; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-border-color: #388E3C; " +
+                                "-fx-border-radius: 5; " +
+                                "-fx-background-radius: 5; " +
+                                "-fx-padding: 10;"
+                ));
                 checkinButton.setOnAction(event -> {
                     booking booking = getTableView().getItems().get(getIndex());
                     System.out.println("CheckIn booking: " + booking.getBooking_id());
