@@ -198,10 +198,12 @@ public class userController {
 	public static boolean updateUser(String id, String un,
 									 String priv,
 									 String ph, String email){
-		String sql = "UPDATE `user` SET username = ?, " +
+		String sql = "UPDATE user SET user_name = ?, " +
 				"privilege =? , email = ?, phone_no = ? WHERE user_id = ?";
 		try(Connection con = DBConnection.getConnection();
 			PreparedStatement psmt = con.prepareStatement(sql)) {
+
+			System.out.println("hree");
 
 			psmt.setString(1, un);
 			psmt.setString(2, priv);
@@ -210,9 +212,12 @@ public class userController {
 			psmt.setString(4,ph);
 
 
-			return psmt.executeUpdate()>0;
+			psmt.executeUpdate();
+			System.out.println("here");
+			return true;
 
 		}catch(SQLException e){
+			System.out.println("herr");
 			return false;
 		}
 	}

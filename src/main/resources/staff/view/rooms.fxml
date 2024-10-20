@@ -204,7 +204,10 @@
       </AnchorPane>
       <AnchorPane id="navbar" layoutX="31.0" layoutY="42.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
          <children>
-            <ImageView fitHeight="142.0" fitWidth="139.0" layoutX="16.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" />
+            <ImageView fitHeight="142.0" fitWidth="139.0" layoutX="16.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0">
+               <image>
+                  <Image url="@../../images/hotel_7499247.png" />
+               </image></ImageView>
             <Button id="buttons" fx:id="orders_button" layoutX="52.0" layoutY="158.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px; -fx-font-size: 18px;" text="Orders" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
                <cursor>
                   <Cursor fx:constant="HAND" />
