@@ -1,0 +1,95 @@
+#navbar{
+       -fx-background-color: #1F1B24;
+}
+#root{
+       -fx-background-color: #121212;
+}
+
+
+/*Buttons Style*/
+#buttons, #logout, #currentPage{
+       -fx-background-color: transparent;
+       -fx-text-fill: #EEEEEE;
+}
+
+#logout:pressed{
+       -fx-background-color: #E60F28;
+}
+#logout:hover{
+    -fx-cursor: hand;
+    -fx-background-color: #F56476;
+}
+
+#buttons:hover{
+    -fx-cursor: hand;
+    -fx-background-color: #948f98;
+}
+
+#buttons:pressed{
+    -fx-background-color: #141216;
+}
+
+#currentPage{
+-fx-background-color: #121212 !important;
+}
+
+/*Tab Styling*/
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+
+    -fx-border-radius: 0;
+    -fx-border-insets: 0;
+}
+
+/* presentation tab */
+
+.tab-pane:top *.tab-header-area {
+    -fx-background-insets: 0, 0 0 2 0;
+ /* -fx-padding: 0.416667em 0.166667em 0.0em 0.833em; /* 5 2 0 10 */
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+
+#main-tab
+{
+    -fx-font-size: 28px;
+    -fx-tab-min-width: 125px;
+    -fx-tab-min-height: 70px
+}
+
+
+#main-tab #foodtab, #main-tab #servicestab{
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 10 0 10 ;
+    -fx-padding: 4 10 4 4 ;
+    -fx-border-insets: 0 10 0 10 ;
+}
+
+#foodtab .tab-label, #servicestab .tab-label{
+    -fx-text-fill: #EEEEEE;
+}
+
+#main-tab #foodtab:hover, #main-tab #servicestab:hover{
+      -fx-border-color: #D1C3D3;
+      -fx-border-width: 0 0 1px 0;
+      -fx-border-insets: 0 10 0 10 ;
+}
+
+#main-tab #foodtab:selected, #main-tab #servicestab:selected{
+      -fx-border-color: #EEEEEE;
+      -fx-border-width: 0 0 1px 0;
+      -fx-border-insets: 0 10 0 10 ;
+}
+
+#main-tab #foodtab:pressed, #main-tab #servicestab:pressed{
+    -fx-border-color: #DEFEEF;
+    -fx-border-insets: 0 10 0 10 ;
+}
+

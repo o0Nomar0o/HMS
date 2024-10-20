@@ -1,0 +1,43 @@
+
+#navbar{
+       -fx-background-color: #1F1B24;
+}
+#root{
+       -fx-background-color: #121212;
+}
+
+#view{
+    -fx-background-color: #1F1B24 !important;
+    -fx-background-radius: 1.5em;
+}
+
+#labels{
+-fx-fill: #EEEEEE;
+}
+
+/*Buttons Style*/
+#buttons, #logout, #currentPage{
+       -fx-background-color: transparent;
+       -fx-text-fill: #EEEEEE;
+}
+
+#logout:pressed{
+       -fx-background-color: #E60F28;
+}
+#logout:hover{
+    -fx-cursor: hand;
+    -fx-background-color: #F56476;
+}
+
+#buttons:hover{
+    -fx-cursor: hand;
+    -fx-background-color: #948f98;
+}
+
+#buttons:pressed{
+    -fx-background-color: #141216;
+}
+
+#currentPage{
+-fx-background-color: #121212 !important;
+}

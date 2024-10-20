@@ -1,0 +1,36 @@
+
+#navbar{
+       -fx-background-color: white;
+}
+#root{
+       -fx-background-color: #F6F5F2;
+
+}
+/*Buttons Style*/
+#buttons, #logout, #currentPage{
+       -fx-background-color: transparent;
+       -fx-font-family: 'Open Sans',sans-serif;
+       -fx-text-fill: black;
+}
+
+#logout:pressed{
+       -fx-background-color: #E60F28;
+}
+#logout:hover{
+    -fx-cursor: hand;
+    -fx-background-color: #F56476;
+}
+
+#buttons:hover{
+    -fx-cursor: hand;
+    -fx-background-color: #F6F5F2;
+
+}
+
+#buttons:pressed{
+    -fx-background-color: #E3E9C2;
+}
+
+#currentPage{
+ -fx-background-color: #F6F5F2 !important;
+}

@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="853.0" prefWidth="1202.0" style="-fx-background-color: #F6F5F2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.adminServiceController">
+    <children>
+        <AnchorPane id="navbar" layoutX="21.0" layoutY="32.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em; -fx-background-color: white;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
+            <children>
+                <ImageView fitHeight="142.0" fitWidth="139.0" layoutX="16.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" />
+                <Button id="buttons" fx:id="dashboard" layoutX="52.0" layoutY="158.0" mnemonicParsing="false" onAction="#switchToDashboard" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-border-radius: 2em 0 0 2em; -fx-font-size: 18px;" text="Dashboard" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="155.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button id="buttons" fx:id="guests" layoutX="57.0" layoutY="237.0" mnemonicParsing="false" onAction="#switchtorooms" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px;" text="Rooms" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="234.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button id="buttons" fx:id="bookings" layoutX="57.0" layoutY="317.0" mnemonicParsing="false" onAction="#switchtobookings" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px;" text="Bookings" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button id="logout" fx:id="logout" layoutX="39.0" layoutY="613.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="94.0" style="-fx-font-size: 18; -fx-background-radius: 2em;" text="Logout" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="39.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Button>
+                <Button id="currentPage" fx:id="services" layoutX="57.0" layoutY="397.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-color: #F3D0D7; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Services" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="392.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button id="buttons" fx:id="setting" layoutX="56.0" layoutY="477.0" mnemonicParsing="false" onAction="#switchtosetting" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Settings" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="471.0">
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+            </children>
+        </AnchorPane>
+        <TabPane id="main-tab" layoutX="216.0" layoutY="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="216.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="20.0">
+            <tabs>
+                <Tab id="servicestab" closable="false" text="Services">
+                    <AnchorPane layoutX="14.0" layoutY="8.0" style="-fx-background-color: white; -fx-background-radius: 1.25em;">
+                        <children>
+                     <VBox AnchorPane.bottomAnchor="18.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="361.0" AnchorPane.topAnchor="0.0">
+                        <children>
+                           <AnchorPane>
+                              <children>
+                                          <Label id="lblTitle" fx:id="lblTitle" layoutX="32.0" layoutY="38.0" prefHeight="88.0" prefWidth="230.0" stylesheets="@adminServiceViewCon.css" text="Laundry">
+                                              <font>
+                                                  <Font size="40.0" />
+                                              </font>
+                                          </Label>
+                                          <Label id="lblDiscription" fx:id="lblDiscription" layoutX="32.0" layoutY="117.0" prefHeight="103.0" prefWidth="231.0" stylesheets="@adminServiceViewCon.css" text="Label">
+                                              <font>
+                                                  <Font size="16.0" />
+                                              </font>
+                                          </Label>
+                                          <Label id="lblPrice" fx:id="lblPrice" layoutX="32.0" layoutY="211.5" prefHeight="68.0" prefWidth="229.0" stylesheets="@adminServiceViewCon.css" text="\$20">
+                                              <font>
+                                                  <Font size="20.0" />
+                                              </font>
+                                          </Label>
+                                        <Button id="btnLeft" fx:id="btnLeft" layoutY="142.0" minWidth="36.0" mnemonicParsing="false" onAction="#previousService" prefHeight="30.0" prefWidth="36.0" stylesheets="@adminServiceViewCon.css" text="&lt;" AnchorPane.leftAnchor="0.0" />
+                                        <Button id="btnRight" fx:id="btnRight" layoutX="589.0" layoutY="142.0" minHeight="-Infinity" minWidth="35.0" mnemonicParsing="false" onAction="#nextService" prefHeight="30.0" prefWidth="35.0" stylesheets="@adminServiceViewCon.css" text="&gt;" AnchorPane.rightAnchor="0.0" />
+                                        <Label layoutX="32.0" prefHeight="40.0" prefWidth="247.0" text="Most Popular Services">
+                                            <font>
+                                                <Font name="System Bold" size="20.0" />
+                                            </font>
+                                            <textFill>
+                                                <LinearGradient endY="0.3791469194312796" startY="1.0">
+                                                    <stops>
+                                                        <Stop>
+                                                            <color>
+                                                                <Color green="1.0" blue="0.6476190686225891" />
+                                                            </color>
+                                                        </Stop>
+                                                        <Stop offset="1.0">
+                                                            <color>
+                                                                <Color red="1.0" green="0.6805555820465088" blue="0.9361110925674438" />
+                                                            </color>
+                                                        </Stop>
+                                                    </stops>
+                                                </LinearGradient>
+                                            </textFill>
+                                        </Label>
+                                        <ImageView fx:id="imgView" fitHeight="238.0" fitWidth="349.0" layoutX="238.0" layoutY="38.0" pickOnBounds="true" />
+                              </children>
+                           </AnchorPane>
+                                  <HBox prefHeight="30.0" prefWidth="206.0" spacing="5.0">
+                                      <children>
+                                          <Button fx:id="btnCreateService" mnemonicParsing="false" onAction="#handleCreateServiceButtonClick" style="-fx-base: #05f846; -fx-text-fill: black;" text="Create" />
+                                      </children>
+                                  </HBox>
+                                  <ScrollPane fx:id="scrollPaneServices" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="331.0" prefWidth="602.0" style="-fx-background-color: transparent; -fx-background-radius: 1.5em;" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                      <content>
+                                          <TilePane fx:id="tilepaneServices" hgap="20.0" prefColumns="1" prefRows="0" style="-fx-background-color: #EDEDED; -fx-padding: 5px; -fx-background-radius: 1.5em;" vgap="20.0" />
+                                      </content>
+                                  </ScrollPane>
+                        </children>
+                     </VBox>
+                     <VBox alignment="CENTER" layoutX="626.0" AnchorPane.bottomAnchor="3.5" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                        <children>
+                           <HBox alignment="CENTER_LEFT" prefWidth="302.0" VBox.vgrow="NEVER">
+                              <children>
+                                        <Label prefHeight="40.0" prefWidth="81.0" text="Order list">
+                                            <font>
+                                                <Font name="System Bold" size="20.0" />
+                                            </font>
+                                            <textFill>
+                                                <LinearGradient endY="0.3791469194312796" startY="1.0">
+                                                    <stops>
+                                                        <Stop>
+                                                            <color>
+                                                                <Color green="1.0" blue="0.6476190686225891" />
+                                                            </color>
+                                                        </Stop>
+                                                        <Stop offset="1.0">
+                                                            <color>
+                                                                <Color red="1.0" green="0.6805555820465088" blue="0.9361110925674438" />
+                                                            </color>
+                                                        </Stop>
+                                                    </stops>
+                                                </LinearGradient>
+                                            </textFill>
+                                        </Label>
+                                          <TextField fx:id="txfRoomNo" prefHeight="35.0" prefWidth="192.0" promptText="Enter Room No" />
+                              </children>
+                           </HBox>
+                           <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="317.0" VBox.vgrow="NEVER">
+                              <children>
+                                          <TextField fx:id="txfServiceName" prefHeight="35.0" prefWidth="192.0" promptText="Service Id" />
+                                        <Button fx:id="btnOrderBatch" mnemonicParsing="false" onAction="#handleAddButtonClick" prefHeight="8.0" prefWidth="25.0" text="+">
+                                            <font>
+                                                <Font size="18.0" />
+                                            </font>
+                                        </Button>
+                              </children>
+                           </HBox>
+                           <AnchorPane prefHeight="519.0" prefWidth="359.0" VBox.vgrow="ALWAYS">
+                              <children>
+                                 <VBox layoutX="208.0" layoutY="546.0" prefHeight="67.0" prefWidth="356.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="3.0">
+                                    <children>
+                                       <Text fx:id="totalCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Cost: 0">
+                                          <font>
+                                             <Font size="18.0" />
+                                          </font>
+                                       </Text>
+                                       <HBox alignment="BOTTOM_RIGHT" prefHeight="45.0" prefWidth="350.0" style="-fx-spacing: 25px;">
+                                          <children>
+                                             <Button fx:id="btnConfirm1" mnemonicParsing="false" onAction="#initialzingOrderList" prefHeight="34.0" prefWidth="61.0" style="-fx-base: #FE1E1A;" text="Clear" />
+                                                    <Button fx:id="btnConfirm" mnemonicParsing="false" onAction="#initialzingOrderList" prefHeight="34.0" prefWidth="61.0" style="-fx-base: #05f846;" text="Confirm" />
+                                          </children>
+                                       </HBox>
+                                    </children>
+                                 </VBox>
+                                        <ScrollPane fx:id="orderListScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="16.0" layoutY="67.0" prefHeight="442.0" prefWidth="352.0" style="-fx-background-color: transparent; -fx-background-radius: 1.5em;" AnchorPane.bottomAnchor="109.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="6.0">
+                                            <content>
+                                                <VBox fx:id="orderListVbox" prefHeight="458.0" prefWidth="340.0" style="-fx-background-color: #F6F5F2; -fx-background-radius: 1.5em; -fx-padding: 5px;">
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                    </padding>
+                                                </VBox>
+                                            </content>
+                                        </ScrollPane>
+                              </children>
+                           </AnchorPane>
+                        </children>
+                     </VBox>
+                        </children>
+                    </AnchorPane>
+                </Tab>
+                <Tab id="foodtab" closable="false" text="Food">
+                    <content>
+                  <AnchorPane>
+                     <children>
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="982.0" style="-fx-background-color: silver;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <children>
+                              <TabPane layoutX="687.0" layoutY="99.0" prefHeight="523.0" prefWidth="475.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="182.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="99.0">
+                                 <tabs>
+                                    <Tab text="Add Menu">
+                                       <content>
+                                          <AnchorPane fx:id="editfoodpane" minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="489.0">
+                                             <children>
+                                                <Pane fx:id="imagepane" layoutX="47.0" layoutY="43.0" prefHeight="197.0" prefWidth="193.0" style="-fx-background-color: white;">
+                                                   <children>
+                                                      <ImageView fx:id="imageView" fitHeight="197.0" fitWidth="193.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
+                                                   </children>
+                                                </Pane>
+                                                <Button layoutX="282.0" layoutY="126.0" mnemonicParsing="false" onAction="#getFoodImage" style="-fx-background-color: white;" text="Choose a photo" />
+                                                <Label layoutX="47.0" layoutY="281.0" style="-fx-background-color: silver;" text="Food Name">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="foodName" layoutX="164.0" layoutY="276.0" />
+                                                <Label layoutX="47.0" layoutY="324.0" style="-fx-background-color: silver;" text="Price">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="price" layoutX="164.0" layoutY="319.0" />
+                                                <Label layoutX="47.0" layoutY="372.0" style="-fx-background-color: silver;" text="Category">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="cat" layoutX="164.0" layoutY="367.0" />
+                                                <Button fx:id="cancelFoodUpdate" layoutX="100.0" layoutY="416.0" mnemonicParsing="false" onAction="#cancelFoodAdd" style="-fx-background-color: red;" text="Cancel" textFill="WHITE">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Button>
+                                                <Button fx:id="add" layoutX="331.0" layoutY="416.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="86.0" style="-fx-background-color: green;" text="Add" textFill="WHITE">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Button>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab text="Edit Menu">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <Label layoutX="67.0" layoutY="216.0" style="-fx-background-color: silver;" text="Price">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="price2" layoutX="195.0" layoutY="211.0" />
+                                                <TextField fx:id="foodName2" layoutX="195.0" layoutY="117.0" />
+                                                <Button layoutX="67.0" layoutY="339.0" mnemonicParsing="false" onAction="#cancelFoodUpdate" prefHeight="45.0" prefWidth="91.0" style="-fx-background-color: red;" text="Cancel" textFill="WHITE">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Button>
+                                                <Button layoutX="352.0" layoutY="339.0" mnemonicParsing="false" onAction="#UpdateFoodMenu" prefHeight="45.0" prefWidth="109.0" style="-fx-background-color: green;" text="Update" textFill="WHITE">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Button>
+                                                <Button layoutX="206.0" layoutY="339.0" mnemonicParsing="false" onAction="#DeleteFoodMenu" prefHeight="45.0" prefWidth="91.0" style="-fx-background-color: red;" text="Delete" textFill="WHITE">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Button>
+                                                <Label layoutX="43.0" layoutY="122.0" style="-fx-background-color: silver;" text="Food Name">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab fx:id="addStocktab" text="Add Stock">
+                                       <content>
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <TableView fx:id="stockTableView" layoutX="1.0" layoutY="-5.0" prefHeight="487.0" prefWidth="515.0">
+                                                   <columns>
+                                                      <TableColumn fx:id="foodNameColumn" prefWidth="237.0" text="Food Name" />
+                                                      <TableColumn fx:id="stockColumn" text="Stock" />
+                                                      <TableColumn fx:id="stockStatusColumn" prefWidth="195.0" text="Stock Status" />
+                                                   </columns>
+                                                   <columnResizePolicy>
+                                                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                   </columnResizePolicy>
+                                                </TableView>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                    <Tab text="Add Category">
+                                       <content>
+                                          <AnchorPane fx:id="editfoodpane1" minHeight="0.0" minWidth="0.0" prefHeight="475.0" prefWidth="515.0">
+                                             <children>
+                                                <Pane fx:id="imagepane1" layoutX="47.0" layoutY="43.0" prefHeight="197.0" prefWidth="193.0" style="-fx-background-color: white;">
+                                                   <children>
+                                                      <ImageView fx:id="CategoryimageView" fitHeight="197.0" fitWidth="193.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
+                                                   </children>
+                                                </Pane>
+                                                <Button layoutX="282.0" layoutY="126.0" mnemonicParsing="false" onAction="#getCategoryImage" style="-fx-background-color: white;" text="Choose a photo" />
+                                                <Label layoutX="47.0" layoutY="305.0" style="-fx-background-color: silver;" text="Category Name">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="cat1" layoutX="212.0" layoutY="300.0" />
+                                                <Button layoutX="100.0" layoutY="416.0" mnemonicParsing="false" onAction="#cancelCategoryAdd" style="-fx-background-color: red;" text="Cancel" textFill="WHITE">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Button>
+                                                <Button fx:id="add1" layoutX="331.0" layoutY="416.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="86.0" style="-fx-background-color: green;" text="Add" textFill="WHITE">
+                                                   <font>
+                                                      <Font size="20.0" />
+                                                   </font>
+                                                </Button>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </Tab>
+                                 </tabs>
+                              </TabPane>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutY="99.0" minWidth="-Infinity" pannable="true" prefHeight="154.0" style="-fx-background-color: gray;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="551.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="482.0" AnchorPane.topAnchor="99.0">
+                                 <content>
+                                    <TilePane fx:id="categoryView" hgap="20.0" prefHeight="93.0" prefWidth="2400.0" style="-fx-background-color: white;" vgap="20.0" />
+                                 </content>
+                              </ScrollPane>
+                              <ScrollPane fx:id="menuScrollPane" fitToHeight="true" fitToWidth="true" layoutY="255.0" maxWidth="-Infinity" prefHeight="549.0" prefWidth="725.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="482.0" AnchorPane.topAnchor="255.0">
+                                 <content>
+                                    <TilePane fx:id="foodView" hgap="10.0" prefHeight="547.0" prefWidth="735.0" style="-fx-background-color: silver; -fx-padding: 2.5px;" vgap="10.0" />
+                                 </content>
+                              </ScrollPane>
+                              <Label layoutX="14.0" layoutY="30.0" text="Menu Category">
+                                 <font>
+                                    <Font name="System Bold" size="37.0" />
+                                 </font>
+                                 <textFill>
+                                    <LinearGradient cycleMethod="REFLECT" endX="1.0" endY="1.0">
+                                       <stops>
+                                          <Stop color="BLACK" />
+                                          <Stop color="#c28a8a" offset="0.4965899403239557" />
+                                          <Stop color="BLACK" offset="1.0" />
+                                       </stops>
+                                    </LinearGradient>
+                                 </textFill>
+                              </Label>
+                              <Pane fx:id="addStockPane" layoutX="690.0" layoutY="627.0" prefHeight="179.0" prefWidth="484.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                 <children>
+                                    <Label layoutX="48.0" layoutY="18.0" style="-fx-background-color: silver;" text="Food Name">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="foodName3" layoutX="197.0" layoutY="13.0" />
+                                    <Label layoutX="48.0" layoutY="55.0" style="-fx-background-color: silver;" text="Stock">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="stockToadd" layoutX="197.0" layoutY="50.0" />
+                                    <Button layoutX="353.0" layoutY="103.0" mnemonicParsing="false" onAction="#addStock" prefHeight="44.0" prefWidth="137.0" style="-fx-background-color: green;" text="Add Stock" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Button>
+                                    <Button layoutX="54.0" layoutY="96.0" mnemonicParsing="false" onAction="#cancelStockUpdate" prefHeight="44.0" prefWidth="116.0" style="-fx-background-color: green;" text="Clear" textFill="WHITE">
+                                       <font>
+                                          <Font size="20.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </Pane>
+                              <Label layoutX="844.0" layoutY="20.0" text="Edit Menu" AnchorPane.rightAnchor="216.0">
+                                 <font>
+                                    <Font name="System Bold" size="30.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>
