@@ -24,9 +24,9 @@ public class DBConnection {
             return DriverManager.getConnection(url, username, password);
         }
 
-        String url = "jdbc:mysql://hotel-oversunset-sunset-hotel.c.aivencloud.com:24376/snowy_inn";
-        String username = "avnadmin";
-        String password = "AVNS_RaPaAPRKW7lPQKNNO3x";
+        String url = "jdbc:mysql://pleaseinputyourcloudhere";
+        String username = "cloudcloud";
+        String password = "quite a secure password";
 
         return DriverManager.getConnection(url, username, password);
 
