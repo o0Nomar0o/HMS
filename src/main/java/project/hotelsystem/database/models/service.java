@@ -10,6 +10,9 @@ public class service {
     private String imagePath;
     private Blob image;
 
+    public service() {
+    }
+
     public service(int id, String name, double price, String description, Blob image) {
         this.id = id;
         this.name = name;

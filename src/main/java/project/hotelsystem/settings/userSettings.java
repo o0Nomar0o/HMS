@@ -15,11 +15,14 @@ public class userSettings {
     private static final String USER_KEY = "user";
     private static final String PRIVILEGE_KEY = "privilege";
     private static final String USERNAME_KEY = "username";
+    private static final String INVOICE_KEY = "invoice";
+
+
 
     private String theme = "light";
     private String uid;
     private String username;
-    private String invoice_path;
+    private String invoice_path = System.getProperty("user.home");
     private String privilege;
 
     public userSettings() {
@@ -40,6 +43,7 @@ public class userSettings {
         this.theme = theme;
         saveTheme();
     }
+
 
     public void setUser(String uid, String privilege, String username) {
         this.uid = uid;

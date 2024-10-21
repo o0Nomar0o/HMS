@@ -115,7 +115,7 @@
                                     </AnchorPane>
                                  </content>
                               </Tab>
-                              <Tab closable="false" text="Booking">
+                              <Tab closable="false" disable="true" text="Booking">
                                  <content>
                                     <AnchorPane prefHeight="445.0" prefWidth="426.0" style="-fx-background-color: white;">
                                        <children>

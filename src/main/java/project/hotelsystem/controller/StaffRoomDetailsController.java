@@ -437,8 +437,9 @@ public class StaffRoomDetailsController {
 
                 checkOutButton.setOnAction(e -> {
                     RoomShowBody.setOpacity(1.0); // Restore the opacity
-                    if (bookingController.checkOut(bkid, roomId)) {
-                        ivs.openPdfModal(bkid);
+                    if (true) {
+						body.getChildren().removeAll(overlayPane, customerDetailsPane);
+                        ivs.openPdfModal(bkid,(Stage)logout.getScene().getWindow());
                         notificationManager.showNotification("Check-Out", "success", (Stage) logout.getScene().getWindow());
                         AddingRooms(null, 0);
                     }

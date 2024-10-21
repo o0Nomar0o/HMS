@@ -186,6 +186,8 @@ public class allBookingController {
                 checkinButton.setOnAction(event -> {
                     booking booking = getTableView().getItems().get(getIndex());
                     System.out.println("CheckIn booking: " + booking.getBooking_id());
+                    BookingFunc bkf = new BookingFunc();
+                    bkf.arrivedBooking();
                 });
             }
 
@@ -219,7 +221,7 @@ public class allBookingController {
                         .filter(b -> !b.getBooking_status().matches("Checked-Out")
                                 && !b.getBooking_status().matches("Cancelled"))
                         .collect(Collectors.toList());
-                bookingPaneController.populatePanes(arrivalPane, checkoutPane, arrived);
+                bookingPaneController.populatePanes(arrivalPane, checkoutPane, filteredBookings);
                 return;
             }
             bookingTable.setPlaceholder(new Label("No bookings found."));
@@ -429,6 +431,84 @@ public class allBookingController {
 
         private boolean removeBookingFromDB(String bookingId, String roomID) {
             return bookingController.cancelBooking(bookingId, roomID);
+        }
+
+        public void arrivedBooking() {
+            booking selectedBooking = bookingTable.getSelectionModel().getSelectedItem();
+
+            if (selectedBooking == null) {
+                showAlert("No Booking Selected", "Please select a booking.");
+                return;
+            }
+
+            Stage modalStage = new Stage();
+            modalStage.initModality(Modality.APPLICATION_MODAL);
+            Stage owner = (Stage) logout.getScene().getWindow();
+            modalStage.initOwner(owner);
+            modalStage.initStyle(StageStyle.UNDECORATED);
+            modalStage.initStyle(StageStyle.TRANSPARENT);
+
+            Text bookingIdText = new Text("Booking ID");
+            bookingIdText.setFont(new Font(16.0));
+            Text bookingIdField = new Text(selectedBooking.getBooking_id());
+            VBox bookingIdBox = new VBox(bookingIdText, bookingIdField);
+
+            Text guestNameText = new Text("Guest Name");
+            guestNameText.setFont(new Font(16.0));
+            Text guestNameField = new Text(selectedBooking.getGuest().getGuest_name());
+            VBox guestNameBox = new VBox(guestNameText, guestNameField);
+
+            VBox credentialsPane = new VBox(bookingIdBox, guestNameBox);
+            credentialsPane.setStyle("-fx-spacing: 15px;" + "-fx-padding: 30px;");
+
+            BorderPane modalRoot = new BorderPane();
+
+            Text modalTitle = new Text("Check-In");
+            modalTitle.setFont(new Font(28.0));
+
+            Text modalHint = new Text("Are you sure?");
+            VBox topBox = new VBox(modalTitle, modalHint);
+            topBox.setAlignment(Pos.CENTER);
+            topBox.setStyle("-fx-padding: 10px;");
+
+            modalRoot.setTop(topBox);
+            BorderPane.setAlignment(topBox, Pos.CENTER);
+
+            modalRoot.setCenter(credentialsPane);
+
+            Button confirmButton = new Button("Confirm");
+            Button cancelButton = new Button("Cancel");
+
+            HBox buttonBox = new HBox(cancelButton, confirmButton);
+            modalRoot.setBottom(buttonBox);
+            buttonBox.setAlignment(Pos.CENTER_RIGHT);
+            buttonBox.setStyle("-fx-spacing: 15px;" + "-fx-padding: 0 25px 20px 0;");
+
+            BorderPane.setAlignment(buttonBox, Pos.TOP_RIGHT);
+
+            Scene modalScene = new Scene(modalRoot, 425, 425);
+            modalStage.setScene(modalScene);
+            modalScene.setFill(Color.TRANSPARENT);
+            modalStage.setResizable(false);
+            modalStage.show();
+            modalRoot.setStyle("-fx-background-color: white;" + "-fx-background-radius: 2.5em;");
+
+            modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
+            modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
+
+            cancelButton.setOnAction(e -> {
+                modalStage.close();
+            });
+
+            confirmButton.setOnAction(e -> {
+                if (bookingController.arrived(selectedBooking.getBooking_id(), selectedBooking.getRoom().getRoom_no())) {
+                    showAlert("Success", "Successfully Checked-in.");
+                    bookingTable.getItems().remove(selectedBooking);
+                } else {
+                    showAlert("Error", "Failed.");
+                }
+                modalStage.close();
+            });
         }
 
         private void showAlert(String title, String message) {

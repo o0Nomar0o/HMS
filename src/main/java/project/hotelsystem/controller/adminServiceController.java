@@ -197,11 +197,19 @@ public class adminServiceController {
     userSettings uss = userSettings.getInstance();
     switchSceneController ssc = new switchSceneController();
     HashMap<Integer, service> serviceMap = new HashMap<Integer, service>();
+    private List<service> servicesList = new ArrayList<>();
 
     @FXML
     void initialize() {
-logout.setOnAction(logoutController::logout);
+        logout.setOnAction(logoutController::logout);
         generateService();
+        loadPopularServicesFromDatabase();
+        if (!servicesList.isEmpty()) {
+            updateServiceDisplay();
+        } else {
+            lblTitle.setText("No services found");
+            lblPrice.setText("");
+        }
 
         this.setupTableView();
         this.add.setOnAction((e) -> {
@@ -220,13 +228,77 @@ logout.setOnAction(logoutController::logout);
         this.displayMenu();
     }
 
-    private void generateService(){
+    private void loadPopularServicesFromDatabase() {//get popular service from database , we can limit to 1 / 2
+        String sql = " SELECT s.service_id, s.service_name, s.service_price, s.service_description, s.service_image, COUNT(os.service_id) AS total_orders " + "FROM service s " + "JOIN service_order_detail os ON s.service_id = os.service_id " + "WHERE os.order_time >= NOW() - INTERVAL 7 DAY " + "GROUP BY s.service_id, s.service_name, s.service_price, s.service_description, s.service_image " + "ORDER BY total_orders DESC limit 3";
+        try (Connection con = DBConnection.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String serviceName = rs.getString(2);
+                double price = rs.getDouble(3);
+                String des = rs.getString(4);
+                Blob img = rs.getBlob(5);
+                servicesList.add(new service(serviceName, price, des, img));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void generateService() {
         tilepaneServices.getChildren().clear();
         List<service> ss = serviceController.getAllServices();
         for (service s : ss) {
-            if(s.getDescription().matches("NIL")) continue;
+            if (s.getDescription().matches("NIL")) continue;
             serviceMap.put(s.getId(), s);
             createService(s);
+        }
+    }
+
+    private int currentIndex = 0;
+
+    @FXML
+    private void previousService() {//left arrow to go previous one
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateServiceDisplay();
+        }
+    }
+
+    @FXML
+    private void nextService() {//right arrow to go next one
+        if (currentIndex < servicesList.size() - 1) {
+            currentIndex++;
+            updateServiceDisplay();
+        }
+    }
+
+    private void updateServiceDisplay() {//updating
+        if (!servicesList.isEmpty() && currentIndex >= 0 && currentIndex < servicesList.size()) {
+            service currentService = servicesList.get(currentIndex);
+            lblTitle.setText(currentService.getName());
+            lblPrice.setText("$" + currentService.getPrice());
+            lblDiscription.setText(currentService.getDescription());
+            Blob imageBlob = currentService.getImage(); // Assuming getImage() returns Blob
+            if (imageBlob != null) {
+                try {
+                    // Convert Blob to byte array and then to Image
+                    byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+                    Image image = new Image(new ByteArrayInputStream(imageBytes));
+
+                    // Set the ImageView with the Image
+                    imgView.setImage(image);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Clear the ImageView if no image is present
+                imgView.setImage(null);
+            }
+        } else {
+            lblTitle.setText("No service available");
+            lblPrice.setText("");
+            lblDiscription.setText("");
+            imgView.setImage(null);
         }
     }
 
@@ -313,15 +385,6 @@ logout.setOnAction(logoutController::logout);
 
     }
 
-    @FXML
-    void nextService(ActionEvent event) {
-
-    }
-
-    @FXML
-    void previousService(ActionEvent event) {
-
-    }
 
     @FXML
     void switchToDashboard(ActionEvent event) throws IOException {
@@ -345,6 +408,7 @@ logout.setOnAction(logoutController::logout);
         ssc.toSettings(event, (Stage) logout.getScene().getWindow());
 
     }
+
     userSettings tss = userSettings.getInstance();
 
     public void createService(service s) {
@@ -442,7 +506,6 @@ logout.setOnAction(logoutController::logout);
     }
 
 
-
     double tc = 0;
 
     private void createServiceOrderPane(int serviceId) {
@@ -458,12 +521,10 @@ logout.setOnAction(logoutController::logout);
         serviceLabel.setStyle("-fx-text-fill:white");
         serviceCharge.setStyle("-fx-text-fill:white");
 
-        serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;"
-                + "-fx-background-radius:8px");
+        serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
 
         sep.setPrefWidth(100); // Set preferred width for horizontal separator
-        sep.setStyle("-fx-background-grey: white;" +
-                "-fx-border-color:grey;" + // Border color
+        sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + // Border color
                 "-fx-border-width: 0;");    // Border width
 
         serviceOrderPane.getChildren().addAll(serviceLabel, serviceCharge);
@@ -489,7 +550,7 @@ logout.setOnAction(logoutController::logout);
 
         Text serviceID = new Text("ID");
         serviceID.setFont(new Font(16.0));
-        Text sidTxt = new Text(f.getId()+"");
+        Text sidTxt = new Text(f.getId() + "");
         VBox sidBox = new VBox(serviceID, sidTxt);
 
         Text serviceName = new Text("Name");
@@ -499,12 +560,12 @@ logout.setOnAction(logoutController::logout);
 
         Text priceTxt1 = new Text("Price");
         priceTxt1.setFont(new Font(16.0));
-        Text priceTxt2 = new Text(f.getPrice()+"");
+        Text priceTxt2 = new Text(f.getPrice() + "");
         VBox priceBox = new VBox(priceTxt1, priceTxt2);
 
         Text desc = new Text("Category");
         desc.setFont(new Font(16.0));
-        Text descTxt = new Text(f.getDescription()+"");
+        Text descTxt = new Text(f.getDescription() + "");
         VBox descBox = new VBox(desc, descTxt);
 
         VBox credentialsPane = new VBox(sidBox, nameFieldBox, priceBox, descBox);
@@ -553,6 +614,7 @@ logout.setOnAction(logoutController::logout);
             removeServiceFromDB(f.getId(), e, modalStage);
         });
     }
+
     private void removeServiceFromDB(int sid, ActionEvent e, Stage st) {
 
         loaderSettings.applyDimmingEffect(e);
@@ -604,6 +666,142 @@ logout.setOnAction(logoutController::logout);
         new Thread(loadSceneTask).start();
     }
 
+    private void editService(ActionEvent e) {
+
+        Button clicked = (Button) e.getSource();
+        service f = (service) clicked.getUserData();
+        System.out.println(f.getId());
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        Stage owner = (Stage) logout.getScene().getWindow();
+        modalStage.initOwner(owner);
+        modalStage.initStyle(StageStyle.UNDECORATED);
+        modalStage.initStyle(StageStyle.TRANSPARENT);
+
+        Text serviceID = new Text("ID");
+        serviceID.setFont(new Font(16.0));
+        Text sidTxt = new Text(f.getId() + "");
+        VBox sidBox = new VBox(serviceID, sidTxt);
+
+        Text serviceName = new Text("Name");
+        serviceName.setFont(new Font(16.0));
+        TextField snameField = new TextField(f.getName());
+        VBox nameFieldBox = new VBox(serviceName, snameField);
+
+        Text priceTxt1 = new Text("Price");
+        priceTxt1.setFont(new Font(16.0));
+        TextField priceTxt2 = new TextField(f.getPrice() + "");
+        priceTxt2.onKeyReleasedProperty().addListener((ob, ov, nv) -> {
+            try {
+                double d = Double.parseDouble(nv.toString());
+            } catch (Exception err) {
+                notificationManager.showNotification("Enter a double value", "failure", modalStage);
+            }
+        });
+        VBox priceBox = new VBox(priceTxt1, priceTxt2);
+
+        Text desc = new Text("Category");
+        desc.setFont(new Font(16.0));
+        TextField descTxt = new TextField(f.getDescription() + "");
+        VBox descBox = new VBox(desc, descTxt);
+
+        VBox editViewBox = new VBox(sidBox, nameFieldBox, priceBox, descBox);
+        editViewBox.setStyle("-fx-spacing: 15px;" + "-fx-padding: 30px;");
+
+        BorderPane modalRoot = new BorderPane();
+
+        Text modalTitle = new Text("Remove Service");
+        modalTitle.setFont(new Font(28.0));
+
+        Text modalHint = new Text("Are you sure you want to remove this service?");
+        VBox topBox = new VBox(modalTitle, modalHint);
+        topBox.setAlignment(Pos.CENTER);
+        topBox.setStyle("-fx-padding: 10px;");
+
+        modalRoot.setTop(topBox);
+        BorderPane.setAlignment(topBox, Pos.CENTER);
+
+        modalRoot.setCenter(editViewBox);
+
+        Button confirmButton = new Button("Confirm");
+        Button cancelButton = new Button("Cancel");
+
+        HBox buttonBox = new HBox(cancelButton, confirmButton);
+        modalRoot.setBottom(buttonBox);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+        buttonBox.setStyle("-fx-spacing: 15px;" + "-fx-padding: 0 25px 20px 0;");
+
+        BorderPane.setAlignment(buttonBox, Pos.TOP_RIGHT);
+
+        Scene modalScene = new Scene(modalRoot, 425, 425);
+        modalStage.setScene(modalScene);
+        modalScene.setFill(Color.TRANSPARENT);
+        modalStage.setResizable(false);
+        modalStage.show();
+        modalRoot.setStyle("-fx-background-color: white;" + "-fx-background-radius: 2.5em;");
+
+        modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
+        modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
+
+        cancelButton.setOnAction(act -> {
+
+            modalStage.close();
+        });
+        confirmButton.setOnAction(act -> {
+            editServiceFromDB(f.getId(), e, modalStage);
+        });
+    }
+
+    private void editServiceFromDB(int sid, ActionEvent e, Stage st) {
+
+        loaderSettings.applyDimmingEffect(e);
+
+        Task<Boolean> loadSceneTask = new Task<>() {
+            @Override
+            protected Boolean call() throws Exception {
+                try {
+                    boolean success = serviceController.deleteService(sid);
+                    if (!success) {
+                        throw new Exception("Failed to delete.");
+                    }
+                    return success;
+                } catch (Exception ex) {
+
+                    ex.printStackTrace();
+                    throw ex;
+                }
+            }
+        };
+
+        Stage loadingStage = loaderSettings.showLoadingBolScreen(loadSceneTask, st);
+
+        loadSceneTask.setOnSucceeded(ev -> {
+            try {
+
+                notificationManager.showNotification(String.format("Successfully removed %d", sid), "success", (Stage) logout.getScene().getWindow());
+                st.close();
+                generateService();
+                loaderSettings.removeDimmingEffect(e);
+                loadingStage.hide();
+                System.out.println("Service removed successfully.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        loadSceneTask.setOnFailed(er -> {
+            try {
+                loadingStage.hide();
+                notificationManager.showNotification("Failed to removed service", "failure", st);
+                loaderSettings.removeDimmingEffect(e);
+                System.out.println("Failed to remove service. Please try again.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        new Thread(loadSceneTask).start();
+    }
 
     private Pane selectedPane;
     private Image selectedImage;

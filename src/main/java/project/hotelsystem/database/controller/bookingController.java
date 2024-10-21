@@ -108,31 +108,54 @@ public class bookingController {
         return bookings;
     }
     public static boolean cancelBooking(String bkid, String room_no) {
-        // Update booking_room_detail to set booking_status to 'Cancelled'
         String sql = "UPDATE booking_room_detail SET booking_status = 'Cancelled' WHERE booking_id = ? AND room_no = ?;";
 
-        // Update room status to 'Available'
         String sql2 = "UPDATE room SET room_status = 'Available' WHERE room_no = ?;";
 
-        // Optionally, if you want to keep track of when the booking was cancelled, you could update a cancel_date column
-        String sql3 = "UPDATE booking SET stay_duration_night = 0 WHERE booking_id = ?;"; // Assuming 'cancel_date' column exists
+        String sql3 = "UPDATE booking SET stay_duration_night = 0 WHERE booking_id = ?;";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement psmt = con.prepareStatement(sql);
              PreparedStatement psmt2 = con.prepareStatement(sql2);
              PreparedStatement psmt3 = con.prepareStatement(sql3)) {
 
-            // Set parameters and execute the first update to cancel the booking
             psmt.setString(1, bkid);
             psmt.setString(2, room_no);
             psmt.executeUpdate();
 
-            // Set parameters and execute the second update to mark the room as available
             psmt2.setString(1, room_no);
             psmt2.executeUpdate();
 
-            // Optionally, set the cancellation timestamp (if you're using a cancel_date column)
             psmt3.setString(1, bkid);
+            psmt3.executeUpdate();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public static boolean arrived(String bkid, String room_no) {
+        String sql = "UPDATE booking_room_detail SET booking_status = 'Arrived' WHERE booking_id = ? AND room_no = ?;";
+
+        String sql2 = "UPDATE room SET room_status = 'Unavailable' WHERE room_no = ?;";
+
+        String sql3 = "UPDATE booking SET check_in = ? WHERE booking_id = ?;";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement psmt = con.prepareStatement(sql);
+             PreparedStatement psmt2 = con.prepareStatement(sql2);
+             PreparedStatement psmt3 = con.prepareStatement(sql3)) {
+
+            psmt.setString(1, bkid);
+            psmt.setString(2, room_no);
+            psmt.executeUpdate();
+
+            psmt2.setString(1, room_no);
+            psmt2.executeUpdate();
+
+            psmt3.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            psmt3.setString(2, bkid);
             psmt3.executeUpdate();
 
             return true;

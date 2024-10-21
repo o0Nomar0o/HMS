@@ -147,6 +147,7 @@ public class staffServiceController {
 
     private Map<String, Pane> paneMap = new HashMap();
     private List<service> orderedService = new ArrayList<>();
+    private List<service> servicesList = new ArrayList<>();
 
     @FXML
     void switchToorders(ActionEvent event) {
@@ -241,16 +242,6 @@ public class staffServiceController {
 
     }
 
-    @FXML
-    void nextService(ActionEvent event) {
-
-    }
-
-    @FXML
-    void previousService(ActionEvent event) {
-
-    }
-
 
     @FXML
     void switchtobookings(ActionEvent event) throws IOException {
@@ -332,6 +323,79 @@ public class staffServiceController {
         tilepaneServices.getChildren().add(serviceRoot);
 
     }
+    private void loadPopularServicesFromDatabase() {//get popular service from database , we can limit to 1 / 2
+        String sql = " SELECT s.service_id, s.service_name, s.service_price, s.service_description, s.service_image, COUNT(os.service_id) AS total_orders " + "FROM service s " + "JOIN service_order_detail os ON s.service_id = os.service_id " + "WHERE os.order_time >= NOW() - INTERVAL 7 DAY " + "GROUP BY s.service_id, s.service_name, s.service_price, s.service_description, s.service_image " + "ORDER BY total_orders DESC limit 3";
+        try (Connection con = DBConnection.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String serviceName = rs.getString(2);
+                double price = rs.getDouble(3);
+                String des = rs.getString(4);
+                Blob img = rs.getBlob(5);
+                servicesList.add(new service(serviceName, price, des, img));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void generateService() {
+        tilepaneServices.getChildren().clear();
+        List<service> ss = serviceController.getAllServices();
+        for (service s : ss) {
+            if (s.getDescription().matches("NIL")) continue;
+            serviceMap.put(s.getId(), s);
+            createService(s);
+        }
+    }
+
+    private int currentIndex = 0;
+
+    @FXML
+    private void previousService() {//left arrow to go previous one
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateServiceDisplay();
+        }
+    }
+
+    @FXML
+    private void nextService() {//right arrow to go next one
+        if (currentIndex < servicesList.size() - 1) {
+            currentIndex++;
+            updateServiceDisplay();
+        }
+    }
+
+    private void updateServiceDisplay() {//updating
+        if (!servicesList.isEmpty() && currentIndex >= 0 && currentIndex < servicesList.size()) {
+            service currentService = servicesList.get(currentIndex);
+            lblTitle.setText(currentService.getName());
+            lblPrice.setText("$" + currentService.getPrice());
+            lblDiscription.setText(currentService.getDescription());
+            Blob imageBlob = currentService.getImage(); // Assuming getImage() returns Blob
+            if (imageBlob != null) {
+                try {
+                    // Convert Blob to byte array and then to Image
+                    byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+                    Image image = new Image(new ByteArrayInputStream(imageBytes));
+
+                    // Set the ImageView with the Image
+                    imgView.setImage(image);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // Clear the ImageView if no image is present
+                imgView.setImage(null);
+            }
+        } else {
+            lblTitle.setText("No service available");
+            lblPrice.setText("");
+            lblDiscription.setText("");
+            imgView.setImage(null);
+        }
+    }
 
     double tc = 0;
 
@@ -396,6 +460,15 @@ public class staffServiceController {
             serviceMap.put(s.getId(), s);
             createService(s);
         }
+
+        loadPopularServicesFromDatabase();
+        if (!servicesList.isEmpty()) {
+            updateServiceDisplay();
+        } else {
+            lblTitle.setText("No services found");
+            lblPrice.setText("");
+        }
+
 
         logout.setOnAction(e->logoutController.logout(e));
 
