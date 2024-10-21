@@ -203,7 +203,8 @@ public class allBookingController {
                 List<booking> filteredBookings = newData.stream()
                         .filter(b -> !b.getBooking_status().matches("Checked-Out")
                                 && !b.getBooking_status().matches("Arrived")
-                                && !b.getBooking_status().matches("Cancelled"))
+                                && !b.getBooking_status().matches("Cancelled")
+                                && !b.getBooking_status().matches("leaved"))
                         .collect(Collectors.toList());
 
                 bookingTable.getItems().addAll(filteredBookings);

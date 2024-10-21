@@ -29,7 +29,9 @@ public class foodController {
     }
     public static List<food> getAllFood() {
         List<food> allFood = new ArrayList<>();
-        String sql = "SELECT food_name, food_price, food_image, current_stock from `food`";
+        String sql = "SELECT f.food_name, f.food_price, f.food_image, f.current_stock, fc.food_category, f.stock_status \n" +
+                "FROM food f\n" +
+                "JOIN food_category fc ON f.category_id = fc.category_id;";
 
         try {
             Throwable var29 = null;
@@ -56,7 +58,10 @@ public class foodController {
                             double price = rs.getDouble(2);
                             Blob img = rs.getBlob(3);
                             int stock = rs.getInt(4);
-                            food newFood = new food(name, price, img, stock);
+                            String cat = rs.getString(5);
+                            String status = rs.getString(6);
+                            if(status.matches("NIL")) continue;
+                            food newFood = new food(name, price, img, stock,cat);
                             allFood.add(newFood);
                         }
                     } finally {
@@ -100,9 +105,12 @@ public class foodController {
         }
     }
 
-    public static List<food> getFoodByCat() {
+    public static List<food> getFoodByCat(String catName) {
         List<food> allFood = new ArrayList();
-        String sql = "SELECT food_name, food_price, food_image, current_stock, food_category FROM food JOIN food_category ON food.category_id = food_category.category_id;";
+        String sql = "SELECT f.food_name, f.food_price, f.food_image, f.current_stock, fc.food_category, f.stock_status \n" +
+                "FROM food f \n" +
+                "JOIN food_category fc ON f.category_id = fc.category_id\n" +
+                "WHERE fc.food_category = ?;";
 
         try {
             Throwable var30 = null;
@@ -116,6 +124,7 @@ public class foodController {
                     PreparedStatement psmt = con.prepareStatement(sql);
 
                     try {
+                        psmt.setString(1, catName);
                         ResultSet rs = psmt.executeQuery();
 
                         while(true) {
@@ -129,6 +138,8 @@ public class foodController {
                             Blob img = rs.getBlob(3);
                             int stock = rs.getInt(4);
                             String category = rs.getString(5);
+                            String status = rs.getString(6);
+                            if(status.matches("NIL")) continue;
                             food newFood = new food(name, price, img, stock, category);
                             allFood.add(newFood);
                         }

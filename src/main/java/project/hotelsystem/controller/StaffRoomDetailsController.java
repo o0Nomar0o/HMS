@@ -1,34 +1,19 @@
 package project.hotelsystem.controller;
 
-import java.io.IOException;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import project.hotelsystem.settings.invoiceSettings;
-import project.hotelsystem.database.controller.bookingController;
 import project.hotelsystem.util.notificationManager;
+
+import java.io.IOException;
+import java.sql.*;
+import java.time.LocalDate;
 
 public class StaffRoomDetailsController {
 
@@ -350,11 +335,15 @@ public class StaffRoomDetailsController {
     invoiceSettings ivs = new invoiceSettings();
 
     private void fetchAndDisplayCustomerDetails(String roomId) {
-        String query = "SELECT customer.customer_name, customer.phone_no, customer.email, customer.id_card, booking.booking_id " +
+
+        String query = "SELECT customer.customer_name, customer.phone_no, customer.email, customer.id_card, " +
+                "booking.booking_id, booking.check_in, booking.check_out, " +
+                "booking_charges.deposite, booking_charges.total_room_charges, booking_charges.remaining_amount " +
                 "FROM customer " +
                 "JOIN booking ON customer.customer_id = booking.customer_id " +
                 "JOIN booking_room_detail ON booking.booking_id = booking_room_detail.booking_id " +
                 "JOIN room ON booking_room_detail.room_no = room.room_no " +
+                "JOIN booking_charges ON booking.booking_id = booking_charges.booking_id " +
                 "WHERE room.room_no = ? AND booking_room_detail.booking_status = 'Arrived'";
 
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
@@ -363,32 +352,87 @@ public class StaffRoomDetailsController {
             stmt.setString(1, roomId);
 
             ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String fullName = rs.getString("customer_name");
-                String phoneNumber = rs.getString("phone_no");
-                String idCard = rs.getString("id_card");
+            while (rs.next()) {
+                String customerName = rs.getString("customer_name");
+                String phone = rs.getString("phone_no");
                 String email = rs.getString("email");
-                String bkid = rs.getString("booking_id");
+                String idCard = rs.getString("id_card");
+                int bookingId = rs.getInt("booking_id");
+                Date checkInDate = rs.getDate("check_in");
+                Date checkOutDate = rs.getDate("check_out");
+                double deposit = rs.getDouble("deposite");
+                double totalAmount = rs.getDouble("total_room_charges");
+                double remainingCharges = rs.getDouble("remaining_amount");
 
                 // Create a new pane to display these details
                 AnchorPane customerDetailsPane = new AnchorPane();
-                customerDetailsPane.setPrefSize(400, 300); // Set size of the pane
-                customerDetailsPane.setStyle("-fx-background-color: white;"
-                        + "-fx-background-radius: 10;");
+                customerDetailsPane.setPrefSize(400, 450);
+                customerDetailsPane.setStyle("-fx-background-color: #f9f9f9;" +
+                        "-fx-background-radius: 15;" +
+                        "-fx-border-color: #d1d1d1;" +
+                        "-fx-border-width: 1.5;" +
+                        "-fx-border-radius:15;" +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" +
+                        "-fx-padding: 20;");
 
                 // Add Labels and Text for each data
-                Text fullNameLabel = new Text("Full Name: " + fullName);
-                Text phoneLabel = new Text("Phone Number: " + phoneNumber);
+                Text fullNameLabel = new Text("Customer Name: " + customerName);
+                fullNameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: #333;");
+
+                Text phoneLabel = new Text("Phone Number: " + phone);
+                phoneLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+
                 Text idCardLabel = new Text("ID Card: " + idCard);
+                idCardLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+
                 Text emailLabel = new Text("Email: " + email);
+                emailLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
 
-                // Create Buttons
+                Text checkInLabel = new Text("Check In: " + checkInDate.toString());
+                checkInLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+
+                Text checkOutLabel = new Text("Check Out: " + checkOutDate.toString());
+                checkOutLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+
+                Text depositLabel = new Text("Deposit: $" + deposit);
+                depositLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+
+                Text totalAmountLabel = new Text("Total Amount: $" + totalAmount);
+                totalAmountLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+
+                Text remainingChargesLabel = new Text("Remaining Charges: $" + remainingCharges);
+                remainingChargesLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+
+                // Create buttons for Cancel and Check Out
                 Button cancelButton = new Button("Cancel");
+                cancelButton.setStyle("-fx-background-color: #ff4d4d;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;");
+
                 Button checkOutButton = new Button("Check Out");
+                checkOutButton.setStyle("-fx-background-color: #4CAF50;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-border-radius: 5;" +
+                        "-fx-background-radius: 5;");
 
+                // Button hover effects
+                cancelButton.setOnMouseEntered(e -> cancelButton.setStyle("-fx-background-color: #ff1a1a;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;"));
+                cancelButton.setOnMouseExited(e -> cancelButton.setStyle("-fx-background-color: #ff4d4d;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;"));
 
-                // Position elements in the pane
+                checkOutButton.setOnMouseEntered(e -> checkOutButton.setStyle("-fx-background-color: #45a049;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;"));
+                checkOutButton.setOnMouseExited(e -> checkOutButton.setStyle("-fx-background-color: #4CAF50;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;"));
+
                 AnchorPane.setTopAnchor(fullNameLabel, 10.0);
                 AnchorPane.setLeftAnchor(fullNameLabel, 10.0);
 
@@ -401,21 +445,39 @@ public class StaffRoomDetailsController {
                 AnchorPane.setTopAnchor(emailLabel, 100.0);
                 AnchorPane.setLeftAnchor(emailLabel, 10.0);
 
-                AnchorPane.setTopAnchor(cancelButton, 140.0);
-                AnchorPane.setLeftAnchor(cancelButton, 10.0);
+                AnchorPane.setTopAnchor(checkInLabel, 130.0);
+                AnchorPane.setLeftAnchor(checkInLabel, 10.0);
 
-                AnchorPane.setTopAnchor(checkOutButton, 140.0);
-                AnchorPane.setLeftAnchor(checkOutButton, 100.0);
+                AnchorPane.setTopAnchor(checkOutLabel, 160.0);
+                AnchorPane.setLeftAnchor(checkOutLabel, 10.0);
+
+                AnchorPane.setTopAnchor(depositLabel, 190.0);
+                AnchorPane.setLeftAnchor(depositLabel, 10.0);
+
+                AnchorPane.setTopAnchor(totalAmountLabel, 220.0);
+                AnchorPane.setLeftAnchor(totalAmountLabel, 10.0);
+
+                AnchorPane.setTopAnchor(remainingChargesLabel, 250.0);
+                AnchorPane.setLeftAnchor(remainingChargesLabel, 10.0);
+
+                AnchorPane.setBottomAnchor(cancelButton, 10.0);
+                AnchorPane.setRightAnchor(cancelButton, 120.0);
+
+                AnchorPane.setBottomAnchor(checkOutButton, 10.0);
+                AnchorPane.setRightAnchor(checkOutButton, 10.0);
 
                 // Add all elements to the pane
-                customerDetailsPane.getChildren().addAll(fullNameLabel, phoneLabel, idCardLabel, emailLabel, cancelButton, checkOutButton);
+                customerDetailsPane.getChildren().addAll(fullNameLabel, phoneLabel, idCardLabel, emailLabel,
+                        checkInLabel, checkOutLabel, depositLabel, totalAmountLabel, remainingChargesLabel,
+                        cancelButton, checkOutButton);
 
+                // Add an overlay pane for darkened background
                 AnchorPane overlayPane = new AnchorPane();
                 overlayPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
                 overlayPane.setPrefSize(body.getWidth(), body.getHeight());
                 body.getChildren().add(overlayPane);
 
-
+                // Center the customerDetailsPane
                 double paneWidth = customerDetailsPane.getPrefWidth();
                 double paneHeight = customerDetailsPane.getPrefHeight();
                 double bodyWidth = body.getWidth();
@@ -427,27 +489,50 @@ public class StaffRoomDetailsController {
                 customerDetailsPane.setLayoutX(centerX);
                 customerDetailsPane.setLayoutY(centerY);
 
-
                 body.getChildren().add(customerDetailsPane);
 
-
+                // Button actions
                 cancelButton.setOnAction(e -> {
                     body.getChildren().removeAll(overlayPane, customerDetailsPane);
                 });
 
                 checkOutButton.setOnAction(e -> {
-                    RoomShowBody.setOpacity(1.0); // Restore the opacity
-                    if (true) {
-                        body.getChildren().removeAll(overlayPane, customerDetailsPane);
-                        ivs.openPdfModal(bkid, (Stage) logout.getScene().getWindow());
-                        notificationManager.showNotification("Check-Out", "success", (Stage) logout.getScene().getWindow());
-                        AddingRooms(null, 0);
-                    }
+                    LocalDate currentDate = LocalDate.now();
+                    ivs.openPdfModal(bookingId+"", (Stage)overlayPane.getScene().getWindow());
 
+                    try (Connection connForUpdate = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
+
+                        // First, update the booking status to 'leaved'
+                        String updateBookingStatusQuery = "UPDATE booking_room_detail SET booking_status = 'leaved' " +
+                                "WHERE booking_id = ? AND room_no = ?";
+
+                        try (PreparedStatement updateBookingStatusStmt = connForUpdate.prepareStatement(updateBookingStatusQuery)) {
+                            updateBookingStatusStmt.setInt(1, bookingId);
+                            updateBookingStatusStmt.setString(2, roomId);
+                            updateBookingStatusStmt.executeUpdate();
+                        }
+                        String updateRoomStatusQuery = "UPDATE room SET room_status='Available' WHERE room_no = ?";
+                        try (PreparedStatement updateRoomStatusStmt = connForUpdate.prepareStatement(updateRoomStatusQuery)) {
+                            updateRoomStatusStmt.setString(1, roomId);
+                            updateRoomStatusStmt.executeUpdate();
+                        }
+                        String updateCheckOutDateQuery = "UPDATE booking SET check_out = ? WHERE booking_id = ?";
+
+                        try (PreparedStatement updateCheckOutDateStmt = connForUpdate.prepareStatement(updateCheckOutDateQuery)) {
+                            updateCheckOutDateStmt.setDate(1, java.sql.Date.valueOf(currentDate));
+                            updateCheckOutDateStmt.setInt(2, bookingId);   // Use the booking ID
+                            updateCheckOutDateStmt.executeUpdate();        // Execute the third update
+                        }
+                        body.getChildren().removeAll(overlayPane, customerDetailsPane);
+                        AddingRooms(null, 0);
+
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        System.out.println("Error during check-out: " + ex.getMessage());
+                    }
                 });
 
-            } else {
-                System.out.println("No ongoing booking found for room " + roomId);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -526,52 +611,71 @@ public class StaffRoomDetailsController {
 
     @FXML
     void SubmitAction(ActionEvent event) {
-
         if (selectedRoomNo == null || selectedRoomNo.isEmpty()) {
             System.out.println("Please select a room before booking.");
             return;
         }
 
-        // Collect guest information from the form
-        String firstName = FirstName.getText();
-        String lastName = LastName.getText();
-        String guestName = firstName + " " + lastName;
-        String phone_number = phoneNumber.getText();
-        String guestId = idORnrc.getText();
-        String email = Email.getText();
-        LocalDate checkInDate = LocalDate.now(); // Assuming check-in is now (replace with actual if needed)
-        int stayDurationNights = Integer.parseInt(duration.getText());
-        int stayDurationHours = 0; // Set to 0 unless you have an additional input for hours
+        if (FirstName.getText().isBlank() || LastName.getText().isBlank() || phoneNumber.getText().isBlank()
+                || idORnrc.getText().isBlank() || Email.getText().isBlank() || duration.getText().isBlank()) {
+            System.out.println("Input the details mf");
+        } else {
+            String firstName = FirstName.getText();
+            String lastName = LastName.getText();
+            String guestName = firstName + " " + lastName;
+            String phone_number = phoneNumber.getText();
+            String guestId = idORnrc.getText();
+            String email = Email.getText();
+            LocalDate checkInDate = LocalDate.now();
+            int stayDurationNights = Integer.parseInt(duration.getText());
+            int stayDurationHours = 0;
 
-        String sql = "CALL add_booking(?, ?, ?, ?, ?, ?, ?, ?)";
+            String checkInSql = "CALL add_checkIn(?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
-             CallableStatement psmt = con.prepareCall(sql)) {
-            con.setAutoCommit(false);
-            // Set procedure parameters
-            psmt.setString(1, selectedRoomNo);
-            psmt.setString(2, guestName);
-            psmt.setString(3, phone_number);
-            psmt.setString(4, guestId);
-            psmt.setString(5, email);
-            psmt.setDate(6, java.sql.Date.valueOf(checkInDate));
-            psmt.setInt(7, stayDurationNights);
-            psmt.setInt(8, stayDurationHours);
-
-            // Execute the stored procedure
-            int result = psmt.executeUpdate();
-
-            // Commit the transaction if successful
-            if (result > 0) {
-                con.commit();
-                System.out.println("Booking added successfully.");
-
+            if (FirstName.getText().isBlank() || LastName.getText().isBlank() || phoneNumber.getText().isBlank()
+                    || idORnrc.getText().isBlank() || Email.getText().isBlank() || duration.getText().isBlank()) {
+                System.out.println("Input the details mf");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage() + " Error occurred during booking.");
 
+            try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+                 CallableStatement psmtCheckIn = con.prepareCall(checkInSql)) {
+
+                con.setAutoCommit(false);
+
+                psmtCheckIn.setString(1, guestName);
+                psmtCheckIn.setString(2, phone_number);
+                psmtCheckIn.setString(3, guestId);
+                psmtCheckIn.setString(4, email);
+                psmtCheckIn.setString(5, selectedRoomNo);
+                psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
+                psmtCheckIn.setInt(7, stayDurationNights);
+                psmtCheckIn.setInt(8, stayDurationHours);
+
+                int checkInResult = psmtCheckIn.executeUpdate();
+
+                if (checkInResult > 0) {
+                    con.commit();
+                    System.out.println("Check-in processed successfully.");
+                    AddingRooms(null, 0);
+                } else {
+                    System.out.println("Error during check-in.");
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage() + " Error occurred during check-in.");
+            }
         }
+        clearAll();
+    }
+
+    private void clearAll() {
+        FirstName.setText("");
+        LastName.setText("");
+        idORnrc.setText("");
+        phoneNumber.setText("");
+        duration.setText("");
+        Email.setText("");
     }
 
 

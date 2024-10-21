@@ -37,10 +37,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class adminServiceController {
 
@@ -219,8 +216,9 @@ public class adminServiceController {
 
         txfRoomNo.setOnAction(event -> {
             if (!userFilter.isShowing()) {
-                Bounds bounds = txfServiceName.localToScreen(txfRoomNo.getBoundsInLocal());
-                userFilter.show((Stage) logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
+                Bounds bounds = txfRoomNo.localToScreen(txfRoomNo.getBoundsInLocal());
+                userFilter.show((Stage) txfServiceName.getScene().getWindow(),
+                        bounds.getMinX(), bounds.getMaxY());
             }
         });
 
@@ -899,7 +897,7 @@ public class adminServiceController {
                                 psmt.executeUpdate();
                                 this.foodView.getChildren().clear();
                                 this.foodView.getChildren().removeAll(new Node[0]);
-                                List<food> Food = foodController.getFoodByCat();
+                                List<food> Food = foodController.getFoodByCat(category);
                                 Iterator var13 = Food.iterator();
 
                                 Pane pane;
@@ -1317,8 +1315,20 @@ public class adminServiceController {
         foodData.clear();
         ObservableList<food> foodItems = FXCollections.observableArrayList(items);
         this.stockTableView.setItems(foodItems);
+
         List<food> allFood = foodController.getAllFood();
+        HashSet<String> catHash = new HashSet<>();
+        for(food fd : allFood){
+            System.out.println(fd.getCategory());
+            if(!catHash.contains(fd.getCategory())) {
+                Pane cfp = this.createCatPane(fd);
+                this.categoryView.getChildren().add(cfp);
+                catHash.add(fd.getCategory());
+            }
+        }
+
         List<food> allCat = foodController.getAllCategory();
+
         Iterator var7 = allFood.iterator();
 
         food f;
@@ -1331,11 +1341,11 @@ public class adminServiceController {
 
         var7 = allCat.iterator();
 
-        while (var7.hasNext()) {
-            f = (food) var7.next();
-            cfp = this.createCatPane(f);
-            this.categoryView.getChildren().add(cfp);
-        }
+//        while (var7.hasNext()) {
+//            f = (food) var7.next();
+//            cfp = this.createCatPane(f);
+//            this.categoryView.getChildren().add(cfp);
+//        }
 
     }
 
@@ -1487,6 +1497,7 @@ public class adminServiceController {
             newCatPane.setPrefHeight(130.0);
             newCatPane.setPrefWidth(106.0);
             Label foodCategory = new Label(fcm.getCategory());
+            System.out.println(fcm.getCategory());
             String foodCat = foodCategory.getText();
             newCatPane.setOnMouseClicked((event) -> {
                 this.showFoodByCat(event, foodCat, newCatPane);
@@ -1510,7 +1521,7 @@ public class adminServiceController {
     private void showFoodByCat(MouseEvent event, String category, Pane clickedPane) {
         this.foodView.getChildren().clear();
         this.foodView.getChildren().removeAll(new Node[0]);
-        List<food> allFood = foodController.getFoodByCat();
+        List<food> allFood = foodController.getFoodByCat(category);
         Iterator var6 = allFood.iterator();
 
         Pane pane;

@@ -161,7 +161,7 @@
                                                     </LinearGradient>
                                                 </textFill>
                                             </Label>
-                                            <TextField fx:id="txfRoomNo" prefHeight="35.0" prefWidth="192.0" promptText="Enter Room No" />
+                                 <Button fx:id="txfRoomNo" mnemonicParsing="false" text="Choose Room No.▼" />
                                         </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="317.0" VBox.vgrow="NEVER">
@@ -253,7 +253,7 @@
                                     </Label>
                                     <HBox>
                                        <children>
-                                          <TextField fx:id="roomNo" prefHeight="31.0" prefWidth="308.0" style="-fx-background-radius: 10;" />
+                                          <Button fx:id="roomNo" mnemonicParsing="false" prefHeight="26.0" prefWidth="342.0" text="Choose Room▼" />
                                        </children>
                                     </HBox>
                                     <ScrollPane hbarPolicy="NEVER" prefHeight="494.0" prefWidth="476.0">

@@ -1,7 +1,10 @@
 package project.hotelsystem.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -14,6 +17,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
+import project.hotelsystem.database.controller.roomController;
+import project.hotelsystem.database.models.room;
+import project.hotelsystem.util.dropdownManager;
 import project.hotelsystem.util.notificationManager;
 import javafx.stage.Stage;
 import project.hotelsystem.database.connection.DBConnection;
@@ -136,13 +143,13 @@ public class staffServiceController {
     private Text totalCost;
 
     @FXML
-    private TextField txfRoomNo;
+    private Button txfRoomNo;
 
     @FXML
     private TextField txfServiceName;
 
     @FXML
-    private TextField roomNo;
+    private Button roomNo;
 
 
     private Map<String, Pane> paneMap = new HashMap();
@@ -356,12 +363,20 @@ public class staffServiceController {
             currentIndex--;
             updateServiceDisplay();
         }
+        else if(currentIndex == 0){
+            currentIndex = servicesList.size() -1;
+            updateServiceDisplay();
+        }
     }
 
     @FXML
     private void nextService() {//right arrow to go next one
         if (currentIndex < servicesList.size() - 1) {
             currentIndex++;
+            updateServiceDisplay();
+        }
+        else if(currentIndex ==  servicesList.size() -1){
+            currentIndex =0;
             updateServiceDisplay();
         }
     }
@@ -447,9 +462,66 @@ public class staffServiceController {
         return newPane;
     }
 
+    private static void styleDropdownButton(Button button) {
+        button.setStyle("""
+        -fx-background-color: #f5f6fa; 
+        -fx-border-color: #dcdde1; 
+        -fx-border-radius: 5; 
+        -fx-padding: 5 10; 
+        -fx-font-size: 14px;
+        -fx-text-fill: #2f3640;
+        -fx-cursor: hand;
+    """);
+
+        button.setOnMouseEntered(e -> button.setStyle("""
+        -fx-background-color: #e1e2e6; 
+        -fx-border-color: #dcdde1; 
+        -fx-border-radius: 5; 
+        -fx-padding: 5 10; 
+        -fx-font-size: 14px;
+        -fx-text-fill: #2f3640;
+        -fx-cursor: hand;
+    """));
+
+        button.setOnMouseExited(e -> button.setStyle("""
+        -fx-background-color: #f5f6fa; 
+        -fx-border-color: #dcdde1; 
+        -fx-border-radius: 5; 
+        -fx-padding: 5 10; 
+        -fx-font-size: 14px;
+        -fx-text-fill: #2f3640;
+        -fx-cursor: hand;
+    """));
+    }
+
+
+
 
     @FXML
     public void initialize() {
+        ObservableList<room> ols = FXCollections.observableArrayList(roomController.getAllOccupiedRooms());
+
+        Popup roomDp =  dropdownManager.createRoomDropdown(txfRoomNo,ols);
+
+        txfRoomNo.setOnAction(event -> {
+            if (!roomDp.isShowing()) {
+                Bounds bounds = txfRoomNo.localToScreen(txfRoomNo.getBoundsInLocal());
+                roomDp.show((Stage) txfServiceName.getScene().getWindow(),
+                        bounds.getMinX(), bounds.getMaxY());
+            }
+        });
+
+        Popup roomDp2 =  dropdownManager.createRoomDropdown(roomNo,ols);
+        roomNo.setOnAction(event -> {
+            if (!roomDp2.isShowing()) {
+                Bounds bounds = roomNo.localToScreen(roomNo.getBoundsInLocal());
+                roomDp2.show((Stage) roomNo.getScene().getWindow(),
+                        bounds.getMinX(), bounds.getMaxY());
+            }
+        });
+        styleDropdownButton(roomNo);
+        styleDropdownButton(txfRoomNo);
+
         orders_button.setDisable(true);
         showTotalCost.setText("0");
         List<service> ss = serviceController.getAllServices();
@@ -470,7 +542,8 @@ public class staffServiceController {
         logout.setOnAction(e -> logoutController.logout(e));
 
         btnConfirm.setOnAction(e -> {
-            if (serviceController.batchOrder(orderedService, txfRoomNo.getText())) {
+            room r = (room)txfRoomNo.getUserData();
+            if (serviceController.batchOrder(orderedService,r.getRoom_no())) {
                 orderedService.clear();
                 orderListVbox.getChildren().clear();
                 notificationManager.showNotification("Successfully ordered!", "success", (Stage) logout.getScene().getWindow());
@@ -523,7 +596,8 @@ public class staffServiceController {
 
         confirmOrder.setOnAction(e -> {
 
-            if (roomNo == null || roomNo.getText() == null || roomNo.getText().isEmpty()) {
+            room r = (room) roomNo.getUserData();
+            if (roomNo == null || r.getRoom_no() == null || r.getRoom_no().isEmpty()) {
                 notificationManager.showNotification("Please choose a room", "faliure", (Stage) logout.getScene().getWindow());
             }
 
@@ -533,9 +607,8 @@ public class staffServiceController {
                 for (Map.Entry<food, Integer> entry : currentOrders.entrySet()) {
                     food foodItem = entry.getKey();
                     int quantity = entry.getValue();
-                    System.out.println(roomNo.getText() + "item: " + foodItem.getName() + ", qnt:" + quantity);
                     // Set the parameters for the stored procedure
-                    stmt.setInt(1, Integer.parseInt(roomNo.getText()));  // Room number
+                    stmt.setInt(1, Integer.parseInt(r.getRoom_no()));  // Room number
                     stmt.setString(2, foodItem.getName());          // Food name
                     stmt.setInt(3, quantity);                            // Food quantity
                     // Execute the stored procedure
