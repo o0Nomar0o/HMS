@@ -357,7 +357,7 @@ public class adminRoomsController {
 
             List<room> lr = roomController.getAllRooms();
             roomsView.getChildren().add(addRoom);
-            addRoom.setStyle("-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+            addRoom.setStyle("-fx-pref-width: 150;" + "-fx-pref-height:90;" +
                     "-fx-background-color: #F6F5F2; " +
                     "-fx-text-fill: #333333; " +
                     "-fx-font-size: 16px; " +
@@ -368,7 +368,7 @@ public class adminRoomsController {
                     "-fx-padding: 10; " +
                     "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);");
             addRoom.setOnMouseEntered(e -> addRoom.setStyle(
-                    "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                    "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
                             "-fx-background-color: #e0e0e0; " +
                             "-fx-text-fill: #333333; " +
                             "-fx-font-size: 16px; " +
@@ -380,7 +380,7 @@ public class adminRoomsController {
                             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0.0, 0, 1);"));
 
             addRoom.setOnMouseExited(e -> addRoom.setStyle(
-                    "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                    "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
                             "-fx-background-color: #F6F5F2; " +
                             "-fx-text-fill: #333333; " +
                             "-fx-font-size: 16px; " +

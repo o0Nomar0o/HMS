@@ -26,78 +26,70 @@ import java.util.stream.Collectors;
 
 public class allBookingController {
 
+    private final Service<List<booking>> bookingService = new Service<>() {
+        @Override
+        protected Task<List<booking>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<booking> call() throws Exception {
+                    return bookingController.getAllBookings();
+
+                }
+            };
+        }
+    };
+    // Data for table
+    switchSceneController ssc = new switchSceneController();
+    userSettings tss = userSettings.getInstance();
     @FXML
     private Text StaffName;
-
     @FXML
     private TilePane arrivalPane;
-
     @FXML
     private TableView<booking> bookingTable; // Changed from wildcard to booking type
-
     @FXML
     private Button bookings_button;
-
     @FXML
     private TilePane checkoutPane;
-
     @FXML
     private TableColumn<booking, Void> col_cancel; // For cancel action button
-
     @FXML
     private TableColumn<booking, Void> col_detail; // For check-in action button
-
     @FXML
     private TableColumn<booking, String> col_id; // booking ID
-
     @FXML
     private TableColumn<booking, String> col_name; // Guest Name
-
     @FXML
     private TableColumn<booking, String> col_note;
-
     @FXML
     private TableColumn<booking, String> col_ph;
-
     @FXML
     private TableColumn<booking, String> col_room; // Room Number
-
     @FXML
     private TableColumn<booking, Void> col_submit;
-
     @FXML
     private HBox floorFilter;
-
     @FXML
     private Button logout;
     @FXML
     private Button dashboard_button;
-
     @FXML
     private Button orders_button;
-
     @FXML
     private VBox roomView;
-
     @FXML
     private Button rooms_button;
-
     @FXML
     private TextField searchField;
-
     @FXML
     private Button services_button;
-
     @FXML
     private Button settings;
-
-    // Data for table
-    switchSceneController ssc = new switchSceneController();
 
     @FXML
     void initialize() {
 
-        if(tss.getPrivilege().matches("staff")) StaffName.setText(tss.getUsername());
+        if (tss.getPrivilege().matches("staff")) StaffName.setText(tss.getUsername());
         else StaffName.setText("");
 
         col_id.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBooking_id()));
@@ -211,7 +203,7 @@ public class allBookingController {
                 List<booking> filteredBookings = newData.stream()
                         .filter(b -> !b.getBooking_status().matches("Checked-Out")
                                 && !b.getBooking_status().matches("Arrived")
-                        && !b.getBooking_status().matches("Cancelled"))
+                                && !b.getBooking_status().matches("Cancelled"))
                         .collect(Collectors.toList());
 
                 bookingTable.getItems().addAll(filteredBookings);
@@ -231,25 +223,6 @@ public class allBookingController {
 
     }
 
-    private final Service<List<booking>> bookingService = new Service<>() {
-        @Override
-        protected Task<List<booking>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<booking> call() throws Exception {
-                    return bookingController.getAllBookings();
-
-                }
-            };
-        }
-    };
-
-    userSettings tss = userSettings.getInstance();
-
-
-
-
-
     @FXML
     void SearchRoom(ActionEvent event) {
     }
@@ -264,7 +237,7 @@ public class allBookingController {
     }
 
     @FXML
-    void switchToorders(ActionEvent event)throws Exception {
+    void switchToorders(ActionEvent event) throws Exception {
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), tss.getPrivilege(), "rooms");
     }
 
@@ -274,13 +247,13 @@ public class allBookingController {
     }
 
     @FXML
-    void switchToservices(ActionEvent event) throws Exception  {
+    void switchToservices(ActionEvent event) throws Exception {
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), tss.getPrivilege(), "services");
     }
 
 
     @FXML
-    void switchToDashboard(ActionEvent event) throws Exception{
+    void switchToDashboard(ActionEvent event) throws Exception {
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), tss.getPrivilege(), "dashboard");
     }
 
@@ -318,7 +291,7 @@ public class allBookingController {
                     "-fx-border-color: #cccccc; " +
                     "-fx-border-radius: 5; " +
                     "-fx-background-radius: 5; " +
-                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.0, 0, 1);"+
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.0, 0, 1);" +
                     "-fx-vgap:10px; -fx-hgap: 15px;";
 
             String darkModeStyle = "-fx-font-size: 16px; " +
@@ -328,11 +301,11 @@ public class allBookingController {
                     "-fx-border-color: #444444; " +
                     "-fx-border-radius: 5; " +
                     "-fx-background-radius: 5; " +
-                    "-fx-effect: dropshadow(gaussian, rgba(255,255,255,0.1), 10, 0.0, 0, 1);"+
+                    "-fx-effect: dropshadow(gaussian, rgba(255,255,255,0.1), 10, 0.0, 0, 1);" +
                     "-fx-vgap:10px; -fx-hgap: 15px;";
 
             String style = tss.getTheme();
-            switch (style){
+            switch (style) {
                 case "light":
                     grid.setStyle(lightModeStyle);
                     break;
@@ -350,7 +323,8 @@ public class allBookingController {
             pane.getChildren().add(grid);
         }
     }
-    class BookingFunc{
+
+    class BookingFunc {
         public void cancelBooking() {
             booking selectedBooking = bookingTable.getSelectionModel().getSelectedItem();
 

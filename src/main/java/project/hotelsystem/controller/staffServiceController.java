@@ -309,9 +309,7 @@ public class staffServiceController {
 
         serviceRoot.setPrefWidth(tilepaneServices.getWidth());
 
-        serviceRoot.setStyle("-fx-hgap: 15px;" +
-                "-fx-border-color: #121212;" + "-fx-border-radius: 1.25em;" +
-                "-fx-border-width: 1px;");
+        serviceRoot.setStyle("-fx-hgap: 15px;" + "-fx-border-color: #121212;" + "-fx-border-radius: 1.25em;" + "-fx-border-width: 1px;");
 
         tilepaneServices.widthProperty().addListener((ob, ov, nv) -> {
             serviceRoot.setPrefWidth(nv.doubleValue() - 15);
@@ -323,6 +321,7 @@ public class staffServiceController {
         tilepaneServices.getChildren().add(serviceRoot);
 
     }
+
     private void loadPopularServicesFromDatabase() {//get popular service from database , we can limit to 1 / 2
         String sql = " SELECT s.service_id, s.service_name, s.service_price, s.service_description, s.service_image, COUNT(os.service_id) AS total_orders " + "FROM service s " + "JOIN service_order_detail os ON s.service_id = os.service_id " + "WHERE os.order_time >= NOW() - INTERVAL 7 DAY " + "GROUP BY s.service_id, s.service_name, s.service_price, s.service_description, s.service_image " + "ORDER BY total_orders DESC limit 3";
         try (Connection con = DBConnection.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
@@ -413,12 +412,10 @@ public class staffServiceController {
         serviceLabel.setStyle("-fx-text-fill:white");
         serviceCharge.setStyle("-fx-text-fill:white");
 
-        serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;"
-                + "-fx-background-radius:8px");
+        serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
 
         sep.setPrefWidth(100); // Set preferred width for horizontal separator
-        sep.setStyle("-fx-background-grey: white;" +
-                "-fx-border-color:grey;" + // Border color
+        sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + // Border color
                 "-fx-border-width: 0;");    // Border width
 
         serviceOrderPane.getChildren().addAll(serviceLabel, serviceCharge);
@@ -470,13 +467,13 @@ public class staffServiceController {
         }
 
 
-        logout.setOnAction(e->logoutController.logout(e));
+        logout.setOnAction(e -> logoutController.logout(e));
 
-        btnConfirm.setOnAction(e->{
-            if(serviceController.batchOrder(orderedService, txfRoomNo.getText())){
+        btnConfirm.setOnAction(e -> {
+            if (serviceController.batchOrder(orderedService, txfRoomNo.getText())) {
                 orderedService.clear();
                 orderListVbox.getChildren().clear();
-                notificationManager.showNotification("Successfully ordered!","success",(Stage)logout.getScene().getWindow());
+                notificationManager.showNotification("Successfully ordered!", "success", (Stage) logout.getScene().getWindow());
             }
         });
 
@@ -526,18 +523,17 @@ public class staffServiceController {
 
         confirmOrder.setOnAction(e -> {
 
-            if(roomNo == null || roomNo.getText() == null || roomNo.getText().isEmpty()){
-                notificationManager.showNotification("Please choose a room","faliure",(Stage)logout.getScene().getWindow());
+            if (roomNo == null || roomNo.getText() == null || roomNo.getText().isEmpty()) {
+                notificationManager.showNotification("Please choose a room", "faliure", (Stage) logout.getScene().getWindow());
             }
 
             try (Connection con = DBConnection.getConnection(); // Get the database connection
-                 CallableStatement stmt =
-                         con.prepareCall("{CALL add_food_order_and_update_stock(?, ?, ?)}")) {
+                 CallableStatement stmt = con.prepareCall("{CALL add_food_order_and_update_stock(?, ?, ?)}")) {
 
                 for (Map.Entry<food, Integer> entry : currentOrders.entrySet()) {
                     food foodItem = entry.getKey();
                     int quantity = entry.getValue();
-                    System.out.println(roomNo.getText()+"item: "+foodItem.getName()+", qnt:"+quantity);
+                    System.out.println(roomNo.getText() + "item: " + foodItem.getName() + ", qnt:" + quantity);
                     // Set the parameters for the stored procedure
                     stmt.setInt(1, Integer.parseInt(roomNo.getText()));  // Room number
                     stmt.setString(2, foodItem.getName());          // Food name
@@ -654,8 +650,7 @@ public class staffServiceController {
 
         Button clicked = (Button) event.getTarget();
         if (clicked.getUserData() != null) {
-            @SuppressWarnings("unchecked")
-            List<Object> retrievedNodes = (List<Object>) clicked.getUserData();
+            @SuppressWarnings("unchecked") List<Object> retrievedNodes = (List<Object>) clicked.getUserData();
             int currText = 0;
             for (Object node : retrievedNodes) {
                 if (node instanceof TextField) {
@@ -695,8 +690,7 @@ public class staffServiceController {
     void reduce_stock(ActionEvent event) {
         String procedureCall = "{Call add_food_order_and_update_stock(?,?,?)}";
 
-        try (Connection con = DBConnection.getConnection();
-             CallableStatement psmt = con.prepareCall(procedureCall);) {
+        try (Connection con = DBConnection.getConnection(); CallableStatement psmt = con.prepareCall(procedureCall);) {
 
             psmt.setInt(1, Integer.parseInt(roomNo.getText()));
             psmt.setString(2, foodName.getText());

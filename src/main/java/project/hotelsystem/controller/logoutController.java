@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.settings.userSettings;
+
 import java.io.File;
 import java.net.URL;
 
@@ -14,14 +15,14 @@ public class logoutController {
 
     public static void logout(ActionEvent event) {
         userSettings ts = userSettings.getInstance();
-        try{
+        try {
             URL path = new File("src/main/resources/login.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             path = new File("src/main/resources/css/login.css").toURI().toURL();
             stage.setTitle("Hotel Manager Login");
-            stage.setWidth(650.0 );
+            stage.setWidth(650.0);
             stage.setHeight(448.0);
             stage.setScene(root);
             stage.centerOnScreen();
@@ -31,7 +32,7 @@ public class logoutController {
             userController.updateStatus(ts.getUid(), "offline");
 
             stage.show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         ts.logout();
@@ -39,14 +40,14 @@ public class logoutController {
 
     public static void logout(Stage st) {
         userSettings ts = userSettings.getInstance();
-        try{
+        try {
             URL path = new File("src/main/resources/login.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
             Stage stage = st;
             path = new File("src/main/resources/css/login.css").toURI().toURL();
             stage.setTitle("Hotel Manager Login");
-            stage.setWidth(650.0 );
+            stage.setWidth(650.0);
             stage.setHeight(448.0);
             stage.setScene(root);
             stage.centerOnScreen();
@@ -55,7 +56,7 @@ public class logoutController {
             userController.updateStatus(ts.getUid(), "offline");
 
             stage.show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         ts.logout();

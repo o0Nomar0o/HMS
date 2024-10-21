@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,21 +19,18 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.*;
 import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.database.controller.foodController;
 import project.hotelsystem.database.controller.serviceController;
-import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.database.models.food;
 import project.hotelsystem.database.models.service;
-import project.hotelsystem.database.models.user;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.settings.userSettings;
 import project.hotelsystem.util.notificationManager;
-
+import project.hotelsystem.util.dropdownManager;
+import project.hotelsystem.database.models.room;
+import project.hotelsystem.database.controller.roomController;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -119,6 +117,7 @@ public class adminServiceController {
     @FXML
     private TilePane foodView;
 
+
     @FXML
     private Button guests;
 
@@ -189,10 +188,13 @@ public class adminServiceController {
     private Text totalCost;
 
     @FXML
-    private TextField txfRoomNo;
+    private Button txfRoomNo;
 
     @FXML
     private TextField txfServiceName;
+
+    @FXML
+    private HBox roomVbox;
 
     userSettings uss = userSettings.getInstance();
     switchSceneController ssc = new switchSceneController();
@@ -210,6 +212,17 @@ public class adminServiceController {
             lblTitle.setText("No services found");
             lblPrice.setText("");
         }
+
+        ObservableList<room> ols = FXCollections.observableArrayList(roomController.getAllRooms());
+
+        Popup userFilter =  dropdownManager.createRoomDropdown(txfRoomNo,ols);
+
+        txfRoomNo.setOnAction(event -> {
+            if (!userFilter.isShowing()) {
+                Bounds bounds = txfServiceName.localToScreen(txfRoomNo.getBoundsInLocal());
+                userFilter.show((Stage) logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
+            }
+        });
 
         this.setupTableView();
         this.add.setOnAction((e) -> {
@@ -462,7 +475,7 @@ public class adminServiceController {
         Button delbtn = new Button("Delete");
         delbtn.setUserData(s);
         editbtn.setOnAction(e -> {
-            // Handle edit action
+            editService(e);
         });
 
         delbtn.setOnAction(e -> {
@@ -710,10 +723,10 @@ public class adminServiceController {
 
         BorderPane modalRoot = new BorderPane();
 
-        Text modalTitle = new Text("Remove Service");
+        Text modalTitle = new Text("Edit Service");
         modalTitle.setFont(new Font(28.0));
 
-        Text modalHint = new Text("Are you sure you want to remove this service?");
+        Text modalHint = new Text("Are you sure you want to Update this service?");
         VBox topBox = new VBox(modalTitle, modalHint);
         topBox.setAlignment(Pos.CENTER);
         topBox.setStyle("-fx-padding: 10px;");

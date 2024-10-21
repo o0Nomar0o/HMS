@@ -145,7 +145,7 @@
                      </VBox>
                      <VBox alignment="CENTER" layoutX="626.0" AnchorPane.bottomAnchor="3.5" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                         <children>
-                           <HBox alignment="CENTER_LEFT" prefWidth="302.0" VBox.vgrow="NEVER">
+                           <HBox fx:id="roomVbox" alignment="CENTER_LEFT" prefWidth="302.0" VBox.vgrow="NEVER">
                               <children>
                                         <Label prefHeight="40.0" prefWidth="81.0" text="Order list">
                                             <font>
@@ -168,7 +168,7 @@
                                                 </LinearGradient>
                                             </textFill>
                                         </Label>
-                                          <TextField fx:id="txfRoomNo" prefHeight="35.0" prefWidth="192.0" promptText="Enter Room No" />
+                                 <Button fx:id="txfRoomNo" mnemonicParsing="false" text="Choose Room No▽" />
                               </children>
                            </HBox>
                            <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="317.0" VBox.vgrow="NEVER">

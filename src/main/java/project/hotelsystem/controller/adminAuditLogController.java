@@ -3,8 +3,6 @@ package project.hotelsystem.controller;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -14,17 +12,17 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
-import project.hotelsystem.util.dropdownManager;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import project.hotelsystem.database.controller.auditController;
 import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.database.models.audit_logs;
 import project.hotelsystem.database.models.user;
+import project.hotelsystem.util.dropdownManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,20 +82,20 @@ public class adminAuditLogController {
                     logsGrid.add(timestampLabel, 1, 1);
 
                     GridPane.setValignment(userLabel, VPos.CENTER);
-                    logsGrid.setStyle("-fx-background-color: #DDDDDD;"+"-fx-padding:15px;"+
-                            "-fx-vgap:10px;"+"-fx-hgap:10px;"+"-fx-background-radius: 1.25em;");
+                    logsGrid.setStyle("-fx-background-color: #DDDDDD;" + "-fx-padding:15px;" +
+                            "-fx-vgap:10px;" + "-fx-hgap:10px;" + "-fx-background-radius: 1.25em;");
 
                     audit_view.getChildren().add(logsGrid);
                 }
             });
 
-            if(count <= 0 && !flag) {
+            if (count <= 0 && !flag) {
                 startLogRefreshTimeline();
                 count++;
             }
 
             Popup actionFilter = dropdownManager.createActionDropdown(dropdownAction, (Stage) logout.getScene().getWindow());
-            dropdownAction.setOnAction(e->{
+            dropdownAction.setOnAction(e -> {
                 if (!actionFilter.isShowing()) {
                     Bounds bounds = dropdownAction.localToScreen(dropdownAction.getBoundsInLocal());
                     actionFilter.show((Stage) logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
@@ -116,12 +114,12 @@ public class adminAuditLogController {
         logs.start();
 
 
-        userlist.setOnSucceeded(e->{
+        userlist.setOnSucceeded(e -> {
             ObservableList<user> users = FXCollections.observableArrayList(userlist.getValue());
             Popup userFilter = dropdownManager.createUserDropdown(dropdownUser,
-                    (Stage) logout.getScene().getWindow() , users, logs);
+                    (Stage) logout.getScene().getWindow(), users, logs);
 
-            dropdownUser.setOnAction(event->{
+            dropdownUser.setOnAction(event -> {
                 if (!userFilter.isShowing()) {
                     Bounds bounds = dropdownUser.localToScreen(dropdownUser.getBoundsInLocal());
                     userFilter.show((Stage) logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
@@ -129,7 +127,7 @@ public class adminAuditLogController {
             });
         });
 
-        userlist.setOnFailed(e->{
+        userlist.setOnFailed(e -> {
             Throwable exception = userlist.getException();
             exception.printStackTrace();
 
@@ -137,7 +135,7 @@ public class adminAuditLogController {
 
         userlist.start();
 
-        logout.setOnAction(e->{
+        logout.setOnAction(e -> {
             logoutController.logout(e);
             flag = true;
             logs.reset();
@@ -153,25 +151,25 @@ public class adminAuditLogController {
     }
 
     @FXML
-    void switchtobookings(ActionEvent event)throws Exception {
+    void switchtobookings(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
     }
 
     @FXML
-    void switchtorooms(ActionEvent event)throws Exception {
+    void switchtorooms(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
     }
 
     @FXML
-    void switchtoservices(ActionEvent event)throws Exception {
+    void switchtoservices(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
     }
 
     @FXML
-    void switchtosettings(ActionEvent event)throws Exception{
+    void switchtosettings(ActionEvent event) throws Exception {
         flag = true;
         timeline.stop();
         logs.reset();
@@ -185,9 +183,9 @@ public class adminAuditLogController {
                 @Override
                 protected List<audit_logs> call() throws Exception {
                     user u = (user) dropdownUser.getUserData();
-                    if(u ==null || u.getUsername().matches("All Users"))
+                    if (u == null || u.getUsername().matches("All Users"))
                         return auditController.getAudits();
-                    return  auditController.getAuditsByID(u.getUid());
+                    return auditController.getAuditsByID(u.getUid());
                 }
             };
         }
@@ -200,7 +198,7 @@ public class adminAuditLogController {
                 @Override
                 protected List<user> call() throws Exception {
                     List<user> results = new ArrayList<>();
-                    results.add(new user("","All Users",""));
+                    results.add(new user("", "All Users", ""));
                     results.addAll(userController.getAllUsers());
                     return results;
                 }
@@ -211,7 +209,7 @@ public class adminAuditLogController {
     Timeline timeline;
 
     private void startLogRefreshTimeline() {
-         timeline = new Timeline(
+        timeline = new Timeline(
                 new KeyFrame(
                         Duration.seconds(5),
                         event -> {

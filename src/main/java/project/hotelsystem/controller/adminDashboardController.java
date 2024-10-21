@@ -15,14 +15,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import project.hotelsystem.database.controller.bookingController;
 import project.hotelsystem.database.models.booking;
-import project.hotelsystem.settings.invoiceSettings;
+import project.hotelsystem.settings.userSettings;
+
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
-
-import project.hotelsystem.settings.userSettings;
 
 public class adminDashboardController {
 
@@ -78,13 +76,13 @@ public class adminDashboardController {
     private switchSceneController ssc = new switchSceneController();
 
     @FXML
-    void initialize(){
+    void initialize() {
         Preferences p = ts.getNodePreference();
         ts.getUid();
 
         room_col.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRoom().getRoom_no()));
         guest_col.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGuest().getGuest_name()));
-        check_in.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCheck_in()+""));
+        check_in.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCheck_in() + ""));
 
         bookingService.valueProperty().addListener((obs, oldData, newData) -> {
             res_table.getItems().clear();
@@ -128,24 +126,24 @@ public class adminDashboardController {
 
     @FXML
     void switchtosetting(ActionEvent event) throws IOException {
-        ssc.toSettings(event,(Stage)logout.getScene().getWindow());
+        ssc.toSettings(event, (Stage) logout.getScene().getWindow());
     }
 
 
     @FXML
-    void switchtorooms(ActionEvent event) throws IOException{
-       ssc.swithcTo(event, (Stage)logout.getScene().getWindow(),"admin","rooms");
+    void switchtorooms(ActionEvent event) throws IOException {
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "rooms");
 
     }
 
     @FXML
     void switchtobookings(ActionEvent event) throws IOException {
-        ssc.swithcTo(event, (Stage)logout.getScene().getWindow(), "admin","booking");
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "booking");
     }
 
     @FXML
     void switchtoservices(ActionEvent event) throws IOException {
-        ssc.swithcTo(event, (Stage)logout.getScene().getWindow(), "admin", "services");
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "services");
     }
 
 

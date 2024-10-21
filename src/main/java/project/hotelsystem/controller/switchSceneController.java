@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import project.hotelsystem.settings.userSettings;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.util.notificationManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -16,24 +17,21 @@ import java.net.URL;
 public class switchSceneController {
 
     /**
-     *
-     *
      * @param priv admim or staff
      * @param view  which fxml file, do not includee .fxml
-     *
      */
 
 
     userSettings ts = userSettings.getInstance();
 
-    public void swithcTo(ActionEvent event,Stage mainStage, String priv, String view) throws IOException {
+    public void swithcTo(ActionEvent event, Stage mainStage, String priv, String view) throws IOException {
         loaderSettings.applyDimmingEffect(event);
 
         Task<Parent> loadSceneTask = new Task<>() {
             @Override
             protected Parent call() throws Exception {
 
-                String rawPath = "src/main/resources/"+priv+"/view/"+view+".fxml";
+                String rawPath = "src/main/resources/" + priv + "/view/" + view + ".fxml";
                 URL path = new File(rawPath).toURI().toURL();
 
                 return FXMLLoader.load(path);
@@ -63,7 +61,7 @@ public class switchSceneController {
         loadSceneTask.setOnFailed(e -> {
             loadingStage.hide();
             notificationManager.showNotification(
-                    "Failed to switch to "+view.toUpperCase(),"failure", mainStage);
+                    "Failed to switch to " + view.toUpperCase(), "failure", mainStage);
             loaderSettings.removeDimmingEffect(event);
 
         });
@@ -71,8 +69,8 @@ public class switchSceneController {
         new Thread(loadSceneTask).start();
     }
 
-    public void toSettings(ActionEvent event, Stage mainStage) throws IOException{
-        try{
+    public void toSettings(ActionEvent event, Stage mainStage) throws IOException {
+        try {
             URL path = new File("src/main/resources/settings.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
 
@@ -85,7 +83,7 @@ public class switchSceneController {
             stage.show();
 
             stage.show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
