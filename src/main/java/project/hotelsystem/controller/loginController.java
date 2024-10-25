@@ -83,6 +83,25 @@ public class loginController {
 
     @FXML
     void initialize() {
+
+        uidField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    Password.requestFocus();
+                }
+            }
+        });
+
+        Password.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    login.fire();
+                }
+            }
+        });
+
         clearUID.setUserData("uid");
         clearUID.setOnAction(this::clearField);
         clearPassword.setUserData("pw");
@@ -104,23 +123,7 @@ public class loginController {
             PasswordTextField.setVisible(false);
         });
 
-        uidField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                    Password.requestFocus();
-                }
-            }
-        });
 
-        Password.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                    login.fire();
-                }
-            }
-        });
 
         databasetoggle.setOnAction(e -> {
             boolean selected = databasetoggle.isSelected();

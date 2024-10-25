@@ -36,134 +36,128 @@ import java.util.*;
 
 public class staffServiceController {
 
+    switchSceneController ssc = new switchSceneController();
+    HashMap<Integer, service> serviceMap = new HashMap<Integer, service>();
+    double tc = 0;
     @FXML
     private Label FoodStock;
-
     @FXML
     private Button addAmount;
-
     @FXML
     private Button addOrder;
-
     @FXML
     private Button bookings;
-
     @FXML
     private Button btnConfirm;
-
     @FXML
     private Button btnConfirm1;
-
     @FXML
     private Button btnLeft;
-
     @FXML
     private Button btnOrderBatch;
-
     @FXML
     private Button btnRight;
-
     @FXML
     private Button cancelOrder;
-
     @FXML
     private TilePane catPane;
-
     @FXML
     private Button confirmOrder;
-
     @FXML
     private ImageView foodImage;
-
     @FXML
     private Pane foodMenu;
-
     @FXML
     private Label foodName;
-
     @FXML
     private Label foodPrice;
-
     @FXML
     private TilePane foodView;
-
     @FXML
     private Button guests;
-
     @FXML
     private ImageView imgView;
-
     @FXML
     private Label lblDiscription;
-
     @FXML
     private Label lblPrice;
-
     @FXML
     private Label lblTitle;
-
     @FXML
     private Button logout;
-
     @FXML
     private VBox orderListContainer;
-
     @FXML
     private ScrollPane orderListScrollPane;
-
     @FXML
     private VBox orderListVbox;
-
     @FXML
     private Button orders_button;
-
     @FXML
     private Button reduceAmount;
-
     @FXML
     private ScrollPane scrollPaneServices;
-
     @FXML
     private Button services;
-
     @FXML
     private Button setting;
-
     @FXML
     private TextField showAmount;
-
     @FXML
     private Label showTotalCost;
-
     @FXML
     private TilePane tilepaneServices;
-
     @FXML
     private Text totalCost;
-
     @FXML
     private Button txfRoomNo;
-
     @FXML
     private TextField txfServiceName;
-
     @FXML
     private Button roomNo;
+    private final Map<String, Pane> paneMap = new HashMap();
+    private final List<service> orderedService = new ArrayList<>();
+    private final List<service> servicesList = new ArrayList<>();
+    private int currentIndex = 0;
+    private final Map<food, Integer> currentOrders = new HashMap<>();
+    private double totalFoodCost = 0.0;
 
+    private static void styleDropdownButton(Button button) {
+        button.setStyle("""
+                    -fx-background-color: #f5f6fa; 
+                    -fx-border-color: #dcdde1; 
+                    -fx-border-radius: 5; 
+                    -fx-padding: 5 10; 
+                    -fx-font-size: 14px;
+                    -fx-text-fill: #2f3640;
+                    -fx-cursor: hand;
+                """);
 
-    private Map<String, Pane> paneMap = new HashMap();
-    private List<service> orderedService = new ArrayList<>();
-    private List<service> servicesList = new ArrayList<>();
+        button.setOnMouseEntered(e -> button.setStyle("""
+                    -fx-background-color: #e1e2e6; 
+                    -fx-border-color: #dcdde1; 
+                    -fx-border-radius: 5; 
+                    -fx-padding: 5 10; 
+                    -fx-font-size: 14px;
+                    -fx-text-fill: #2f3640;
+                    -fx-cursor: hand;
+                """));
+
+        button.setOnMouseExited(e -> button.setStyle("""
+                    -fx-background-color: #f5f6fa; 
+                    -fx-border-color: #dcdde1; 
+                    -fx-border-radius: 5; 
+                    -fx-padding: 5 10; 
+                    -fx-font-size: 14px;
+                    -fx-text-fill: #2f3640;
+                    -fx-cursor: hand;
+                """));
+    }
 
     @FXML
     void switchToorders(ActionEvent event) {
 
     }
-
-
-    switchSceneController ssc = new switchSceneController();
-    HashMap<Integer, service> serviceMap = new HashMap<Integer, service>();
-
 
     @FXML
     void handleAddButtonClick(ActionEvent event) {
@@ -192,7 +186,6 @@ public class staffServiceController {
         TextField priceField = new TextField();
         priceField.setPromptText("Service Price");
 
-        // FileChooser to select the image
         Button btnSelectImage = new Button("Select Image");
         Label selectedFileLabel = new Label();
         final File[] selectedFile = new File[1];
@@ -203,7 +196,7 @@ public class staffServiceController {
             File file = fileChooser.showOpenDialog(popupStage);
             if (file != null) {
                 selectedFileLabel.setText(file.getName());
-                selectedFile[0] = file; // Store selected file for later use
+                selectedFile[0] = file;
             }
         });
         vbox.setStyle("-fx-background-color:black");
@@ -215,9 +208,8 @@ public class staffServiceController {
             String description = descriptionField.getText();
             double price = Double.parseDouble(priceField.getText());
 
-            // Save service and image to the database
             serviceController.saveService(serviceName, description, price, selectedFile[0]);
-            popupStage.close(); // Close the popup after saving
+            popupStage.close();
         });
 
         vbox.getChildren().addAll(serviceIdField, serviceNameField, descriptionField, priceField, btnSelectImage, selectedFileLabel, btnSave);
@@ -225,7 +217,6 @@ public class staffServiceController {
         popupStage.setScene(scene);
         popupStage.showAndWait();
     }
-
 
     @FXML
     void handleDeleteServiceButtonClick(ActionEvent event) {
@@ -237,7 +228,6 @@ public class staffServiceController {
 
     }
 
-
     @FXML
     void handleOrderAction(ActionEvent event) {
 
@@ -247,7 +237,6 @@ public class staffServiceController {
     void initialzingOrderList(ActionEvent event) {
 
     }
-
 
     @FXML
     void switchtobookings(ActionEvent event) throws IOException {
@@ -268,13 +257,12 @@ public class staffServiceController {
     }
 
     public void createService(service s) {
-        // Existing createService logic
         HBox hbox = new HBox(10);
         GridPane serviceRoot = new GridPane();
 
         ImageView imageView = new ImageView();
         try {
-            byte imgByte[] = s.getImage().getBytes(1, (int) s.getImage().length());
+            byte[] imgByte = s.getImage().getBytes(1, (int) s.getImage().length());
             Image img = new Image(new ByteArrayInputStream(imgByte));
             imageView.setImage(img);
         } catch (Exception e) {
@@ -322,13 +310,12 @@ public class staffServiceController {
 
         });
 
-        // Add the HBox to TilePane
 
         tilepaneServices.getChildren().add(serviceRoot);
 
     }
 
-    private void loadPopularServicesFromDatabase() {//get popular service from database , we can limit to 1 / 2
+    private void loadPopularServicesFromDatabase() {
         String sql = " SELECT s.service_id, s.service_name, s.service_price, s.service_description, s.service_image, COUNT(os.service_id) AS total_orders " + "FROM service s " + "JOIN service_order_detail os ON s.service_id = os.service_id " + "WHERE os.order_time >= NOW() - INTERVAL 7 DAY " + "GROUP BY s.service_id, s.service_name, s.service_price, s.service_description, s.service_image " + "ORDER BY total_orders DESC limit 3";
         try (Connection con = DBConnection.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
@@ -354,10 +341,8 @@ public class staffServiceController {
         }
     }
 
-    private int currentIndex = 0;
-
     @FXML
-    private void previousService() {//left arrow to go previous one
+    private void previousService() {
         if (currentIndex > 0) {
             currentIndex--;
             updateServiceDisplay();
@@ -368,7 +353,7 @@ public class staffServiceController {
     }
 
     @FXML
-    private void nextService() {//right arrow to go next one
+    private void nextService() {
         if (currentIndex < servicesList.size() - 1) {
             currentIndex++;
             updateServiceDisplay();
@@ -378,26 +363,23 @@ public class staffServiceController {
         }
     }
 
-    private void updateServiceDisplay() {//updating
+    private void updateServiceDisplay() {
         if (!servicesList.isEmpty() && currentIndex >= 0 && currentIndex < servicesList.size()) {
             service currentService = servicesList.get(currentIndex);
             lblTitle.setText(currentService.getName());
             lblPrice.setText("$" + currentService.getPrice());
             lblDiscription.setText(currentService.getDescription());
-            Blob imageBlob = currentService.getImage(); // Assuming getImage() returns Blob
+            Blob imageBlob = currentService.getImage();
             if (imageBlob != null) {
                 try {
-                    // Convert Blob to byte array and then to Image
                     byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
                     Image image = new Image(new ByteArrayInputStream(imageBytes));
 
-                    // Set the ImageView with the Image
                     imgView.setImage(image);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                // Clear the ImageView if no image is present
                 imgView.setImage(null);
             }
         } else {
@@ -408,11 +390,9 @@ public class staffServiceController {
         }
     }
 
-    double tc = 0;
-
     private void createServiceOrderPane(int serviceId) {
         service s = serviceMap.get(serviceId);
-        HBox serviceOrderPane = new HBox(50);  // Horizontal layout for order details
+        HBox serviceOrderPane = new HBox(50);
         VBox Tosep = new VBox(10);
         Label serviceLabel = new Label("Service id:" + serviceId);
         Label serviceCharge = new Label("Charges: " + s.getPrice());
@@ -426,13 +406,10 @@ public class staffServiceController {
 
         serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
 
-        sep.setPrefWidth(100); // Set preferred width for horizontal separator
-        sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + // Border color
-                "-fx-border-width: 0;");    // Border width
-
+        sep.setPrefWidth(100);
+        sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + "-fx-border-width: 0;");
         serviceOrderPane.getChildren().addAll(serviceLabel, serviceCharge);
         Tosep.getChildren().addAll(serviceOrderPane, sep);
-        // Add the pane to the VBox
         orderListVbox.getChildren().add(Tosep);
         tc += s.getPrice();
         totalCost.setText("Total Cost: $" + tc);
@@ -443,7 +420,7 @@ public class staffServiceController {
         Button clicked = (Button) event.getTarget();
         String foodName = clicked.getUserData().toString();
         Pane newPane = this.createNewOrder(foodName);
-        this.orderListContainer.getChildren().addAll(new Node[]{newPane});
+        this.orderListContainer.getChildren().addAll(newPane);
     }
 
     private Pane createNewOrder(String fn) {
@@ -453,44 +430,11 @@ public class staffServiceController {
         Label foodName = new Label(fn);
         foodName.setStyle("-fx-font-size: 20px;");
         newPane.setStyle("-fx-background-color:  #2f847c;");
-        newPane.getChildren().addAll(new Node[]{foodName, qnt});
-        ((Node) newPane.getChildren().get(0)).setLayoutX(76.0);
-        ((Node) newPane.getChildren().get(1)).setLayoutX(232.0);
+        newPane.getChildren().addAll(foodName, qnt);
+        newPane.getChildren().get(0).setLayoutX(76.0);
+        newPane.getChildren().get(1).setLayoutX(232.0);
         return newPane;
     }
-
-    private static void styleDropdownButton(Button button) {
-        button.setStyle("""
-                    -fx-background-color: #f5f6fa; 
-                    -fx-border-color: #dcdde1; 
-                    -fx-border-radius: 5; 
-                    -fx-padding: 5 10; 
-                    -fx-font-size: 14px;
-                    -fx-text-fill: #2f3640;
-                    -fx-cursor: hand;
-                """);
-
-        button.setOnMouseEntered(e -> button.setStyle("""
-                    -fx-background-color: #e1e2e6; 
-                    -fx-border-color: #dcdde1; 
-                    -fx-border-radius: 5; 
-                    -fx-padding: 5 10; 
-                    -fx-font-size: 14px;
-                    -fx-text-fill: #2f3640;
-                    -fx-cursor: hand;
-                """));
-
-        button.setOnMouseExited(e -> button.setStyle("""
-                    -fx-background-color: #f5f6fa; 
-                    -fx-border-color: #dcdde1; 
-                    -fx-border-radius: 5; 
-                    -fx-padding: 5 10; 
-                    -fx-font-size: 14px;
-                    -fx-text-fill: #2f3640;
-                    -fx-cursor: hand;
-                """));
-    }
-
 
     @FXML
     public void initialize() {
@@ -501,7 +445,7 @@ public class staffServiceController {
         txfRoomNo.setOnAction(event -> {
             if (!roomDp.isShowing()) {
                 Bounds bounds = txfRoomNo.localToScreen(txfRoomNo.getBoundsInLocal());
-                roomDp.show((Stage) txfServiceName.getScene().getWindow(),
+                roomDp.show(txfServiceName.getScene().getWindow(),
                         bounds.getMinX(), bounds.getMaxY());
             }
         });
@@ -510,7 +454,7 @@ public class staffServiceController {
         roomNo.setOnAction(event -> {
             if (!roomDp2.isShowing()) {
                 Bounds bounds = roomNo.localToScreen(roomNo.getBoundsInLocal());
-                roomDp2.show((Stage) roomNo.getScene().getWindow(),
+                roomDp2.show(roomNo.getScene().getWindow(),
                         bounds.getMinX(), bounds.getMaxY());
             }
         });
@@ -573,25 +517,21 @@ public class staffServiceController {
         }
         cancelOrder.setOnAction(e -> {
             for (Node orderNode : orderListContainer.getChildren()) {
-                if (orderNode instanceof Pane) {
-                    Pane orderPane = (Pane) orderNode;
+                if (orderNode instanceof Pane orderPane) {
                     food fm = (food) orderPane.getUserData();
 
-                    // Restore stock for each item in the order
                     Label quantityLabel = (Label) orderPane.lookup("#quantityLabel");
                     if (quantityLabel != null) {
                         int foodQuantity = Integer.parseInt(quantityLabel.getText());
                         fm.setStock(fm.getStock() + foodQuantity);
-                        //fm.getStockLabel().setText("" + fm.getCurrent_stock());
                     }
                     currentOrders.remove(fm);
                 }
             }
 
-            orderListContainer.getChildren().clear(); // Clear the order list
-            totalFoodCost = 0.0; // Reset total cost
-            updateTotalCost(showTotalCost); // Update the displayed total cost
-
+            orderListContainer.getChildren().clear();
+            totalFoodCost = 0.0;
+            updateTotalCost(showTotalCost);
         });
 
         confirmOrder.setOnAction(e -> {
@@ -603,42 +543,30 @@ public class staffServiceController {
                 return;
             }
 
-            try (Connection con = DBConnection.getConnection(); // Get the database connection
-                 CallableStatement stmt = con.prepareCall("{CALL add_food_order_and_update_stock(?, ?, ?)}")) {
+            try (Connection con = DBConnection.getConnection(); CallableStatement stmt = con.prepareCall("{CALL add_food_order_and_update_stock(?, ?, ?)}")) {
 
                 for (Map.Entry<food, Integer> entry : currentOrders.entrySet()) {
                     food foodItem = entry.getKey();
                     int quantity = entry.getValue();
-                    // Set the parameters for the stored procedure
-                    stmt.setInt(1, Integer.parseInt(r.getRoom_no()));  // Room number
-                    stmt.setString(2, foodItem.getName());          // Food name
-                    stmt.setInt(3, quantity);                            // Food quantity
-                    // Execute the stored procedure
+                    stmt.setInt(1, Integer.parseInt(r.getRoom_no()));
+                    stmt.setString(2, foodItem.getName());
+                    stmt.setInt(3, quantity);
                     stmt.addBatch();
                 }
-                // Optionally log or display a success message
                 stmt.executeBatch();
             } catch (SQLException ee) {
-                // Handle SQL exceptions, like if the food is not found or there's not enough stock
                 ee.printStackTrace();
             }
 
 
-            // Clear order list and reset total cost
             orderListContainer.getChildren().clear();
             totalFoodCost = 0.0;
             updateTotalCost(showTotalCost);
             showTotalCost.setText("0");
-            // Clear the currentOrders map
             currentOrders.clear();
         });
 
     }
-
-    private Map<food, Integer> currentOrders = new HashMap<>();
-
-    private double totalFoodCost = 0.0;
-
 
     void add_Order(ActionEvent event, String qnt, food fm) throws SQLException {
         int quantity;
@@ -651,56 +579,44 @@ public class staffServiceController {
         }
 
 
-        // Check stock availability
         if (fm.getStock() < quantity) {
             System.out.println("Not enough stock available!");
             notificationManager.showNotification("Item out of stock", "failure", (Stage) logout.getScene().getWindow());
-            return; // Optionally show a message to the user
+            return;
         }
 
-        // Reduce stock
         fm.setStock(fm.getStock() - quantity);
 
-        // Update stock label
-        // fm.getStockLabel().setText(""+ fm.getStock());
 
-        // Proceed with order addition
         if (currentOrders.containsKey(fm)) {
-            // Update existing order
             int existingQuantity = currentOrders.get(fm);
-            existingQuantity += quantity; // Increment quantity
+            existingQuantity += quantity;
             currentOrders.put(fm, existingQuantity);
 
-            // Update the corresponding order display
             Pane orderPane = findOrderPane(fm);
             if (orderPane != null) {
-                Label quantityLabel = (Label) orderPane.lookup("#quantityLabel"); // Ensure to set an ID for the quantity label
-                Label priceLabel = (Label) orderPane.lookup("#priceLabel"); // Price label for updating price
+                Label quantityLabel = (Label) orderPane.lookup("#quantityLabel");
+                Label priceLabel = (Label) orderPane.lookup("#priceLabel");
                 if (quantityLabel != null) {
-                    // Update the quantity
                     int currentQuantity = Integer.parseInt(quantityLabel.getText());
                     currentQuantity += quantity;
                     quantityLabel.setText(String.valueOf(currentQuantity));
-                    // Calculate and update the price
-                    double pricePerUnit = fm.getPrice(); // Get the price per unit of the item
-                    double totalPrice = currentQuantity * pricePerUnit; // New total price
-
-                    priceLabel.setText(String.valueOf(totalPrice)); // Format price as currency
-
+                    double pricePerUnit = fm.getPrice();
+                    double totalPrice = currentQuantity * pricePerUnit;
+                    priceLabel.setText(String.valueOf(totalPrice));
                 } else {
                     System.out.println("Quantity label not found!");
                 }
             }
         } else {
-            // If it's a new order, create a new pane
             Pane newPane = createNewOrder(fm, String.valueOf(quantity));
             orderListContainer.getChildren().add(newPane);
             currentOrders.put(fm, quantity);
         }
 
         double foodPrice = fm.getPrice();
-        totalFoodCost += foodPrice * quantity; // Update total cost
-        updateTotalCost(showTotalCost); // Update total cost display
+        totalFoodCost += foodPrice * quantity;
+        updateTotalCost(showTotalCost);
         System.out.println("Order added");
     }
 
@@ -708,7 +624,6 @@ public class staffServiceController {
     private Pane findOrderPane(food food) {
         for (Node node : orderListContainer.getChildren()) {
             if (node instanceof Pane) {
-                // Assuming the food model is stored in the order pane
                 food orderFood = (food) node.getUserData();
                 if (orderFood.equals(food)) {
                     return (Pane) node;
@@ -728,16 +643,14 @@ public class staffServiceController {
             @SuppressWarnings("unchecked") List<Object> retrievedNodes = (List<Object>) clicked.getUserData();
             int currText = 0;
             for (Object node : retrievedNodes) {
-                if (node instanceof TextField) {
+                if (node instanceof TextField tf) {
 
-                    TextField tf = (TextField) node;
                     currText = Integer.parseInt(tf.getText());
                     currText++;
                     tf.setText(String.valueOf(currText));
 
-                } else if (node instanceof Button) {
+                } else if (node instanceof Button btn) {
 
-                    Button btn = (Button) node;
                     btn.setDisable(false);
                 }
             }
@@ -765,11 +678,10 @@ public class staffServiceController {
     void reduce_stock(ActionEvent event) {
         String procedureCall = "{Call add_food_order_and_update_stock(?,?,?)}";
 
-        try (Connection con = DBConnection.getConnection(); CallableStatement psmt = con.prepareCall(procedureCall);) {
+        try (Connection con = DBConnection.getConnection(); CallableStatement psmt = con.prepareCall(procedureCall)) {
 
             psmt.setInt(1, Integer.parseInt(roomNo.getText()));
             psmt.setString(2, foodName.getText());
-            // psmt.setInt(3, Integer.parseInt(text.getText()));
             psmt.execute();
 
         } catch (Exception e) {
@@ -788,10 +700,9 @@ public class staffServiceController {
 
         try {
             Blob b = fm.getImage();
-            byte imgByte[] = b.getBytes(1, (int) b.length());
+            byte[] imgByte = b.getBytes(1, (int) b.length());
             Image img = new Image(new ByteArrayInputStream(imgByte));
             ImageView iv = new ImageView(img);
-            // fitHeight="111.0" fitWidth="89.0" layoutX="15.0" layoutY="14.0"
             iv.setFitHeight(111);
             iv.setFitWidth(89);
             iv.setPreserveRatio(true);
@@ -802,7 +713,7 @@ public class staffServiceController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Label CategoryName = new Label(fm.getCategory() + "");
+        Label CategoryName = new Label(fm.getCategory());
 
         CategoryName.setFont(new Font(20.0));
         catePane.getChildren().add(CategoryName);
@@ -822,10 +733,9 @@ public class staffServiceController {
 
         try {
             Blob b = fm.getImage();
-            byte imgByte[] = b.getBytes(1, (int) b.length());
+            byte[] imgByte = b.getBytes(1, (int) b.length());
             Image img = new Image(new ByteArrayInputStream(imgByte));
             ImageView iv = new ImageView(img);
-            // fitHeight="111.0" fitWidth="89.0" layoutX="15.0" layoutY="14.0"
             iv.setFitHeight(111);
             iv.setFitWidth(89);
             iv.setPreserveRatio(true);
@@ -898,7 +808,6 @@ public class staffServiceController {
         newPane.getChildren().add(stockLabel);
         newPane.getChildren().get(6).setLayoutX(171);
         newPane.getChildren().get(6).setLayoutY(93);
-        //fm.setStockLabel(stockLabel);
 
         HBox hbox = new HBox();
         newPane.getChildren().add(hbox);
@@ -913,8 +822,8 @@ public class staffServiceController {
         decbtn.setStyle("-fx-background-radius: 10; -fx-background-color: white;");
 
         List<Object> datas = new ArrayList<>();
-        datas.add((Object) text);
-        datas.add((Object) decbtn);
+        datas.add(text);
+        datas.add(decbtn);
         incBtn.setUserData(datas);
 
         incBtn.setOnAction(e -> add_Amount(e));
@@ -952,7 +861,7 @@ public class staffServiceController {
         fn.setLayoutY(14);
 
         Blob b = fm.getImage();
-        byte imgByte[] = b.getBytes(1, (int) b.length());
+        byte[] imgByte = b.getBytes(1, (int) b.length());
         Image img = new Image(new ByteArrayInputStream(imgByte));
         ImageView iv = new ImageView(img);
         iv.setFitWidth(54);
@@ -961,8 +870,7 @@ public class staffServiceController {
         Label qnt = new Label(text);
         int foodQuantity = Integer.parseInt(text);
         qnt.setStyle("-fx-font-size: 15px;");
-        qnt.setId("quantityLabel"); // Set an ID for easier access later
-
+        qnt.setId("quantityLabel");
         Label sign = new Label("x");
         sign.setStyle("fx-font-size: 15px");
 
@@ -986,28 +894,20 @@ public class staffServiceController {
 
 
         remove.setOnAction(e -> {
-            // Retrieve the current quantity of the item from the quantity label
             Label quantityLabel = (Label) newPane.lookup("#quantityLabel");
             if (quantityLabel != null) {
                 int currentQuantity = Integer.parseInt(quantityLabel.getText());
 
-                // Restore stock for the removed quantity
                 fm.setStock(fm.getStock() + currentQuantity);
-                //fm.getStockLabel().setText("" + fm.getStock());
 
-                // Calculate the total cost for the removed item based on its quantity
                 double itemTotalCost = currentQuantity * fm.getPrice();
 
-                // Subtract the item cost from the overall totalCost
                 totalFoodCost -= itemTotalCost;
 
-                // Update the displayed total cost
                 updateTotalCost(showTotalCost);
 
-                // Remove the item pane from the order list UI
                 orderListContainer.getChildren().remove(newPane);
 
-                // Remove the item from the currentOrders map
                 currentOrders.remove(fm);
             }
         });

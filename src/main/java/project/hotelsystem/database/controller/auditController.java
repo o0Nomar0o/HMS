@@ -76,13 +76,6 @@ public class auditController {
         }
     }
 
-    public static void main(String[] args) {
-        addLogs("Added a new user","A1");
-        addLogs("Delete an existing booking","A1");
-        addLogs("Create new order","A1");
-
-
-    }
 
 
 }

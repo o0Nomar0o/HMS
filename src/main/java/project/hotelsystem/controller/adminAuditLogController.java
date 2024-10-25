@@ -11,7 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -34,43 +33,58 @@ import java.util.Map;
 
 public class adminAuditLogController {
 
+    private final Service<List<user>> userlist = new Service<>() {
+        @Override
+        protected Task<List<user>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<user> call() throws Exception {
+                    List<user> results = new ArrayList<>();
+                    results.add(new user("", "All Users", ""));
+                    results.addAll(userController.getAllUsers());
+                    return results;
+                }
+            };
+        }
+    };
+    boolean flag = false;
+    Timeline timeline;
     @FXML
     private VBox audit_view;
-
     @FXML
     private Button bookings;
-
     @FXML
     private Button dashboard;
-
     @FXML
     private Button dropdownAction;
-
     @FXML
     private Button dropdownUser;
-
+    private final Service<List<audit_logs>> logs = new Service<>() {
+        @Override
+        protected Task<List<audit_logs>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<audit_logs> call() throws Exception {
+                    user u = (user) dropdownUser.getUserData();
+                    if (u == null || u.getUsername().matches("All Users"))
+                        return auditController.getAudits();
+                    return auditController.getAuditsByID(u.getUid());
+                }
+            };
+        }
+    };
     @FXML
     private Button guests;
-
     @FXML
     private Button logout;
-
     @FXML
     private Button services;
-
     @FXML
     private Button setting;
-
-    private switchSceneController ssc = new switchSceneController();
-
+    private final switchSceneController ssc = new switchSceneController();
     private int count = 0;
-    boolean flag = false;
-
-    private Map<Integer, String> nodeMap = new HashMap<>();
-
-    private List<VBox> logsRootList = new ArrayList<>();
-
-
+    private final Map<Integer, String> nodeMap = new HashMap<>();
+    private final List<VBox> logsRootList = new ArrayList<>();
 
     @FXML
     void initialize() {
@@ -91,7 +105,7 @@ public class adminAuditLogController {
                     Button actionButton = new Button();
                     int key = al.getId();
 
-                    if(nodeMap.containsKey(key))
+                    if (nodeMap.containsKey(key))
                         actionButton.setUserData(nodeMap.get(key));
                     else
                         actionButton.setUserData("0");
@@ -103,8 +117,8 @@ public class adminAuditLogController {
 
                     HBox dataView = new HBox(dataLabel);
 
-                    actionButton.setOnAction(e->{
-                        handleNodeToggle(al.getId(),actionButton, logsRoot, dataView);
+                    actionButton.setOnAction(e -> {
+                        handleNodeToggle(al.getId(), actionButton, logsRoot, dataView);
                     });
 
                     logsGrid.add(userLabel, 0, 0, 1, 2);
@@ -115,7 +129,7 @@ public class adminAuditLogController {
                     logsGrid.setStyle("-fx-padding:15px;" +
                             "-fx-vgap:10px;" + "-fx-hgap:10px;" + "-fx-background-radius: 1.25em;");
 
-                    dataView.setStyle("-fx-background-color: #EDEDED;"+
+                    dataView.setStyle("-fx-background-color: #EDEDED;" +
                             "-fx-background-radius: 0.5em 0.5em 1.25em 1.25em; " +
                             "-fx-padding: 15px;");
 
@@ -141,7 +155,7 @@ public class adminAuditLogController {
             dropdownAction.setOnAction(e -> {
                 if (!actionFilter.isShowing()) {
                     Bounds bounds = dropdownAction.localToScreen(dropdownAction.getBoundsInLocal());
-                    actionFilter.show((Stage) logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
+                    actionFilter.show(logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
                 }
 
             });
@@ -165,7 +179,7 @@ public class adminAuditLogController {
             dropdownUser.setOnAction(event -> {
                 if (!userFilter.isShowing()) {
                     Bounds bounds = dropdownUser.localToScreen(dropdownUser.getBoundsInLocal());
-                    userFilter.show((Stage) logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
+                    userFilter.show(logout.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
                 }
             });
         });
@@ -190,28 +204,28 @@ public class adminAuditLogController {
     void switchToDashboard(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
-        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","dashboard");
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "dashboard");
     }
 
     @FXML
     void switchtobookings(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
-        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","booking");
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "booking");
     }
 
     @FXML
     void switchtorooms(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
-        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","rooms");
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "rooms");
     }
 
     @FXML
     void switchtoservices(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
-        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","services");
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "services");
     }
 
     @FXML
@@ -221,38 +235,6 @@ public class adminAuditLogController {
         logs.reset();
         ssc.toSettings(event, (Stage) logout.getScene().getWindow());
     }
-
-    private final Service<List<audit_logs>> logs = new Service<>() {
-        @Override
-        protected Task<List<audit_logs>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<audit_logs> call() throws Exception {
-                    user u = (user) dropdownUser.getUserData();
-                    if (u == null || u.getUsername().matches("All Users"))
-                        return auditController.getAudits();
-                    return auditController.getAuditsByID(u.getUid());
-                }
-            };
-        }
-    };
-
-    private final Service<List<user>> userlist = new Service<>() {
-        @Override
-        protected Task<List<user>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<user> call() throws Exception {
-                    List<user> results = new ArrayList<>();
-                    results.add(new user("", "All Users", ""));
-                    results.addAll(userController.getAllUsers());
-                    return results;
-                }
-            };
-        }
-    };
-
-    Timeline timeline;
 
     private void startLogRefreshTimeline() {
         timeline = new Timeline(
@@ -271,10 +253,11 @@ public class adminAuditLogController {
         timeline.play();
 
     }
+
     private void handleNodeToggle(int id, Button actionButton, VBox logsRoot, HBox dataView) {
         String currentState = actionButton.getUserData().toString();
 
-        switch (actionButton.getUserData().toString()){
+        switch (actionButton.getUserData().toString()) {
             case "0":
                 logsRoot.getChildren().add(dataView);
                 actionButton.setUserData("1");
@@ -303,7 +286,6 @@ public class adminAuditLogController {
             }
         }
     }
-
 
 
 }

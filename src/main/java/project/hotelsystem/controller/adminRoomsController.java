@@ -10,87 +10,80 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import project.hotelsystem.database.controller.auditController;
+import project.hotelsystem.database.controller.roomController;
 import project.hotelsystem.database.controller.roomTypeController;
-import project.hotelsystem.database.models.audit_logs;
-import project.hotelsystem.database.models.user;
+import project.hotelsystem.database.models.room;
+import project.hotelsystem.database.models.room_type_details;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.util.notificationManager;
-import project.hotelsystem.database.models.room_type_details;
-import project.hotelsystem.database.models.room;
-import project.hotelsystem.database.controller.roomController;
-
 
 import java.io.IOException;
 import java.util.List;
 
 public class adminRoomsController {
 
+    private final Service<List<room_type_details>> roomTypeService = new Service<>() {
+        @Override
+        protected Task<List<room_type_details>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<room_type_details> call() throws Exception {
+                    return roomTypeController.getAllRoomType();
+                }
+            };
+        }
+    };
+    roomBuilder rb = new roomBuilder();
+    roomTypeBuilder rtb = new roomTypeBuilder();
+    switchSceneController ssc = new switchSceneController();
     @FXML
     private Button addRoom;
-
     @FXML
     private Button addType;
-
     @FXML
     private Button bookings;
-
     @FXML
     private Button dashboard;
-
     @FXML
     private Button editType;
-
     @FXML
     private Button logout;
-
     @FXML
     private Button rooms;
-
     @FXML
     private TilePane roomsView;
-
     @FXML
     private Button services;
-
     @FXML
     private Button setting;
-
     @FXML
     private TableView<room_type_details> typeTable;
-
     @FXML
     private TableColumn<?, ?> typecol;
-
     @FXML
     private TableColumn<?, ?> pricecol;
     @FXML
     private TableColumn<?, ?> nightcol;
     @FXML
     private TableColumn<?, ?> hourcol;
-
-
     @FXML
     private TableColumn<?, ?> idcol;
-
-    private ObservableList<room_type_details> roomTypeList = FXCollections.observableArrayList();
-
-
-    roomBuilder rb = new roomBuilder();
-    roomTypeBuilder rtb = new roomTypeBuilder();
-    switchSceneController ssc = new switchSceneController();
+    private final ObservableList<room_type_details> roomTypeList = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
 
-        logout.setOnAction(e->logout(e));
+        logout.setOnAction(e -> logout(e));
 
         addRoom.setOnAction(e -> rb.createRoom());
         addType.setOnAction(e -> rtb.createRoomType());
@@ -115,14 +108,9 @@ public class adminRoomsController {
         editType.setDisable(true);
         SelectionModel<room_type_details> smu = typeTable.getSelectionModel();
         smu.selectedItemProperty().addListener((ob, ov, nv) -> {
-            if (nv != null) {
-                editType.setDisable(false);
-            } else {
-                editType.setDisable(true);
-
-            }
+            editType.setDisable(nv == null);
         });
-        editType.setOnAction(e->{
+        editType.setOnAction(e -> {
             rtb.editRoomType();
         });
 
@@ -133,12 +121,10 @@ public class adminRoomsController {
         logoutController.logout(event);
     }
 
-
     @FXML
     void switchtosetting(ActionEvent event) throws IOException {
         ssc.toSettings(event, (Stage) logout.getScene().getWindow());
     }
-
 
     @FXML
     void switchtodashboard(ActionEvent event) throws IOException {
@@ -155,18 +141,6 @@ public class adminRoomsController {
     void switchtoservices(ActionEvent event) throws IOException {
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "services");
     }
-
-    private final Service<List<room_type_details>> roomTypeService = new Service<>() {
-        @Override
-        protected Task<List<room_type_details>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<room_type_details> call() throws Exception {
-                    return roomTypeController.getAllRoomType();
-                }
-            };
-        }
-    };
 
     class roomBuilder {
         private void createRoom() {
@@ -190,7 +164,6 @@ public class adminRoomsController {
             Text selectRoomType = new Text("Select Room Type");
             selectRoomType.setFont(new Font(16.0));
             ComboBox<String> rtype = new ComboBox<>();
-            //room_type controller
             rtype.getItems().addAll(roomTypeController.getRoomTypeID());
             rtype.getSelectionModel().selectFirst();
             VBox rtBox = new VBox(selectRoomType, rtype);
@@ -240,9 +213,9 @@ public class adminRoomsController {
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
             cancelButton.setOnAction(e -> modalStage.close());
-            confirmButton.setOnAction(e->{
+            confirmButton.setOnAction(e -> {
                 createRoom(roomNo.getText(), rtype.getSelectionModel().getSelectedItem(),
-                        floor_field.getText(), rmstus_field.getSelectionModel().getSelectedItem(),e, modalStage);
+                        floor_field.getText(), rmstus_field.getSelectionModel().getSelectedItem(), e, modalStage);
             });
         }
 
@@ -278,7 +251,6 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully added %s", room_no), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
-//                    cancel.fire();
                     loadingStage.hide();
                     generateRooms();
                     System.out.println("Room added successfully.");
@@ -300,6 +272,7 @@ public class adminRoomsController {
 
             new Thread(loadSceneTask).start();
         }
+
         private void EditRoom(String room_no, String rtid, String floor, String r_status, ActionEvent e, Stage st) {
 
             loaderSettings.applyDimmingEffect(e);
@@ -332,7 +305,6 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully updated %s", room_no), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
-//                    cancel.fire();
                     loadingStage.hide();
                     generateRooms();
                     System.out.println("Room updated successfully.");
@@ -355,7 +327,7 @@ public class adminRoomsController {
             new Thread(loadSceneTask).start();
         }
 
-        private void generateRooms(){
+        private void generateRooms() {
             roomsView.getChildren().clear();
 
             List<room> lr = roomController.getAllRooms();
@@ -393,9 +365,9 @@ public class adminRoomsController {
                             "-fx-background-radius: 10; " +
                             "-fx-padding: 10; " +
                             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);"));
-            for (room r : lr){
+            for (room r : lr) {
                 Button hotelrooms = new Button(r.getRoom_no());
-                hotelrooms.setStyle("-fx-pref-width: 150;"+"-fx-pref-height:90;"+
+                hotelrooms.setStyle("-fx-pref-width: 150;" + "-fx-pref-height:90;" +
                         "-fx-background-color: #F6F5F2; " +
                         "-fx-text-fill: #333333; " +
                         "-fx-font-size: 16px; " +
@@ -407,8 +379,8 @@ public class adminRoomsController {
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);");
 
                 hotelrooms.setOnMouseEntered(e -> hotelrooms.setStyle(
-                        "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
-                        "-fx-background-color: #e0e0e0; " +
+                        "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+                                "-fx-background-color: #e0e0e0; " +
                                 "-fx-text-fill: #333333; " +
                                 "-fx-font-size: 16px; " +
                                 "-fx-font-weight: bold; " +
@@ -419,8 +391,8 @@ public class adminRoomsController {
                                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0.0, 0, 1);"));
 
                 hotelrooms.setOnMouseExited(e -> hotelrooms.setStyle(
-                        "-fx-pref-width: 150;"+"-fx-pref-height:90;"+
-                        "-fx-background-color: #F6F5F2; " +
+                        "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+                                "-fx-background-color: #F6F5F2; " +
                                 "-fx-text-fill: #333333; " +
                                 "-fx-font-size: 16px; " +
                                 "-fx-font-weight: bold; " +
@@ -430,7 +402,9 @@ public class adminRoomsController {
                                 "-fx-padding: 10; " +
                                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);"));
 
-                hotelrooms.setOnAction(e->{editRoom(r);});
+                hotelrooms.setOnAction(e -> {
+                    editRoom(r);
+                });
                 roomsView.getChildren().add(hotelrooms);
             }
         }
@@ -453,7 +427,7 @@ public class adminRoomsController {
             Text roomFloor = new Text("Choose Floor");
             roomFloor.setFont(new Font(16.0));
             TextField floorField = new TextField();
-            floorField.setText(r.getFloor()+"");
+            floorField.setText(r.getFloor() + "");
             VBox floorFieldBox = new VBox(roomFloor, floorField);
 
             Text selectRoomType = new Text("Select Room Type");
@@ -509,9 +483,9 @@ public class adminRoomsController {
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
             cancelButton.setOnAction(e -> modalStage.close());
-            confirmButton.setOnAction(e->{
+            confirmButton.setOnAction(e -> {
                 EditRoom(roomNo.getText(), rtype.getSelectionModel().getSelectedItem(),
-                        floorField.getText(), rmstus_field.getSelectionModel().getSelectedItem(),e, modalStage);
+                        floorField.getText(), rmstus_field.getSelectionModel().getSelectedItem(), e, modalStage);
             });
         }
     }
@@ -582,13 +556,13 @@ public class adminRoomsController {
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
             cancelButton.setOnAction(e -> modalStage.close());
-            confirmButton.setOnAction(e->{
+            confirmButton.setOnAction(e -> {
                 createRoomType(rtIdField.getText(), rtDescriptionField.getText(),
                         nightprice.getValue(), hourprice.getValue(), e, modalStage);
             });
         }
 
-        private void editRoomType(){
+        private void editRoomType() {
 
             room_type_details selected_rt = typeTable.getSelectionModel().getSelectedItem();
 
@@ -657,7 +631,7 @@ public class adminRoomsController {
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
             cancelButton.setOnAction(e -> modalStage.close());
-            confirmButton.setOnAction(e->{
+            confirmButton.setOnAction(e -> {
                 updateRoomType(rtIdField.getText(), rtDescriptionField.getText(),
                         nightprice.getValue(), hourprice.getValue(), e, modalStage);
             });
@@ -667,9 +641,9 @@ public class adminRoomsController {
             room_type_details selected_rt;
             double p = 0.0;
 
-            if(typeTable.getSelectionModel().getSelectedItem() != null){
-                 selected_rt = typeTable.getSelectionModel().getSelectedItem();
-               p = type.matches("n")?selected_rt.getPricePerNight() : selected_rt.getPricePerHour();
+            if (typeTable.getSelectionModel().getSelectedItem() != null) {
+                selected_rt = typeTable.getSelectionModel().getSelectedItem();
+                p = type.matches("n") ? selected_rt.getPricePerNight() : selected_rt.getPricePerHour();
             }
             Spinner<Double> priceSpinner = new Spinner<>();
 
@@ -706,6 +680,7 @@ public class adminRoomsController {
             return priceSpinner;
 
         }
+
         private void createRoomType(String rtid, String desc, Double np, Double hp, ActionEvent e, Stage st) {
 
             loaderSettings.applyDimmingEffect(e);
@@ -737,7 +712,6 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully added %s", rtid), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
-//                    cancel.fire();
                     loadingStage.hide();
                     roomTypeService.restart();
                     System.out.println("Room Type added successfully.");
@@ -759,6 +733,7 @@ public class adminRoomsController {
 
             new Thread(loadSceneTask).start();
         }
+
         private void updateRoomType(String rtid, String desc, Double np, Double hp, ActionEvent e, Stage st) {
 
             loaderSettings.applyDimmingEffect(e);
@@ -790,7 +765,6 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully updated %s", rtid), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
-//                    cancel.fire();
                     loadingStage.hide();
                     roomTypeService.restart();
                     System.out.println("Room Type updated successfully.");

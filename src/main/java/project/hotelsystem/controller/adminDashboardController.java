@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import project.hotelsystem.database.controller.bookingController;
 import project.hotelsystem.database.models.booking;
 import project.hotelsystem.settings.userSettings;
-import project.hotelsystem.web.WebSocketCon;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,56 +24,52 @@ import java.util.stream.Collectors;
 
 public class adminDashboardController {
 
+    private final Service<List<booking>> bookingService = new Service<>() {
+        @Override
+        protected Task<List<booking>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<booking> call() throws Exception {
+                    return bookingController.getAllBookings();
+
+                }
+            };
+        }
+    };
     @FXML
     private Button bookings;
-
     @FXML
     private Button dashboard;
-
     @FXML
     private Button services;
-
     @FXML
     private LineChart<?, ?> linechard;
-
     @FXML
     private Button logout;
-
     @FXML
     private Text monthoverview;
-
     @FXML
     private PieChart piechard;
-
     @FXML
     private PieChart piechard1;
-
     @FXML
     private TableColumn<?, ?> reservation;
-
     @FXML
     private TableColumn<?, ?> reservation1;
-
     @FXML
     private Button setting;
-
     @FXML
     private Text yearoverview;
-
     @FXML
     private TableView<booking> res_table;
-
     @FXML
     private TableColumn<booking, String> room_col;
-
     @FXML
     private TableColumn<booking, String> guest_col;
-
     @FXML
     private TableColumn<booking, String> check_in;
-
-    private userSettings ts = userSettings.getInstance();
-    private switchSceneController ssc = new switchSceneController();
+    private final userSettings ts = userSettings.getInstance();
+    private final switchSceneController ssc = new switchSceneController();
 
     @FXML
     void initialize() {
@@ -97,7 +92,6 @@ public class adminDashboardController {
                         .collect(Collectors.toList());
 
                 res_table.getItems().addAll(filteredBookings);
-                // Create an instance of BookingPaneController and populate the panes
 
                 return;
             }
@@ -106,19 +100,6 @@ public class adminDashboardController {
 
         bookingService.start();
     }
-
-    private final Service<List<booking>> bookingService = new Service<>() {
-        @Override
-        protected Task<List<booking>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<booking> call() throws Exception {
-                    return bookingController.getAllBookings();
-
-                }
-            };
-        }
-    };
 
     @FXML
     void logout(ActionEvent event) {

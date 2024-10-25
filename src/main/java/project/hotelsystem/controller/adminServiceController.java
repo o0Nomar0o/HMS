@@ -241,7 +241,7 @@ public class adminServiceController {
         this.displayMenu();
     }
 
-    private void loadPopularServicesFromDatabase() {//get popular service from database , we can limit to 1 / 2
+    private void loadPopularServicesFromDatabase() {
         String sql = " SELECT s.service_id, s.service_name, s.service_price, s.service_description, s.service_image, COUNT(os.service_id) AS total_orders " + "FROM service s " + "JOIN service_order_detail os ON s.service_id = os.service_id " + "WHERE os.order_time >= NOW() - INTERVAL 7 DAY " + "GROUP BY s.service_id, s.service_name, s.service_price, s.service_description, s.service_image " + "ORDER BY total_orders DESC limit 3";
         try (Connection con = DBConnection.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
@@ -270,7 +270,7 @@ public class adminServiceController {
     private int currentIndex = 0;
 
     @FXML
-    private void previousService() {//left arrow to go previous one
+    private void previousService() {
         if (currentIndex > 0) {
             currentIndex--;
             updateServiceDisplay();
@@ -278,33 +278,30 @@ public class adminServiceController {
     }
 
     @FXML
-    private void nextService() {//right arrow to go next one
+    private void nextService() {
         if (currentIndex < servicesList.size() - 1) {
             currentIndex++;
             updateServiceDisplay();
         }
     }
 
-    private void updateServiceDisplay() {//updating
+    private void updateServiceDisplay() {
         if (!servicesList.isEmpty() && currentIndex >= 0 && currentIndex < servicesList.size()) {
             service currentService = servicesList.get(currentIndex);
             lblTitle.setText(currentService.getName());
             lblPrice.setText("$" + currentService.getPrice());
             lblDiscription.setText(currentService.getDescription());
-            Blob imageBlob = currentService.getImage(); // Assuming getImage() returns Blob
+            Blob imageBlob = currentService.getImage();
             if (imageBlob != null) {
                 try {
-                    // Convert Blob to byte array and then to Image
                     byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
                     Image image = new Image(new ByteArrayInputStream(imageBytes));
 
-                    // Set the ImageView with the Image
                     imgView.setImage(image);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                // Clear the ImageView if no image is present
                 imgView.setImage(null);
             }
         } else {
@@ -342,7 +339,6 @@ public class adminServiceController {
         TextField priceField = new TextField();
         priceField.setPromptText("Service Price");
 
-        // FileChooser to select the image
         Button btnSelectImage = new Button("Select Image");
         Label selectedFileLabel = new Label();
         final File[] selectedFile = new File[1];
@@ -353,7 +349,7 @@ public class adminServiceController {
             File file = fileChooser.showOpenDialog(popupStage);
             if (file != null) {
                 selectedFileLabel.setText(file.getName());
-                selectedFile[0] = file; // Store selected file for later use
+                selectedFile[0] = file;
             }
         });
         vbox.setStyle("-fx-background-color:black");
@@ -365,9 +361,8 @@ public class adminServiceController {
             String description = descriptionField.getText();
             double price = Double.parseDouble(priceField.getText());
 
-            // Save service and image to the database
             serviceController.saveService(serviceName, description, price, selectedFile[0]);
-            popupStage.close(); // Close the popup after saving
+            popupStage.close();
         });
 
         vbox.getChildren().addAll(serviceIdField, serviceNameField, descriptionField, priceField, btnSelectImage, selectedFileLabel, btnSave);
@@ -425,7 +420,6 @@ public class adminServiceController {
     userSettings tss = userSettings.getInstance();
 
     public void createService(service s) {
-        // Existing createService logic
         HBox hbox = new HBox(10);
         GridPane serviceRoot = new GridPane();
 
@@ -447,7 +441,6 @@ public class adminServiceController {
         Label descriptionLabel = new Label("Description: " + s.getDescription());
         Label priceLabel = new Label("Price: $" + s.getPrice());
 
-        // Set label styles
         String lightModeStyle = "-fx-text-fill: #333333;";
         String darkModeStyle = "-fx-text-fill: #FFFFFF;";
 
@@ -456,9 +449,8 @@ public class adminServiceController {
         descriptionLabel.setStyle(lightModeStyle);
         priceLabel.setStyle(lightModeStyle);
 
-        // HBox style
-        hbox.setStyle("-fx-background-color: #F6F5F2; -fx-padding: 10; -fx-spacing: 10;"); // Light mode
-        String currentTheme = tss.getTheme(); // Assuming tss is your theme service
+        hbox.setStyle("-fx-background-color: #F6F5F2; -fx-padding: 10; -fx-spacing: 10;");
+        String currentTheme = tss.getTheme();
         switch (currentTheme) {
             case "light":
                 hbox.setStyle("-fx-background-color: #F6F5F2; -fx-text-fill: #333333;");
@@ -485,7 +477,6 @@ public class adminServiceController {
         VBox actionbox = new VBox(editbtn, delbtn);
         actionbox.setAlignment(Pos.CENTER_RIGHT);
 
-        // Set padding and styling for action buttons
         actionbox.setStyle("-fx-spacing: 5;");
 
         vbox.getChildren().addAll(idLabel, nameLabel, descriptionLabel, priceLabel);
@@ -493,10 +484,8 @@ public class adminServiceController {
         serviceRoot.add(vbox, 1, 0);
         serviceRoot.add(actionbox, 2, 0);
 
-        // Add borders and padding to the serviceRoot
         serviceRoot.setStyle("-fx-padding: 15; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-border-width: 1;");
 
-        // Configure column constraints
         ColumnConstraints col1 = new ColumnConstraints();
         col1.setMinWidth(imageView.getFitWidth());
 
@@ -523,7 +512,7 @@ public class adminServiceController {
 
     private void createServiceOrderPane(int serviceId) {
         service s = serviceMap.get(serviceId);
-        HBox serviceOrderPane = new HBox(50);  // Horizontal layout for order details
+        HBox serviceOrderPane = new HBox(50);
         VBox Tosep = new VBox(10);
         Label serviceLabel = new Label("Service id:" + serviceId);
 
@@ -536,13 +525,10 @@ public class adminServiceController {
 
         serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
 
-        sep.setPrefWidth(100); // Set preferred width for horizontal separator
-        sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + // Border color
-                "-fx-border-width: 0;");    // Border width
-
+        sep.setPrefWidth(100);
+        sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + "-fx-border-width: 0;");
         serviceOrderPane.getChildren().addAll(serviceLabel, serviceCharge);
         Tosep.getChildren().addAll(serviceOrderPane, sep);
-        // Add the pane to the VBox
         orderListVbox.getChildren().add(Tosep);
         tc += s.getPrice();
         totalCost.setText("Total Cost: $" + tc);
@@ -765,12 +751,13 @@ public class adminServiceController {
             modalStage.close();
         });
         confirmButton.setOnAction(act -> {
-            editServiceFromDB(f.getId(), snameField.getText(),descTxt.getText(),
-                    d,null, e, modalStage);
+            editServiceFromDB(f.getId(), snameField.getText(), descTxt.getText(),
+                    d, null, e, modalStage);
         });
     }
+
     private void editServiceFromDB(int sid, String serviceName, String description,
-                                   double price, File imageFile,ActionEvent e, Stage st) {
+                                   double price, File imageFile, ActionEvent e, Stage st) {
 
         loaderSettings.applyDimmingEffect(e);
 
@@ -779,7 +766,7 @@ public class adminServiceController {
             protected Boolean call() throws Exception {
                 try {
                     boolean success = serviceController.updateServiceInDatabase(sid, serviceName,
-                            description,price,imageFile);
+                            description, price, imageFile);
                     if (!success) {
                         throw new Exception("Failed to update.");
                     }
@@ -1356,11 +1343,6 @@ public class adminServiceController {
 
         var7 = allCat.iterator();
 
-//        while (var7.hasNext()) {
-//            f = (food) var7.next();
-//            cfp = this.createCatPane(f);
-//            this.categoryView.getChildren().add(cfp);
-//        }
 
     }
 
