@@ -2,10 +2,19 @@ package project.hotelsystem.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import project.hotelsystem.settings.databaseSettings;
+import project.hotelsystem.util.notificationManager;
+
+import java.io.File;
+import java.net.URL;
 
 public class dbsetupController {
 
@@ -39,27 +48,80 @@ public class dbsetupController {
     databaseSettings dbs = databaseSettings.getInstance();
 
     @FXML
-    void initialize(){
+    void initialize() {
+
+        save_local.setCursor(Cursor.HAND);
+        save_cloud.setCursor(Cursor.HAND);
 
         setupFields();
     }
 
-    private void setupFields(){
+    private void setupFields() {
+
+        dbs.loadSettings();
 
         local_url.setText(dbs.getLocal_url());
         local_user.setText(dbs.getLocal_user());
-        local_user.setText(dbs.getLocal_password());
 
+        cloud_url.setText(dbs.getCloud_url());
+        cloud_user.setText(dbs.getCloud_user());
     }
 
     @FXML
     void save_cloud_db(ActionEvent event) {
+
 
     }
 
     @FXML
     void save_local_db(ActionEvent event) {
 
+        if(local_url.getText().isEmpty()||
+                local_user.getText().isEmpty()||
+                local_pw.getText().isEmpty()){
+
+            notificationManager.showNotification(
+                    "Please fill all the fields",
+                    "failure",
+                    (Stage)go_back.getScene().getWindow()
+            );
+            return;
+        }
+
+
+        String url = local_url.getText();
+        String user = local_user.getText();
+        String pw = local_pw.getText();
+
+        dbs.saveLocalSettings(url, user, pw);
+        notificationManager.showNotification(
+                "Saved Local Database",
+                "success",
+                (Stage) go_back.getScene().getWindow()
+        );
+
+    }
+
+    @FXML
+    void go_back(ActionEvent event) {
+        try {
+
+            URL path = new File("src/main/resources/login.fxml").toURI().toURL();
+            FXMLLoader fxmlLoader = new FXMLLoader(path);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent root = fxmlLoader.load();
+
+            path = new File("src/main/resources/css/login.css").toURI().toURL();
+            root.getStylesheets().add(path.toExternalForm());
+
+            stage.getScene().setRoot(root);
+
+            stage.centerOnScreen();
+            stage.show();
+        } catch (Exception e) {
+
+        }
     }
 
 }

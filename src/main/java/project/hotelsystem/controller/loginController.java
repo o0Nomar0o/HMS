@@ -32,6 +32,7 @@ import project.hotelsystem.web.WebSocketCon;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class loginController {
@@ -87,6 +88,11 @@ public class loginController {
         clearPassword.setUserData("pw");
         clearPassword.setOnAction(this::clearField);
 
+        if(!userController.isUserTableEmpty()){
+            create_account.setDisable(true);
+            return;
+        }
+
         showPassword.setOnMousePressed(e -> {
             Password.setVisible(false);
             PasswordTextField.setText(Password.getText());
@@ -116,22 +122,33 @@ public class loginController {
             }
         });
 
-        databasetoggle.setSelected(DBConnection.isDb());
-
         databasetoggle.setOnAction(e -> {
-            if (databasetoggle.isSelected()) {
-                System.out.println(databasetoggle);
-                DBConnection.setDb(databasetoggle.isSelected());
-                dblb.setStyle("-fx-text-fill: #BAC8F8;");
-            } else {
-                System.out.println(databasetoggle);
-                dblb.setStyle("-fx-text-fill: black;");
-                DBConnection.setDb(databasetoggle.isSelected());
-            }
+            boolean selected = databasetoggle.isSelected();
+            DBConnection.setDb(selected);
+
             try {
-                System.out.println(DBConnection.getConnection().toString());
+                Connection connection = DBConnection.getConnection();
+
+                if (selected) {
+                    dblb.setStyle("-fx-text-fill: #BAC8F8;");
+                } else {
+                    dblb.setStyle("-fx-text-fill: black;");
+                }
+
+                connection.close();
+
             } catch (SQLException err) {
-                err.printStackTrace();
+
+                notificationManager.showNotification(
+                        "Cannot Connect",
+                        "failure",
+                        (Stage)login.getScene().getWindow());
+                databasetoggle.setSelected(!selected);
+                DBConnection.setDb(!selected);
+
+                if (selected) {
+                    dblb.setStyle("-fx-text-fill: black;");
+                }
             }
         });
 
@@ -245,16 +262,30 @@ public class loginController {
     }
 
     @FXML
-    void tosettings(ActionEvent event){
+    void tosettings(ActionEvent event) {
+        try {
 
+            URL path = new File("src/main/resources/dbsetup.fxml").toURI().toURL();
+            FXMLLoader fxmlLoader = new FXMLLoader(path);
+
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent root = fxmlLoader.load();
+
+            path = new File("src/main/resources/css/dbsetup.css").toURI().toURL();
+            root.getStylesheets().add(path.toExternalForm());
+
+            stage.getScene().setRoot(root);
+
+            stage.show();
+        }catch (Exception e){
+
+        }
     }
 
     @FXML
     void create_acc(ActionEvent event){
-        if(!userController.isUserTableEmpty()){
-            create_account.setDisable(true);
-            return;
-        }
+
     createNewUser();
     }
 
@@ -266,7 +297,6 @@ public class loginController {
         modalStage.initOwner(owner);
         modalStage.initStyle(StageStyle.TRANSPARENT);
 
-        // UID input section
         Text uid_txt = new Text("Enter UID");
         uid_txt.setFont(new Font("Arial", 16));
         uid_txt.setFill(Color.DARKSLATEGRAY);
@@ -279,7 +309,7 @@ public class loginController {
                         "-fx-padding: 8; " +
                         "-fx-font-size: 14px; "
         );
-        VBox uidBox = new VBox(8, uid_txt, enterUID);  // 8px spacing between label and field
+        VBox uidBox = new VBox(8, uid_txt, enterUID);
 
         Text username = new Text("Enter Username");
         username.setFont(new Font("Arial", 16));
@@ -311,7 +341,6 @@ public class loginController {
         );
         VBox emailBox = new VBox(8, email, email_field);
 
-// Phone number input section
         Text phone_no = new Text("Enter Phone No.");
         phone_no.setFont(new Font("Arial", 16));
         phone_no.setFill(Color.DARKSLATEGRAY);
@@ -326,7 +355,6 @@ public class loginController {
         );
         VBox phBox = new VBox(8, phone_no, phno_field);
 
-// Privilege selection section
         Text selectPrivilege = new Text("Select Privilege");
         selectPrivilege.setFont(new Font("Arial", 16));
         selectPrivilege.setFill(Color.DARKSLATEGRAY);

@@ -1,8 +1,11 @@
 package project.hotelsystem.database.connection;
 
 import java.sql.*;
+import project.hotelsystem.settings.databaseSettings;
 
 public class DBConnection {
+
+    private static databaseSettings dbs = databaseSettings.getInstance();
 
     private static boolean db = false;
 
@@ -16,10 +19,12 @@ public class DBConnection {
 
     public static Connection getConnection() throws SQLException {
 
+        dbs.loadSettings();
+
         if(!db){
-            String url = "jdbc:mysql://localhost/snowy_resort";
-            String username = "root";
-            String password = "12345678";
+            String url = dbs.getLocal_url();
+            String username = dbs.getLocal_user();
+            String password = dbs.getLocal_password();
 
             return DriverManager.getConnection(url, username, password);
         }
@@ -32,13 +37,5 @@ public class DBConnection {
 
     }
 
-    public static Connection getLocalConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost/hotelmanagementdb";
-        String username = "root";
-        String password = "12345678";
-
-        return DriverManager.getConnection(url, username, password);
-
-    }
 
 }

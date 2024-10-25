@@ -1,0 +1,76 @@
+/* Remove any background from the TabPane */
+.tab-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Center-align tabs in the tab header */
+.tab-pane .tab-header-area {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0 20 0 20; /* Add padding on left and right for centering */
+    -fx-alignment: CENTER;  /* Center-align tabs */
+}
+
+/* Remove gray background and shadow from tab header background */
+.tab-pane *.tab-header-background {
+    -fx-background-color: transparent;
+    -fx-effect: null;
+}
+
+/* Style individual tabs */
+.tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333; /* Dark gray text color for readability */
+    -fx-padding: 8 16;
+}
+
+/* Selected tab style */
+.tab:selected {
+    -fx-background-color: #FFF9E6; /* Light cream color for selected tab */
+    -fx-border-color: #DDDDDD;     /* Light border for the selected tab */
+    -fx-border-width: 0 0 2 0;     /* Bottom border to indicate active tab */
+}
+
+/* Hover effect for tabs */
+.tab:hover {
+    -fx-background-color: rgba(255, 249, 230, 0.5); /* Light cream hover effect */
+}
+
+/* Rounded content area of the TabPane */
+.tab-pane .tab-content-area {
+    -fx-background-color: #FFFFFF; /* Content area color */
+    -fx-background-radius: 15;     /* Rounded corners */
+    -fx-border-radius: 15;
+    -fx-padding: 10;
+    -fx-border-color: #DDDDDD;     /* Optional border to define the content pane */
+    -fx-border-width: 1;
+}
+
+.tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333; /* Dark gray text color for readability */
+    -fx-padding: 8 16;
+    -fx-focus-color: transparent;  /* Remove focus outline */
+    -fx-faint-focus-color: transparent;  /* Remove faint focus outline */
+}
+
+/* Selected tab style */
+.tab:selected {
+    -fx-background-color: #FFF9E6; /* Light cream color for selected tab */
+    -fx-border-color: #DDDDDD;     /* Light border for the selected tab */
+    -fx-border-width: 0 0 2 0;     /* Bottom border to indicate active tab */
+}
+
+/* Optional: Add padding to the tabs for better alignment with rounded corners */
+.tab-pane .tab-header-area .tab {
+    -fx-padding: 0 15; /* Adjusts padding for better alignment with rounded content area */
+}
+#save{
+-fx-text-fill: #007BFF !important;
+}
+
+#save:hover{
+-fx-background-color: #007BFF !important;
+-fx-text-fill: white !important;
+}

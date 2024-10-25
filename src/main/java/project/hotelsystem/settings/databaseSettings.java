@@ -36,7 +36,7 @@ public class databaseSettings {
 
     public void setLocal_url(String local_url) {
         Preferences preferences = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
-        this.local_url += local_url;
+        this.local_url = local_url;
         preferences.put(LOCAL_URL_KEY, local_url);
 
     }
@@ -94,15 +94,15 @@ public class databaseSettings {
         preferences.put(CLOUD_PASSWORD_KEY, cloud_password);
     }
 
-    private void loadSettings() {
+    public void loadSettings() {
         Preferences preferences = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
-        local_url = preferences.get(LOCAL_URL_KEY, "jdbc:mysql://localhost:3306/defaultDB");
-        local_user = preferences.get(LOCAL_USER_KEY, local_user);
-        local_password = preferences.get(LOCAL_PASSWORD_KEY, "");
+        this.local_url = preferences.get(LOCAL_URL_KEY, "jdbc:mysql://localhost:3306/defaultDB");
+        this.local_user = preferences.get(LOCAL_USER_KEY, local_user);
+        this.local_password = preferences.get(LOCAL_PASSWORD_KEY, "");
 
-        cloud_url = preferences.get(CLOUD_URL_KEY, "jdbc:mysql://cloud-host:3306/defaultDB");
-        cloud_user = preferences.get(CLOUD_USER_KEY, "");
-        cloud_password = preferences.get(CLOUD_PASSWORD_KEY, "");
+        this.cloud_url = preferences.get(CLOUD_URL_KEY, "jdbc:mysql://cloud-host:3306/defaultDB");
+        this.cloud_user = preferences.get(CLOUD_USER_KEY, "");
+        this.cloud_password = preferences.get(CLOUD_PASSWORD_KEY, "");
     }
 
     public void saveSettings() {
@@ -118,17 +118,16 @@ public class databaseSettings {
 
     public void saveLocalSettings(String url, String user, String pw) {
         Preferences preferences = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
-        preferences.put(LOCAL_URL_KEY, url);
-        preferences.put(LOCAL_USER_KEY, user);
-        preferences.put(LOCAL_PASSWORD_KEY, pw);
+
+        this.local_url = url;
+        this.local_user = user;
+        this.local_password = pw;
+
+        preferences.put(LOCAL_URL_KEY, local_url);
+        preferences.put(LOCAL_USER_KEY, local_user);
+        preferences.put(LOCAL_PASSWORD_KEY, local_password);
 
     }
 
-    public void saveCloudSettings(String url, String user, String pw){
-        Preferences preferences = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
 
-        preferences.put(CLOUD_URL_KEY, url);
-        preferences.put(CLOUD_USER_KEY, user);
-        preferences.put(CLOUD_PASSWORD_KEY, pw);
-    }
 }
