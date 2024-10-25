@@ -13,7 +13,7 @@ public class WebSocketCon {
 
     public void connect() {
 
-        String ip = "172.20.10.5";
+        String ip = "youraddress";
 
         String serverUri = "ws://" + ip + ":8080";
 
