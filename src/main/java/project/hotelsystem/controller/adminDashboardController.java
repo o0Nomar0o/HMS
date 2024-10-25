@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import project.hotelsystem.database.controller.bookingController;
 import project.hotelsystem.database.models.booking;
 import project.hotelsystem.settings.userSettings;
+import project.hotelsystem.web.WebSocketCon;
 
 import java.io.IOException;
 import java.util.List;
@@ -77,6 +78,8 @@ public class adminDashboardController {
 
     @FXML
     void initialize() {
+
+
         Preferences p = ts.getNodePreference();
         ts.getUid();
 

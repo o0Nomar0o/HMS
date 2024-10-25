@@ -22,15 +22,16 @@ import javafx.scene.text.Text;
 import javafx.stage.*;
 import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.database.controller.foodController;
+import project.hotelsystem.database.controller.roomController;
 import project.hotelsystem.database.controller.serviceController;
 import project.hotelsystem.database.models.food;
+import project.hotelsystem.database.models.room;
 import project.hotelsystem.database.models.service;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.settings.userSettings;
-import project.hotelsystem.util.notificationManager;
 import project.hotelsystem.util.dropdownManager;
-import project.hotelsystem.database.models.room;
-import project.hotelsystem.database.controller.roomController;
+import project.hotelsystem.util.notificationManager;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class adminServiceController {
 
@@ -212,7 +214,7 @@ public class adminServiceController {
 
         ObservableList<room> ols = FXCollections.observableArrayList(roomController.getAllRooms());
 
-        Popup userFilter =  dropdownManager.createRoomDropdown(txfRoomNo,ols);
+        Popup userFilter = dropdownManager.createRoomDropdown(txfRoomNo, ols);
 
         txfRoomNo.setOnAction(event -> {
             if (!userFilter.isShowing()) {
@@ -702,13 +704,17 @@ public class adminServiceController {
         Text priceTxt1 = new Text("Price");
         priceTxt1.setFont(new Font(16.0));
         TextField priceTxt2 = new TextField(f.getPrice() + "");
+
         priceTxt2.onKeyReleasedProperty().addListener((ob, ov, nv) -> {
             try {
                 double d = Double.parseDouble(nv.toString());
             } catch (Exception err) {
                 notificationManager.showNotification("Enter a double value", "failure", modalStage);
+                return;
             }
         });
+        double d = Double.parseDouble(priceTxt2.getText());
+
         VBox priceBox = new VBox(priceTxt1, priceTxt2);
 
         Text desc = new Text("Category");
@@ -759,11 +765,12 @@ public class adminServiceController {
             modalStage.close();
         });
         confirmButton.setOnAction(act -> {
-            editServiceFromDB(f.getId(), e, modalStage);
+            editServiceFromDB(f.getId(), snameField.getText(),descTxt.getText(),
+                    d,null, e, modalStage);
         });
     }
-
-    private void editServiceFromDB(int sid, ActionEvent e, Stage st) {
+    private void editServiceFromDB(int sid, String serviceName, String description,
+                                   double price, File imageFile,ActionEvent e, Stage st) {
 
         loaderSettings.applyDimmingEffect(e);
 
@@ -771,9 +778,10 @@ public class adminServiceController {
             @Override
             protected Boolean call() throws Exception {
                 try {
-                    boolean success = serviceController.deleteService(sid);
+                    boolean success = serviceController.updateServiceInDatabase(sid, serviceName,
+                            description,price,imageFile);
                     if (!success) {
-                        throw new Exception("Failed to delete.");
+                        throw new Exception("Failed to update.");
                     }
                     return success;
                 } catch (Exception ex) {
@@ -789,12 +797,12 @@ public class adminServiceController {
         loadSceneTask.setOnSucceeded(ev -> {
             try {
 
-                notificationManager.showNotification(String.format("Successfully removed %d", sid), "success", (Stage) logout.getScene().getWindow());
+                notificationManager.showNotification(String.format("Successfully updated %d", sid), "success", (Stage) logout.getScene().getWindow());
                 st.close();
                 generateService();
                 loaderSettings.removeDimmingEffect(e);
                 loadingStage.hide();
-                System.out.println("Service removed successfully.");
+                System.out.println("Service updated successfully.");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -803,7 +811,7 @@ public class adminServiceController {
         loadSceneTask.setOnFailed(er -> {
             try {
                 loadingStage.hide();
-                notificationManager.showNotification("Failed to removed service", "failure", st);
+                notificationManager.showNotification("Failed to update service", "failure", st);
                 loaderSettings.removeDimmingEffect(e);
                 System.out.println("Failed to remove service. Please try again.");
             } catch (Exception ex) {
@@ -1314,13 +1322,20 @@ public class adminServiceController {
         ObservableList<food> foodData = this.stockTableView.getItems();
         foodData.clear();
         ObservableList<food> foodItems = FXCollections.observableArrayList(items);
-        this.stockTableView.setItems(foodItems);
+
+        ObservableList<food> filteredFood = FXCollections.observableArrayList(
+                foodItems.stream()
+                        .filter(b -> !b.getStock_status().matches("NIL"))
+                        .collect(Collectors.toList())
+        );
+
+        this.stockTableView.setItems(filteredFood);
 
         List<food> allFood = foodController.getAllFood();
         HashSet<String> catHash = new HashSet<>();
-        for(food fd : allFood){
+        for (food fd : allFood) {
             System.out.println(fd.getCategory());
-            if(!catHash.contains(fd.getCategory())) {
+            if (!catHash.contains(fd.getCategory())) {
                 Pane cfp = this.createCatPane(fd);
                 this.categoryView.getChildren().add(cfp);
                 catHash.add(fd.getCategory());

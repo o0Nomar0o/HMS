@@ -9,7 +9,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import project.hotelsystem.settings.invoiceSettings;
-import project.hotelsystem.util.notificationManager;
 
 import java.io.IOException;
 import java.sql.*;
@@ -338,7 +337,7 @@ public class StaffRoomDetailsController {
 
         String query = "SELECT customer.customer_name, customer.phone_no, customer.email, customer.id_card, " +
                 "booking.booking_id, booking.check_in, booking.check_out, " +
-                "booking_charges.deposite, booking_charges.total_room_charges, booking_charges.remaining_amount " +
+                "booking_charges.deposite, booking_charges.total_room_charges, booking_charges.total_booking_charges,booking_charges.remaining_amount " +
                 "FROM customer " +
                 "JOIN booking ON customer.customer_id = booking.customer_id " +
                 "JOIN booking_room_detail ON booking.booking_id = booking_room_detail.booking_id " +
@@ -361,7 +360,7 @@ public class StaffRoomDetailsController {
                 Date checkInDate = rs.getDate("check_in");
                 Date checkOutDate = rs.getDate("check_out");
                 double deposit = rs.getDouble("deposite");
-                double totalAmount = rs.getDouble("total_room_charges");
+                double totalAmount = rs.getDouble("total_booking_charges");
                 double remainingCharges = rs.getDouble("remaining_amount");
 
                 // Create a new pane to display these details
@@ -498,7 +497,7 @@ public class StaffRoomDetailsController {
 
                 checkOutButton.setOnAction(e -> {
                     LocalDate currentDate = LocalDate.now();
-                    ivs.openPdfModal(bookingId+"", (Stage)overlayPane.getScene().getWindow());
+                    ivs.openPdfModal(bookingId + "", (Stage) overlayPane.getScene().getWindow());
 
                     try (Connection connForUpdate = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
 

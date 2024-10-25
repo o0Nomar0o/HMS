@@ -6,6 +6,24 @@
        -fx-background-color: #F6F5F2;
 
 }
+#view{
+    -fx-background-color: white !important;
+    -fx-background-radius: 1.5em;
+}
+#overview, #bookingview, #revenueview{
+    -fx-background-color: white !important;
+}
+#sections{
+-fx-background-color: #F6F5F2 !important;
+}
+#inner-sections{
+-fx-background-color: #F2F2EE !important;
+}
+
+#labels{
+-fx-fill: black;
+}
+
 /*Buttons Style*/
 #buttons, #logout, #currentPage{
        -fx-background-color: transparent;
@@ -33,4 +51,5 @@
 
 #currentPage{
  -fx-background-color: #F6F5F2 !important;
+
 }

@@ -7,6 +7,7 @@ public class audit_logs {
     int id;
     String action;
     String user;
+    String data;
     LocalDateTime timestamp;
 
     public audit_logs(int id, String action, String user, LocalDateTime timestamp) {
@@ -16,9 +17,18 @@ public class audit_logs {
         this.timestamp = timestamp;
     }
 
-    public audit_logs(String action, String user, LocalDateTime timestamp) {
+    public audit_logs(int id, String action, String user, String data, LocalDateTime timestamp) {
+        this.id = id;
         this.action = action;
         this.user = user;
+        this.data = data;
+        this.timestamp = timestamp;
+    }
+
+    public audit_logs(String action, String user, String data, LocalDateTime timestamp) {
+        this.action = action;
+        this.user = user;
+        this.data = data;
         this.timestamp = timestamp;
     }
 
@@ -46,21 +56,19 @@ public class audit_logs {
         this.user = user;
     }
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
-    }
-
-    @Override
-    public String toString() {
-        return "audit_logs{" +
-                "id=" + id +
-                ", action='" + action + '\'' +
-                ", user='" + user + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
     }
 }

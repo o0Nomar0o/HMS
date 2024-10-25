@@ -20,7 +20,18 @@
        -fx-background-color: transparent;
        -fx-text-fill: #EEEEEE;
 }
-
+#overview, #bookingview, #revenueview{
+    -fx-background-color: #1F1B24 !important;
+}
+#sections{
+-fx-background-color: #1C1921 !important;
+}
+#inner-sections{
+-fx-background-color: #1A1518 !important;
+}
+#labels{
+-fx-fill: #EEEEEE;
+}
 #logout:pressed{
        -fx-background-color: #E60F28;
 }

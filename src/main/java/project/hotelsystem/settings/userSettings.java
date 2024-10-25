@@ -22,7 +22,7 @@ public class userSettings {
     private String theme = "light";
     private String uid;
     private String username;
-    private String invoice_path = System.getProperty("user.home");
+    private String invoice_path = System.getProperty("user.home") + File.separator + "Invoices";
     private String privilege;
 
     public userSettings() {
@@ -111,6 +111,8 @@ public class userSettings {
     public void applyTheme(Parent root, String baseFilename) {
         try {
 
+            root.getStylesheets().clear();
+
             loadWindowsSettings();
 
             String cssPath = "src/main/resources/css/" + baseFilename;
@@ -121,7 +123,7 @@ public class userSettings {
             }
 
             URL appTheme = new File(cssPath).toURI().toURL();
-            root.getStylesheets().clear();
+
             root.getStylesheets().add(appTheme.toExternalForm());
 
         } catch (IOException e) {

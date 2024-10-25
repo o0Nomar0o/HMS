@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,16 +17,16 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
-import project.hotelsystem.database.controller.roomController;
-import project.hotelsystem.database.models.room;
-import project.hotelsystem.util.dropdownManager;
-import project.hotelsystem.util.notificationManager;
 import javafx.stage.Stage;
 import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.database.controller.foodController;
+import project.hotelsystem.database.controller.roomController;
 import project.hotelsystem.database.controller.serviceController;
 import project.hotelsystem.database.models.food;
+import project.hotelsystem.database.models.room;
 import project.hotelsystem.database.models.service;
+import project.hotelsystem.util.dropdownManager;
+import project.hotelsystem.util.notificationManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -362,9 +361,8 @@ public class staffServiceController {
         if (currentIndex > 0) {
             currentIndex--;
             updateServiceDisplay();
-        }
-        else if(currentIndex == 0){
-            currentIndex = servicesList.size() -1;
+        } else if (currentIndex == 0) {
+            currentIndex = servicesList.size() - 1;
             updateServiceDisplay();
         }
     }
@@ -374,9 +372,8 @@ public class staffServiceController {
         if (currentIndex < servicesList.size() - 1) {
             currentIndex++;
             updateServiceDisplay();
-        }
-        else if(currentIndex ==  servicesList.size() -1){
-            currentIndex =0;
+        } else if (currentIndex == servicesList.size() - 1) {
+            currentIndex = 0;
             updateServiceDisplay();
         }
     }
@@ -464,44 +461,42 @@ public class staffServiceController {
 
     private static void styleDropdownButton(Button button) {
         button.setStyle("""
-        -fx-background-color: #f5f6fa; 
-        -fx-border-color: #dcdde1; 
-        -fx-border-radius: 5; 
-        -fx-padding: 5 10; 
-        -fx-font-size: 14px;
-        -fx-text-fill: #2f3640;
-        -fx-cursor: hand;
-    """);
+                    -fx-background-color: #f5f6fa; 
+                    -fx-border-color: #dcdde1; 
+                    -fx-border-radius: 5; 
+                    -fx-padding: 5 10; 
+                    -fx-font-size: 14px;
+                    -fx-text-fill: #2f3640;
+                    -fx-cursor: hand;
+                """);
 
         button.setOnMouseEntered(e -> button.setStyle("""
-        -fx-background-color: #e1e2e6; 
-        -fx-border-color: #dcdde1; 
-        -fx-border-radius: 5; 
-        -fx-padding: 5 10; 
-        -fx-font-size: 14px;
-        -fx-text-fill: #2f3640;
-        -fx-cursor: hand;
-    """));
+                    -fx-background-color: #e1e2e6; 
+                    -fx-border-color: #dcdde1; 
+                    -fx-border-radius: 5; 
+                    -fx-padding: 5 10; 
+                    -fx-font-size: 14px;
+                    -fx-text-fill: #2f3640;
+                    -fx-cursor: hand;
+                """));
 
         button.setOnMouseExited(e -> button.setStyle("""
-        -fx-background-color: #f5f6fa; 
-        -fx-border-color: #dcdde1; 
-        -fx-border-radius: 5; 
-        -fx-padding: 5 10; 
-        -fx-font-size: 14px;
-        -fx-text-fill: #2f3640;
-        -fx-cursor: hand;
-    """));
+                    -fx-background-color: #f5f6fa; 
+                    -fx-border-color: #dcdde1; 
+                    -fx-border-radius: 5; 
+                    -fx-padding: 5 10; 
+                    -fx-font-size: 14px;
+                    -fx-text-fill: #2f3640;
+                    -fx-cursor: hand;
+                """));
     }
-
-
 
 
     @FXML
     public void initialize() {
         ObservableList<room> ols = FXCollections.observableArrayList(roomController.getAllOccupiedRooms());
 
-        Popup roomDp =  dropdownManager.createRoomDropdown(txfRoomNo,ols);
+        Popup roomDp = dropdownManager.createRoomDropdown(txfRoomNo, ols);
 
         txfRoomNo.setOnAction(event -> {
             if (!roomDp.isShowing()) {
@@ -511,7 +506,7 @@ public class staffServiceController {
             }
         });
 
-        Popup roomDp2 =  dropdownManager.createRoomDropdown(roomNo,ols);
+        Popup roomDp2 = dropdownManager.createRoomDropdown(roomNo, ols);
         roomNo.setOnAction(event -> {
             if (!roomDp2.isShowing()) {
                 Bounds bounds = roomNo.localToScreen(roomNo.getBoundsInLocal());
@@ -542,8 +537,13 @@ public class staffServiceController {
         logout.setOnAction(e -> logoutController.logout(e));
 
         btnConfirm.setOnAction(e -> {
-            room r = (room)txfRoomNo.getUserData();
-            if (serviceController.batchOrder(orderedService,r.getRoom_no())) {
+            room r = (room) txfRoomNo.getUserData();
+            if (r == null) {
+                notificationManager.showNotification("Please select a room", "failure", (Stage) btnConfirm.getScene().getWindow());
+                return;
+            }
+
+            if (serviceController.batchOrder(orderedService, r.getRoom_no())) {
                 orderedService.clear();
                 orderListVbox.getChildren().clear();
                 notificationManager.showNotification("Successfully ordered!", "success", (Stage) logout.getScene().getWindow());
@@ -597,8 +597,10 @@ public class staffServiceController {
         confirmOrder.setOnAction(e -> {
 
             room r = (room) roomNo.getUserData();
+
             if (roomNo == null || r.getRoom_no() == null || r.getRoom_no().isEmpty()) {
                 notificationManager.showNotification("Please choose a room", "faliure", (Stage) logout.getScene().getWindow());
+                return;
             }
 
             try (Connection con = DBConnection.getConnection(); // Get the database connection

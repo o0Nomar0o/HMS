@@ -106,10 +106,10 @@ public class roomController {
 		try(Connection con = DBConnection.getConnection();
 			PreparedStatement clst = con.prepareStatement(sql);){
 
-			clst.setString(1, roomNo);
-			clst.setString(2, rtid);
-			clst.setInt(3, floor);
-			clst.setString(4,status);
+			clst.setString(4, roomNo);
+			clst.setString(1, rtid);
+			clst.setInt(2, floor);
+			clst.setString(3,status);
 			clst.execute();
 			return true;
 

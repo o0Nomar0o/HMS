@@ -25,7 +25,7 @@
 
 <AnchorPane id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="853.0" prefWidth="1202.0" style="-fx-background-color: #F6F5F2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.adminServiceController">
     <children>
-        <AnchorPane id="navbar" layoutX="21.0" layoutY="32.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em; -fx-background-color: white;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
+        <AnchorPane id="navbar" layoutX="21.0" layoutY="32.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
             <children>
                 <ImageView fitHeight="142.0" fitWidth="139.0" layoutX="16.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0">
                <image>
@@ -84,29 +84,29 @@
         <TabPane id="main-tab" layoutX="216.0" layoutY="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="216.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="20.0">
             <tabs>
                 <Tab id="servicestab" closable="false" text="Services">
-                    <AnchorPane layoutX="14.0" layoutY="8.0" style="-fx-background-color: white; -fx-background-radius: 1.25em;">
+                    <AnchorPane id="overview" layoutX="14.0" layoutY="8.0" style="-fx-background-color: white; -fx-background-radius: 1.25em;">
                         <children>
                      <VBox AnchorPane.bottomAnchor="18.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="361.0" AnchorPane.topAnchor="0.0">
                         <children>
                            <AnchorPane>
                               <children>
-                                          <Label id="lblTitle" fx:id="lblTitle" layoutX="32.0" layoutY="38.0" prefHeight="88.0" prefWidth="230.0" stylesheets="@adminServiceViewCon.css" text="Laundry">
+                                          <Label id="lblTitle" fx:id="lblTitle" layoutX="32.0" layoutY="38.0" prefHeight="88.0" prefWidth="230.0" text="Laundry">
                                               <font>
                                                   <Font size="40.0" />
                                               </font>
                                           </Label>
-                                          <Label id="lblDiscription" fx:id="lblDiscription" layoutX="32.0" layoutY="117.0" prefHeight="103.0" prefWidth="231.0" stylesheets="@adminServiceViewCon.css" text="Label">
+                                          <Label id="lblDiscription" fx:id="lblDiscription" layoutX="32.0" layoutY="117.0" prefHeight="103.0" prefWidth="231.0" text="Label">
                                               <font>
                                                   <Font size="16.0" />
                                               </font>
                                           </Label>
-                                          <Label id="lblPrice" fx:id="lblPrice" layoutX="32.0" layoutY="211.5" prefHeight="68.0" prefWidth="229.0" stylesheets="@adminServiceViewCon.css" text="\$20">
+                                          <Label id="lblPrice" fx:id="lblPrice" layoutX="32.0" layoutY="211.5" prefHeight="68.0" prefWidth="229.0" text="\$20">
                                               <font>
                                                   <Font size="20.0" />
                                               </font>
                                           </Label>
-                                        <Button id="btnLeft" fx:id="btnLeft" layoutY="142.0" minWidth="36.0" mnemonicParsing="false" onAction="#previousService" prefHeight="30.0" prefWidth="36.0" stylesheets="@adminServiceViewCon.css" text="&lt;" AnchorPane.leftAnchor="0.0" />
-                                        <Button id="btnRight" fx:id="btnRight" layoutX="589.0" layoutY="142.0" minHeight="-Infinity" minWidth="35.0" mnemonicParsing="false" onAction="#nextService" prefHeight="30.0" prefWidth="35.0" stylesheets="@adminServiceViewCon.css" text="&gt;" AnchorPane.rightAnchor="0.0" />
+                                        <Button id="btnLeft" fx:id="btnLeft" layoutY="142.0" minWidth="36.0" mnemonicParsing="false" onAction="#previousService" prefHeight="30.0" prefWidth="36.0" text="&lt;" AnchorPane.leftAnchor="0.0" />
+                                        <Button id="btnRight" fx:id="btnRight" layoutX="589.0" layoutY="142.0" minHeight="-Infinity" minWidth="35.0" mnemonicParsing="false" onAction="#nextService" prefHeight="30.0" prefWidth="35.0" text="&gt;" AnchorPane.rightAnchor="0.0" />
                                         <Label layoutX="32.0" prefHeight="40.0" prefWidth="247.0" text="Most Popular Services">
                                             <font>
                                                 <Font name="System Bold" size="20.0" />
@@ -218,7 +218,7 @@
                     <content>
                   <AnchorPane>
                      <children>
-                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="982.0" style="-fx-background-color: silver;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane id="overview" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="982.0" style="-fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>

@@ -93,9 +93,9 @@
                   <Button fx:id="esc" mnemonicParsing="false" onAction="#switchtosettings" style="-fx-background-radius: 2em;" text="X" />
                </children>
             </HBox>
-            <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="SOMETIMES">
+            <ScrollPane fitToHeight="false" fitToWidth="true" vvalue="1.0" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox fx:id="audit_view" alignment="TOP_CENTER" style="-fx-padding: 20px; -fx-spacing: 25px;" />
+                  <VBox fx:id="audit_view" alignment="TOP_CENTER" style="-fx-padding: 20px; -fx-spacing: 25px;" VBox.vgrow="ALWAYS" />
                </content>
             </ScrollPane>
          </children>

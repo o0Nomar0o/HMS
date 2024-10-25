@@ -96,15 +96,14 @@ public class serviceController {
         }
     }
 
-    public static void updateServiceInDatabase(String serviceId, String serviceName, String description, double price, File imageFile) {
+    public static boolean updateServiceInDatabase(int serviceId, String serviceName,
+                                                  String description, double price, File imageFile) {
         // Implement logic to update the service in the database using the given parameters
         String sql;
         if (imageFile != null) {
-            // SQL to update everything, including the image
-            sql = "UPDATE service SET service_name = ?,  service_price = ?,service_decription = ?, service_image = ? WHERE service_id = ?";
+            sql = "UPDATE service SET service_name = ?,  service_price = ?,service_description = ?, service_image = ? WHERE service_id = ?";
         } else {
-            // SQL to update everything except the image
-            sql = "UPDATE service SET service_name = ?,  service_price = ?,service_decription = ? WHERE service_id = ?";
+            sql = "UPDATE service SET service_name = ?,  service_price = ?,service_description = ? WHERE service_id = ?";
         }
 
         try (Connection conn = DBConnection.getConnection();
@@ -114,23 +113,21 @@ public class serviceController {
             pstmt.setString(3, description);
             pstmt.setDouble(2, price);
 
-            // If a new image is selected, update the BLOB column with the image file
             if (imageFile != null) {
-                // If there's a new image, set the BLOB for the image column
                 FileInputStream fis = new FileInputStream(imageFile);
                 pstmt.setBinaryStream(4, fis, (int) imageFile.length());
-                pstmt.setString(5, serviceId);
+                pstmt.setInt(5, serviceId);
             } else {
-                // If no new image, just set the serviceId after the price
-                pstmt.setString(4, serviceId);
+                pstmt.setInt(4, serviceId);
             }
 
             pstmt.executeUpdate();
-            new Alert(Alert.AlertType.INFORMATION, "Service Updated Successfully", ButtonType.OK).showAndWait();
 
+            return true;
 
         } catch (SQLException | FileNotFoundException e) {
             System.out.println(e.getMessage());
+            return false;
         }
     }
 

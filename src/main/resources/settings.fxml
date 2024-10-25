@@ -113,16 +113,11 @@
                                         <Font size="24.0" />
                                     </font>
                                 </Text>
-                              <Text id="labels" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Path: ">
+                              <Text id="labels" fx:id="pathtxt" strokeType="OUTSIDE" strokeWidth="0.0" text="Invoice Path: ">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Text>
-                              <Button id="importantButtons" fx:id="path_button" mnemonicParsing="false" text="Change">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Button>
                            </children>
                         </VBox>
                         <VBox fx:id="hotelMod" style="-fx-spacing: 10px;">
@@ -141,9 +136,9 @@
                                                     <Font size="24.0" />
                                                 </font>
                                             </Text>
-                                          <Button fx:id="add" mnemonicParsing="false" onAction="#add" text="Add" />
-                                          <Button fx:id="edit" disable="true" mnemonicParsing="false" onAction="#edit" text="Edit" />
-                                          <Button fx:id="remove" disable="true" mnemonicParsing="false" onAction="#remove" text="Remove" />
+                                          <Button fx:id="add" mnemonicParsing="false" onAction="#add" style="-fx-background-color: #4CAF50;" text="Add" />
+                                          <Button fx:id="edit" disable="true" mnemonicParsing="false" onAction="#edit" style="-fx-background-color: #4CAFD2;" text="Edit" />
+                                          <Button fx:id="remove" disable="true" mnemonicParsing="false" onAction="#remove" style="-fx-background-color: #ff4d4d;" text="Remove" />
                                        </children>
                                     </HBox>
                                     <TableView fx:id="userTable" minHeight="165.0" prefHeight="168.0" prefWidth="428.0" style="-fx-background-color: transparent; -fx-background-radius: 1.5em;" VBox.vgrow="ALWAYS">
@@ -183,12 +178,12 @@
             </ScrollPane>
             <HBox id="sections" alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="923.0" style="-fx-spacing: 15px; -fx-padding: 15px 20px 0 20px; -fx-border-width: 1px 0 0 0;">
                <children>
-                  <Button id="actionbuttons" fx:id="cancel" mnemonicParsing="false" onAction="#cancelAction" text="Cancel">
+                  <Button id="actionbuttons" fx:id="cancel" mnemonicParsing="false" onAction="#cancelAction" style="-fx-background-color: #DEDEDE;" text="Cancel">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Button>
-                  <Button id="actionbuttons" fx:id="save" mnemonicParsing="false" onAction="#saveSettings" text="Save">
+                  <Button id="actionbuttons" fx:id="save" mnemonicParsing="false" onAction="#saveSettings" style="-fx-background-color: #4CAF50;" text="Save">
                      <font>
                         <Font size="18.0" />
                      </font>

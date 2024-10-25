@@ -18,11 +18,13 @@ public class auditController {
 
             while (rs.next()) {
 
+                int id = rs.getInt(1);
                 String action = rs.getString(2);
                 String user = rs.getString(3);
-                LocalDateTime time = rs.getTimestamp(4).toLocalDateTime();
+                String data = rs.getString(4);
+                LocalDateTime time = rs.getTimestamp(5).toLocalDateTime();
 
-                audit_logs l = new audit_logs(action,user,time);
+                audit_logs l = new audit_logs(id,action,user,data,time);
                 logs.add(l);
             }
 
@@ -45,9 +47,10 @@ public class auditController {
 
                 String action = rs.getString(2);
                 String user = rs.getString(3);
-                LocalDateTime time = rs.getTimestamp(4).toLocalDateTime();
+                String data = rs.getString(4);
+                LocalDateTime time = rs.getTimestamp(5).toLocalDateTime();
 
-                audit_logs l = new audit_logs(action,user,time);
+                audit_logs l = new audit_logs(action,user,data,time);
                 logs.add(l);
             }
 

@@ -89,6 +89,9 @@ public class adminRoomsController {
 
     @FXML
     private void initialize() {
+
+        logout.setOnAction(e->logout(e));
+
         addRoom.setOnAction(e -> rb.createRoom());
         addType.setOnAction(e -> rtb.createRoomType());
         rb.generateRooms();
@@ -661,11 +664,14 @@ public class adminRoomsController {
         }
 
         private Spinner<Double> createPriceSpinner(String type) {
-            room_type_details selected_rt = typeTable.getSelectionModel().getSelectedItem();
+            room_type_details selected_rt;
+            double p = 0.0;
 
+            if(typeTable.getSelectionModel().getSelectedItem() != null){
+                 selected_rt = typeTable.getSelectionModel().getSelectedItem();
+               p = type.matches("n")?selected_rt.getPricePerNight() : selected_rt.getPricePerHour();
+            }
             Spinner<Double> priceSpinner = new Spinner<>();
-            double p = type.matches("n")?selected_rt.getPricePerNight() : selected_rt.getPricePerHour();
-            if(type.isEmpty()) p =0.0;
 
             SpinnerValueFactory.DoubleSpinnerValueFactory valueFactory =
                     new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, Double.MAX_VALUE,

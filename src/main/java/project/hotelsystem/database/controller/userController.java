@@ -163,7 +163,6 @@ public class userController {
 		try(Connection con = DBConnection.getConnection();
 			PreparedStatement psmt = con.prepareStatement(sql)) {
 
-
 			psmt.setString(1, status);
 			psmt.setString(2, id);
 
@@ -202,8 +201,6 @@ public class userController {
 				"privilege =? , email = ?, phone_no = ? WHERE user_id = ?";
 		try(Connection con = DBConnection.getConnection();
 			PreparedStatement psmt = con.prepareStatement(sql)) {
-
-			System.out.println("hree");
 
 			psmt.setString(1, un);
 			psmt.setString(2, priv);

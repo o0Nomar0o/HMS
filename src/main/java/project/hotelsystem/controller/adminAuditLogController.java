@@ -11,9 +11,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -25,7 +28,9 @@ import project.hotelsystem.database.models.user;
 import project.hotelsystem.util.dropdownManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class adminAuditLogController {
 
@@ -61,31 +66,69 @@ public class adminAuditLogController {
     private int count = 0;
     boolean flag = false;
 
+    private Map<Integer, String> nodeMap = new HashMap<>();
+
+    private List<VBox> logsRootList = new ArrayList<>();
+
+
+
     @FXML
     void initialize() {
 
+
         logs.setOnSucceeded(workerStateEvent -> {
+
             List<audit_logs> newData = logs.getValue();
 
             Platform.runLater(() -> {
                 audit_view.getChildren().clear();
 
                 for (audit_logs al : newData) {
+                    VBox logsRoot = new VBox();
                     GridPane logsGrid = new GridPane();
 
                     Label userLabel = new Label(al.getUser());
-                    Label actionLabel = new Label(al.getAction());
+                    Button actionButton = new Button();
+                    int key = al.getId();
+
+                    if(nodeMap.containsKey(key))
+                        actionButton.setUserData(nodeMap.get(key));
+                    else
+                        actionButton.setUserData("0");
+
+
+                    actionButton.setText(al.getAction() + " >");
+                    Label dataLabel = new Label(al.getData());
                     Label timestampLabel = new Label(al.getTimestamp().toString());
 
+                    HBox dataView = new HBox(dataLabel);
+
+                    actionButton.setOnAction(e->{
+                        handleNodeToggle(al.getId(),actionButton, logsRoot, dataView);
+                    });
+
                     logsGrid.add(userLabel, 0, 0, 1, 2);
-                    logsGrid.add(actionLabel, 1, 0);
+                    logsGrid.add(actionButton, 1, 0);
                     logsGrid.add(timestampLabel, 1, 1);
 
                     GridPane.setValignment(userLabel, VPos.CENTER);
-                    logsGrid.setStyle("-fx-background-color: #DDDDDD;" + "-fx-padding:15px;" +
+                    logsGrid.setStyle("-fx-padding:15px;" +
                             "-fx-vgap:10px;" + "-fx-hgap:10px;" + "-fx-background-radius: 1.25em;");
 
-                    audit_view.getChildren().add(logsGrid);
+                    dataView.setStyle("-fx-background-color: #EDEDED;"+
+                            "-fx-background-radius: 0.5em 0.5em 1.25em 1.25em; " +
+                            "-fx-padding: 15px;");
+
+                    logsRoot.setStyle("-fx-background-color: #EAEAEA; -fx-background-radius: 1.25em;");
+                    VBox.setVgrow(logsRoot, Priority.ALWAYS);
+
+                    logsRoot.getChildren().add(logsGrid);
+                    logsRootList.add(logsRoot);
+
+                    restoreExpandedNodes(logsRoot, actionButton, dataView);
+
+                    audit_view.getChildren().add(logsRoot);
+
                 }
             });
 
@@ -147,25 +190,28 @@ public class adminAuditLogController {
     void switchToDashboard(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
-
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","dashboard");
     }
 
     @FXML
     void switchtobookings(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","booking");
     }
 
     @FXML
     void switchtorooms(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","rooms");
     }
 
     @FXML
     void switchtoservices(ActionEvent event) throws Exception {
         flag = true;
         logs.reset();
+        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(),"admin","services");
     }
 
     @FXML
@@ -225,5 +271,39 @@ public class adminAuditLogController {
         timeline.play();
 
     }
+    private void handleNodeToggle(int id, Button actionButton, VBox logsRoot, HBox dataView) {
+        String currentState = actionButton.getUserData().toString();
+
+        switch (actionButton.getUserData().toString()){
+            case "0":
+                logsRoot.getChildren().add(dataView);
+                actionButton.setUserData("1");
+                audit_view.layout();
+                nodeMap.put(id, "1");
+                break;
+            case "1":
+
+                logsRoot.getChildren().remove(dataView);
+
+                actionButton.setUserData("0");
+                nodeMap.remove(id);
+
+            default:
+                break;
+        }
+    }
+
+    private void restoreExpandedNodes(VBox logsRoot, Button actionButton, HBox dataView) {
+
+        String currentState = actionButton.getUserData().toString();
+
+        if ("1".equals(currentState)) {
+            if (!logsRoot.getChildren().contains(dataView)) {
+                logsRoot.getChildren().add(dataView);
+            }
+        }
+    }
+
+
 
 }

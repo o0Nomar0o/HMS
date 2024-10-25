@@ -15,6 +15,7 @@ module project.hotelsystem {
     requires org.apache.pdfbox;
     requires javafx.swing;
     requires commons;
+    requires Java.WebSocket;
 
 
     opens project.hotelsystem to javafx.fxml;

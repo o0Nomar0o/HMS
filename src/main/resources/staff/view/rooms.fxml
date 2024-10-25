@@ -7,7 +7,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -19,11 +18,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="738.0" prefWidth="1303.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.StaffRoomDetailsController">
+<AnchorPane id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="738.0" prefWidth="1303.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.StaffRoomDetailsController">
     <children>
-      <AnchorPane layoutX="213.0" prefHeight="718.0" prefWidth="1070.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="213.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+      <AnchorPane id="view" layoutX="213.0" prefHeight="718.0" prefWidth="1070.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="213.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <AnchorPane prefHeight="60.0" prefWidth="884.0" style="-fx-background-color: #283747;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <AnchorPane id="view" prefHeight="60.0" prefWidth="884.0" style="-fx-background-radius: 1.5em;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
                   <TextField fx:id="searchField" layoutX="569.0" layoutY="15.0" onAction="#SearchRoom" prefHeight="30.0" prefWidth="200.0" promptText="Search" style="-fx-background-radius: 10; -fx-border-color: white; -fx-border-radius: 10; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" AnchorPane.rightAnchor="15.0">
                      <font>
@@ -39,167 +38,163 @@
                         </ImageView>
                      </children>
                   </Pane>
-                  <Text fx:id="StaffName" fill="WHITE" fontSmoothingType="LCD" layoutX="14.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Staff Name" AnchorPane.leftAnchor="14.0">
+                  <Text id="labels" fx:id="StaffName" fontSmoothingType="LCD" layoutX="14.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Staff Name" AnchorPane.leftAnchor="14.0">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Text>
                </children>
             </AnchorPane>
-            <SplitPane layoutY="60.0" prefHeight="678.0" prefWidth="884.0" style="-fx-background-color: #34495E;" AnchorPane.bottomAnchor="-0.39999999999997726" AnchorPane.leftAnchor="-0.39999999999997726" AnchorPane.rightAnchor="-0.39999999999997726" AnchorPane.topAnchor="59.60000000000002">
-               <items>
-                  <AnchorPane fx:id="body" minHeight="0.0" minWidth="0.0" prefHeight="624.0" prefWidth="882.0">
+            <AnchorPane id="overview" fx:id="body" layoutY="64.0" minHeight="0.0" minWidth="0.0" prefHeight="634.0" prefWidth="1060.0" style="-fx-background-radius: 1.5em;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="64.0">
+               <children>
+                  <AnchorPane id="sections" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="227.0" style="-fx-background-radius: 1.25em;" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
                      <children>
-                        <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="227.0" style="-fx-background-color: white; -fx-background-radius: 10;" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0">
-                           <children>
-                              <Text layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rooms Status">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Text>
-                              <Text layoutX="14.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Available Rooms:" />
-                              <Text fx:id="NumberOfAR" layoutX="174.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
-                              <Text layoutX="14.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Booking Rooms:" />
-                              <Text fx:id="NumberOfBR" layoutX="174.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
-                              <DatePicker fx:id="ToCheckWithCheckInDate" layoutX="3.0" layoutY="165.0" onAction="#ChecktheRoomsWithTheCKDate" prefHeight="27.0" prefWidth="106.0" promptText="Date" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
-                              <DatePicker fx:id="ToCheckWithCheckOutDate" layoutX="112.0" layoutY="165.0" onAction="#ChecktheRoomsWithTheCKDate" prefHeight="27.0" prefWidth="106.0" promptText="Date" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
-                              <Text layoutX="14.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check In Date:" />
-                              <Text layoutX="118.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check Out Date:" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane layoutX="248.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10;" AnchorPane.leftAnchor="248.0">
-                           <children>
-                              <Text layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room Details">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Text>
-                              <Text layoutX="24.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room ID      :" />
-                              <Text layoutX="24.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room Type  :" />
-                              <Text layoutX="2.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price-per-Night  :" />
-                              <Text layoutX="24.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor            :" />
-                              <Text fx:id="roomID" layoutX="117.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
-                              <Text fx:id="roomType" layoutX="117.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
-                              <Text fx:id="roomPrice" layoutX="117.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
-                              <Text fx:id="floorText" layoutX="117.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
-                              <Text layoutX="2.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price-per-Hour   :" />
-                              <Text fx:id="roomPrice1" layoutX="117.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
-                           </children>
-                        </AnchorPane>
-                        <TabPane layoutX="14.0" layoutY="224.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="224.0">
-                           <tabs>
-                              <Tab closable="false" text="CheckIn">
-                                 <content>
-                                    <AnchorPane prefHeight="416.0" prefWidth="433.0" style="-fx-background-color: white;">
-                                       <children>
-                                          <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Details Input">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="14.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" />
-                                          <Text layoutX="191.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" />
-                                          <Text layoutX="14.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID/NRC" />
-                                          <Text layoutX="14.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number" />
-                                          <Text layoutX="14.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duration" />
-                                          <TextField fx:id="FirstName" layoutX="11.0" layoutY="100.0" prefHeight="27.0" prefWidth="121.0" promptText="First Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <TextField fx:id="LastName" layoutX="185.0" layoutY="100.0" prefHeight="27.0" prefWidth="122.0" promptText="Last Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <TextField fx:id="idORnrc" layoutX="11.0" layoutY="180.0" prefHeight="27.0" prefWidth="294.0" promptText="--//--" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <TextField fx:id="phoneNumber" layoutX="14.0" layoutY="260.0" prefHeight="27.0" prefWidth="130.0" promptText="+959-" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <TextField fx:id="duration" layoutX="14.0" layoutY="340.0" prefHeight="27.0" prefWidth="131.0" promptText="0" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <Button layoutX="358.0" layoutY="377.0" mnemonicParsing="false" onAction="#SubmitAction" style="-fx-background-color: green; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Submit" textFill="WHITE" AnchorPane.bottomAnchor="13.399999999999977" />
-                                          <Button layoutX="295.0" layoutY="377.0" mnemonicParsing="false" onAction="#ResetAction" style="-fx-background-color: red; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Reset" textFill="WHITE" AnchorPane.bottomAnchor="13.399999999999977" />
-                                          <Text layoutX="191.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" />
-                                          <TextField fx:id="Email" layoutX="187.0" layoutY="260.0" prefHeight="27.0" prefWidth="130.0" promptText="N/A @gamil.com" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                       </children>
-                                    </AnchorPane>
-                                 </content>
-                              </Tab>
-                              <Tab closable="false" text="Booking">
-                                 <content>
-                                    <AnchorPane prefHeight="445.0" prefWidth="426.0" style="-fx-background-color: white;">
-                                       <children>
-                                          <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Booking Details Input">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </Text>
-                                          <Text layoutX="14.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" />
-                                          <Text layoutX="191.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" />
-                                          <Text layoutX="14.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number" />
-                                          <Text layoutX="14.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room Type" />
-                                          <Text layoutX="191.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Rooms" />
-                                          <TextField fx:id="FirstName1" layoutX="11.0" layoutY="100.0" prefHeight="27.0" prefWidth="121.0" promptText="First Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <TextField fx:id="LastName1" layoutX="185.0" layoutY="100.0" prefHeight="27.0" prefWidth="122.0" promptText="Last Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <TextField fx:id="phoneNumber1" layoutX="11.0" layoutY="180.0" prefHeight="27.0" prefWidth="294.0" promptText="+959-" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
-                                          <TextField fx:id="NoOfRooms" alignment="CENTER" layoutX="224.0" layoutY="252.0" prefHeight="32.0" prefWidth="30.0" promptText="0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
-                                          <Button layoutX="358.0" layoutY="377.0" mnemonicParsing="false" onAction="#BookingAction" style="-fx-background-color: yellow; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Book" AnchorPane.bottomAnchor="13.399999999999977" />
-                                          <Button layoutX="295.0" layoutY="377.0" mnemonicParsing="false" onAction="#ResetAction" style="-fx-background-color: red; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Reset" textFill="WHITE" AnchorPane.bottomAnchor="13.399999999999977" />
-                                          <Button layoutX="191.0" layoutY="255.0" mnemonicParsing="false" onAction="#decreaseAction" prefHeight="26.0" prefWidth="25.0" text="-" />
-                                          <Button layoutX="263.0" layoutY="255.0" mnemonicParsing="false" onAction="#increaseAction" prefHeight="26.0" prefWidth="25.0" text="+" />
-                                          <ComboBox fx:id="selectRoomscheckBox" layoutX="11.0" layoutY="256.0" prefWidth="150.0" promptText="Select Rooms" />
-                                          <ComboBox fx:id="selectRoomscheckBox1" layoutX="11.0" layoutY="284.0" prefWidth="150.0" promptText="Select Rooms" />
-                                          <Button layoutX="191.0" layoutY="286.0" mnemonicParsing="false" onAction="#decreaseAction1" prefHeight="26.0" prefWidth="25.0" text="-" />
-                                          <TextField fx:id="NoOfRooms1" alignment="CENTER" layoutX="224.0" layoutY="284.0" prefHeight="32.0" prefWidth="30.0" promptText="0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
-                                          <Button layoutX="263.0" layoutY="286.0" mnemonicParsing="false" onAction="#increaseAction1" prefHeight="26.0" prefWidth="25.0" text="+" />
-                                          <TextField fx:id="total1" layoutX="14.0" layoutY="363.0" prefHeight="27.0" prefWidth="70.0" promptText="0$" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" />
-                                          <Text layoutX="14.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total" />
-                                          <Text layoutX="120.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Deposit" />
-                                          <TextField fx:id="deposit1" layoutX="120.0" layoutY="363.0" prefHeight="27.0" prefWidth="70.0" promptText="0$" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" />
-                                       </children>
-                                    </AnchorPane>
-                                 </content>
-                              </Tab>
-                           </tabs>
-                        </TabPane>
-                        <AnchorPane layoutX="466.4" layoutY="16.0" prefHeight="653.0" prefWidth="476.0" style="-fx-background-color: white; -fx-background-radius: 10;" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="466.0" AnchorPane.rightAnchor="-108.79999999999995" AnchorPane.topAnchor="15.199999999999932">
-                           <children>
-                              <HBox alignment="CENTER" layoutX="28.0" layoutY="592.0" prefHeight="48.0" prefWidth="615.0" AnchorPane.bottomAnchor="13.599999999999909" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="139.20000000000005">
+                        <Text id="labels" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rooms Status">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <Text id="labels" layoutX="14.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Available Rooms:" />
+                        <Text id="labels" fx:id="NumberOfAR" layoutX="174.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
+                        <Text id="labels" layoutX="14.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Booking Rooms:" />
+                        <Text id="labels" fx:id="NumberOfBR" layoutX="174.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
+                        <DatePicker fx:id="ToCheckWithCheckInDate" layoutX="3.0" layoutY="165.0" onAction="#ChecktheRoomsWithTheCKDate" prefHeight="27.0" prefWidth="106.0" promptText="Date" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
+                        <DatePicker fx:id="ToCheckWithCheckOutDate" layoutX="112.0" layoutY="165.0" onAction="#ChecktheRoomsWithTheCKDate" prefHeight="27.0" prefWidth="106.0" promptText="Date" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
+                        <Text id="labels" layoutX="14.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check In Date:" />
+                        <Text id="labels" layoutX="118.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check Out Date:" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane id="sections" layoutX="248.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-radius: 1.25em;" AnchorPane.leftAnchor="248.0">
+                     <children>
+                        <Text id="labels" layoutX="14.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room Details">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <Text id="labels" layoutX="24.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room ID      :" />
+                        <Text id="labels" layoutX="24.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room Type  :" />
+                        <Text id="labels" layoutX="2.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price-per-Night  :" />
+                        <Text id="labels" layoutX="24.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor            :" />
+                        <Text id="labels" fx:id="roomID" layoutX="117.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
+                        <Text id="labels" fx:id="roomType" layoutX="117.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
+                        <Text id="labels" fx:id="roomPrice" layoutX="117.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
+                        <Text id="labels" fx:id="floorText" layoutX="117.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
+                        <Text id="labels" layoutX="2.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price-per-Hour   :" />
+                        <Text id="labels" fx:id="roomPrice1" layoutX="117.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" />
+                     </children>
+                  </AnchorPane>
+                  <TabPane layoutX="14.0" layoutY="224.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="224.0">
+                     <tabs>
+                        <Tab closable="false" text="CheckIn">
+                           <content>
+                              <AnchorPane id="sections" prefHeight="416.0" prefWidth="433.0" style="-fx-background-radius: 1.25em;">
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor1">
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                    <Button layoutX="176.0" layoutY="19.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor2">
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                    <Button layoutX="149.0" layoutY="19.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor3">
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                    <Button layoutX="228.0" layoutY="19.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor4">
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                    <Button layoutX="380.0" layoutY="20.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="All">
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                    <AnchorPane prefHeight="46.0" prefWidth="98.0">
-                                       <children>
-                                          <CheckBox fx:id="singleRoomCheckBox" layoutX="8.0" layoutY="5.0" mnemonicParsing="false" onAction="#RoomTypeAction" text="Single" />
-                                          <CheckBox fx:id="doubleRoomCheckBox" layoutX="8.0" layoutY="25.0" mnemonicParsing="false" onAction="#RoomTypeAction" text="Double" />
-                                       </children>
-                                    </AnchorPane>
+                                    <Text id="labels" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Details Input">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Text>
+                                    <Text id="labels" layoutX="14.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" />
+                                    <Text id="labels" layoutX="191.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" />
+                                    <Text id="labels" layoutX="14.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ID/NRC" />
+                                    <Text id="labels" layoutX="14.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number" />
+                                    <Text id="labels" layoutX="14.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Duration" />
+                                    <TextField fx:id="FirstName" layoutX="11.0" layoutY="100.0" prefHeight="27.0" prefWidth="121.0" promptText="First Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <TextField fx:id="LastName" layoutX="185.0" layoutY="100.0" prefHeight="27.0" prefWidth="122.0" promptText="Last Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <TextField fx:id="idORnrc" layoutX="11.0" layoutY="180.0" prefHeight="27.0" prefWidth="294.0" promptText="--//--" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <TextField fx:id="phoneNumber" layoutX="14.0" layoutY="260.0" prefHeight="27.0" prefWidth="130.0" promptText="+959-" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <TextField fx:id="duration" layoutX="14.0" layoutY="340.0" prefHeight="27.0" prefWidth="131.0" promptText="0" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <Button layoutX="358.0" layoutY="377.0" mnemonicParsing="false" onAction="#SubmitAction" style="-fx-background-color: green; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Submit" textFill="WHITE" AnchorPane.bottomAnchor="13.399999999999977" />
+                                    <Button layoutX="295.0" layoutY="377.0" mnemonicParsing="false" onAction="#ResetAction" style="-fx-background-color: red; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Reset" textFill="WHITE" AnchorPane.bottomAnchor="13.399999999999977" />
+                                    <Text layoutX="191.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" />
+                                    <TextField fx:id="Email" layoutX="187.0" layoutY="260.0" prefHeight="27.0" prefWidth="130.0" promptText="N/A @gamil.com" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
                                  </children>
-                              </HBox>
-                              <ScrollPane layoutX="14.0" layoutY="14.0" prefHeight="554.0" prefWidth="644.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="85.19999999999993" AnchorPane.leftAnchor="13.600000000000023" AnchorPane.rightAnchor="123.60000000000002" AnchorPane.topAnchor="14.399999999999977">
-                                 <content>
-                                    <AnchorPane fx:id="RoomShowBody" />
-                                 </content>
-                              </ScrollPane>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab closable="false" text="Booking">
+                           <content>
+                              <AnchorPane id="sections" prefHeight="445.0" prefWidth="426.0" style="-fx-background-color: white;">
+                                 <children>
+                                    <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Booking Details Input">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Text>
+                                    <Text layoutX="14.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" />
+                                    <Text layoutX="191.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" />
+                                    <Text layoutX="14.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number" />
+                                    <Text layoutX="14.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room Type" />
+                                    <Text layoutX="191.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Rooms" />
+                                    <TextField fx:id="FirstName1" layoutX="11.0" layoutY="100.0" prefHeight="27.0" prefWidth="121.0" promptText="First Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <TextField fx:id="LastName1" layoutX="185.0" layoutY="100.0" prefHeight="27.0" prefWidth="122.0" promptText="Last Name" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <TextField fx:id="phoneNumber1" layoutX="11.0" layoutY="180.0" prefHeight="27.0" prefWidth="294.0" promptText="+959-" style="-fx-background-color: white; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                                    <TextField fx:id="NoOfRooms" alignment="CENTER" layoutX="224.0" layoutY="252.0" prefHeight="32.0" prefWidth="30.0" promptText="0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
+                                    <Button layoutX="358.0" layoutY="377.0" mnemonicParsing="false" onAction="#BookingAction" style="-fx-background-color: yellow; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Book" AnchorPane.bottomAnchor="13.399999999999977" />
+                                    <Button layoutX="295.0" layoutY="377.0" mnemonicParsing="false" onAction="#ResetAction" style="-fx-background-color: red; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);;" text="Reset" textFill="WHITE" AnchorPane.bottomAnchor="13.399999999999977" />
+                                    <Button layoutX="191.0" layoutY="255.0" mnemonicParsing="false" onAction="#decreaseAction" prefHeight="26.0" prefWidth="25.0" text="-" />
+                                    <Button layoutX="263.0" layoutY="255.0" mnemonicParsing="false" onAction="#increaseAction" prefHeight="26.0" prefWidth="25.0" text="+" />
+                                    <ComboBox fx:id="selectRoomscheckBox" layoutX="11.0" layoutY="256.0" prefWidth="150.0" promptText="Select Rooms" />
+                                    <ComboBox fx:id="selectRoomscheckBox1" layoutX="11.0" layoutY="284.0" prefWidth="150.0" promptText="Select Rooms" />
+                                    <Button layoutX="191.0" layoutY="286.0" mnemonicParsing="false" onAction="#decreaseAction1" prefHeight="26.0" prefWidth="25.0" text="-" />
+                                    <TextField fx:id="NoOfRooms1" alignment="CENTER" layoutX="224.0" layoutY="284.0" prefHeight="32.0" prefWidth="30.0" promptText="0" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 5;" />
+                                    <Button layoutX="263.0" layoutY="286.0" mnemonicParsing="false" onAction="#increaseAction1" prefHeight="26.0" prefWidth="25.0" text="+" />
+                                    <TextField fx:id="total1" layoutX="14.0" layoutY="363.0" prefHeight="27.0" prefWidth="70.0" promptText="0$" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" />
+                                    <Text layoutX="14.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total" />
+                                    <Text layoutX="120.0" layoutY="341.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Deposit" />
+                                    <TextField fx:id="deposit1" layoutX="120.0" layoutY="363.0" prefHeight="27.0" prefWidth="70.0" promptText="0$" style="-fx-background-color: white; -fx-border-color: black; -fx-border-radius: 10;" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+                  <AnchorPane id="sections" layoutX="466.4" layoutY="15.0" prefHeight="611.0" prefWidth="581.0" style="-fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="466.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="15.0">
+                     <children>
+                        <HBox alignment="CENTER" layoutX="28.0" layoutY="592.0" prefHeight="48.0" prefWidth="615.0" AnchorPane.bottomAnchor="13.599999999999909" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="139.20000000000005">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor1">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button layoutX="176.0" layoutY="19.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor2">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button layoutX="149.0" layoutY="19.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor3">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button layoutX="228.0" layoutY="19.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="Floor4">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button layoutX="380.0" layoutY="20.0" mnemonicParsing="false" onAction="#FloorAction" prefHeight="26.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);" text="All">
+                                 <HBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="14.0" layoutY="14.0" prefWidth="554.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+                           <content>
+                              <AnchorPane id="sections" fx:id="RoomShowBody" />
+                           </content>
+                        </ScrollPane>
+                        <AnchorPane layoutX="445.0" layoutY="549.0" prefHeight="46.0" prefWidth="98.0" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="38.0">
+                           <children>
+                              <CheckBox fx:id="singleRoomCheckBox" layoutX="8.0" layoutY="5.0" mnemonicParsing="false" onAction="#RoomTypeAction" text="Single" />
+                              <CheckBox fx:id="doubleRoomCheckBox" layoutX="8.0" layoutY="25.0" mnemonicParsing="false" onAction="#RoomTypeAction" text="Double" />
                            </children>
                         </AnchorPane>
                      </children>
                   </AnchorPane>
-               </items>
-            </SplitPane>
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
       <AnchorPane id="navbar" layoutX="31.0" layoutY="42.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">

@@ -202,18 +202,21 @@ public class allBookingController {
             if (newData != null && !newData.isEmpty()) {
                 List<booking> filteredBookings = newData.stream()
                         .filter(b -> !b.getBooking_status().matches("Checked-Out")
-                                && !b.getBooking_status().matches("Arrived")
                                 && !b.getBooking_status().matches("Cancelled")
                                 && !b.getBooking_status().matches("leaved"))
                         .collect(Collectors.toList());
 
-                bookingTable.getItems().addAll(filteredBookings);
+                List<booking> morefilteredBookings = newData.stream()
+                        .filter(b -> !b.getBooking_status().matches("Checked-Out")
+                                && !b.getBooking_status().matches("Cancelled")
+                                && !b.getBooking_status().matches("Arrived")
+                                && !b.getBooking_status().matches("leaved"))
+                        .collect(Collectors.toList());
+
+                bookingTable.getItems().addAll(morefilteredBookings);
                 // Create an instance of BookingPaneController and populate the panes
                 BookingPaneController bookingPaneController = new BookingPaneController();
-                List<booking> arrived = newData.stream()
-                        .filter(b -> !b.getBooking_status().matches("Checked-Out")
-                                && !b.getBooking_status().matches("Cancelled"))
-                        .collect(Collectors.toList());
+
                 bookingPaneController.populatePanes(arrivalPane, checkoutPane, filteredBookings);
                 return;
             }
@@ -269,7 +272,7 @@ public class allBookingController {
             LocalDate today = LocalDate.now();
 
             for (booking b : bookings) {
-                if (b.getCheck_in().toLocalDate().isEqual(today)) {
+                if (b.getCheck_in().toLocalDate().isEqual(today) && !b.getBooking_status().matches("Arrived")) {
                     addRoomToTilePane(arrivalPane, b.getRoom().getRoom_no(), b.getGuest().getGuest_name());
                 }
                 if (b.getCheck_out().toLocalDate().isEqual(today)) {

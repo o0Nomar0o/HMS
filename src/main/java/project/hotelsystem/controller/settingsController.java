@@ -107,6 +107,9 @@ public class settingsController implements Initializable {
     @FXML
     private TableColumn<user, String> role;
 
+    @FXML
+    private Text pathtxt;
+
 
     private ObservableList<user> userList = FXCollections.observableArrayList();
     private List<user> initList = new ArrayList<>();
@@ -125,6 +128,8 @@ public class settingsController implements Initializable {
         light.setToggleGroup(themeSelector);
 
         loadWindowsSettings();
+
+        pathtxt.setText("Invoice Path: "+ts.getInvoice_path());
 
         switch (theme) {
             case "light":
@@ -331,43 +336,111 @@ public class settingsController implements Initializable {
             modalStage.initOwner(owner);
             modalStage.initStyle(StageStyle.TRANSPARENT);
 
+            // UID input section
             Text uid_txt = new Text("Enter UID");
-            uid_txt.setFont(new Font(16.0));
+            uid_txt.setFont(new Font("Arial", 16));
+            uid_txt.setFill(Color.DARKSLATEGRAY);
+
             TextField enterUID = new TextField();
-            VBox uidBox = new VBox(uid_txt, enterUID);
+            enterUID.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox uidBox = new VBox(8, uid_txt, enterUID);  // 8px spacing between label and field
 
+// Username input section
             Text username = new Text("Enter Username");
-            username.setFont(new Font(16.0));
+            username.setFont(new Font("Arial", 16));
+            username.setFill(Color.DARKSLATEGRAY);
+
             TextField username_field = new TextField();
-            VBox userFieldBox = new VBox(username, username_field);
+            username_field.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox userFieldBox = new VBox(8, username, username_field);
 
-            HBox userCred = new HBox(uidBox, userFieldBox);
-            userCred.setStyle("-fx-spacing: 35px;");
+// HBox for UID and Username
+            HBox userCred = new HBox(35, uidBox, userFieldBox);  // 35px spacing between UID and Username sections
 
+// Email input section
             Text email = new Text("Enter Email");
-            email.setFont(new Font(16.0));
+            email.setFont(new Font("Arial", 16));
+            email.setFill(Color.DARKSLATEGRAY);
+
             TextField email_field = new TextField();
-            VBox emailBox = new VBox(email, email_field);
+            email_field.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox emailBox = new VBox(8, email, email_field);
 
+// Phone number input section
             Text phone_no = new Text("Enter Phone No.");
-            phone_no.setFont(new Font(16.0));
-            TextField phno_field = new TextField();
-            VBox phBox = new VBox(phone_no, phno_field);
+            phone_no.setFont(new Font("Arial", 16));
+            phone_no.setFill(Color.DARKSLATEGRAY);
 
+            TextField phno_field = new TextField();
+            phno_field.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox phBox = new VBox(8, phone_no, phno_field);
+
+// Privilege selection section
             Text selectPrivilege = new Text("Select Privilege");
-            selectPrivilege.setFont(new Font(16.0));
+            selectPrivilege.setFont(new Font("Arial", 16));
+            selectPrivilege.setFill(Color.DARKSLATEGRAY);
+
             ComboBox<String> privilegeBox = new ComboBox<>();
             privilegeBox.getItems().addAll("staff", "admin");
             privilegeBox.getSelectionModel().selectFirst();
-            VBox privBox = new VBox(selectPrivilege, privilegeBox);
+            privilegeBox.setStyle(
+                    "-fx-background-color: #ffffff; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox privBox = new VBox(8, selectPrivilege, privilegeBox);
 
+// Password input section
             Text pw_txt = new Text("Enter Password");
-            pw_txt.setFont(new Font(16.0));
-            PasswordField pw_field = new PasswordField();
-            VBox pwFieldBox = new VBox(pw_txt, pw_field);
+            pw_txt.setFont(new Font("Arial", 16));
+            pw_txt.setFill(Color.DARKSLATEGRAY);
 
-            VBox credentialsPane = new VBox(userCred, emailBox, phBox, pwFieldBox, privBox);
-            credentialsPane.setStyle("-fx-spacing: 15px;" + "-fx-padding: 30px;");
+            PasswordField pw_field = new PasswordField();
+            pw_field.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox pwFieldBox = new VBox(8, pw_txt, pw_field);
+
+// Final layout for the form
+            VBox credentialsPane = new VBox(15, userCred, emailBox, phBox, pwFieldBox, privBox);
+            credentialsPane.setStyle(
+                    "-fx-spacing: 15px; " +  // Spacing between the form sections
+                            "-fx-padding: 30px; " +  // Padding around the entire form
+                            "-fx-background-color: #f9f9f9; " +  // Light background for the form
+                            "-fx-border-radius: 10; " +  // Rounded corners
+                            "-fx-border-color: #eaeaea; " +  // Subtle border color
+                            "-fx-border-width: 1; "
+            );
 
             BorderPane modalRoot = new BorderPane();
 
@@ -387,14 +460,57 @@ public class settingsController implements Initializable {
             Button confirmButton = new Button("Confirm");
             Button cancelButton = new Button("Cancel");
 
-            HBox buttonBox = new HBox(cancelButton, confirmButton);
+            cancelButton.setStyle(
+                    "-fx-background-color: #ff4d4d; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-family: Arial; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-background-radius: 10;"
+            );
+            cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
+                    "-fx-background-color: #ff1a1a; -fx-text-fill: white; -fx-background-radius: 10;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
+            cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
+                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;"+
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
+
+            confirmButton.setStyle(
+                    "-fx-background-color: #4CAF50; " +
+                            "-fx-text-fill: #333333; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-family: Arial; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-background-radius: 10;"
+            );
+            confirmButton.setOnMouseEntered(e -> confirmButton.setStyle(
+                    "-fx-background-color: #3b9E4F;; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
+            confirmButton.setOnMouseExited(e -> confirmButton.setStyle(
+                    "-fx-background-color: #4CAF50;; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                            " -fx-font-size: 14px;" +
+                            " -fx-font-family: Arial;" +
+                            "  -fx-padding: 10px 20px;"
+            ));
+            HBox buttonBox = new HBox(15, cancelButton, confirmButton);
             modalRoot.setBottom(buttonBox);
-            buttonBox.setAlignment(Pos.CENTER_RIGHT);
-            buttonBox.setStyle("-fx-spacing: 15px;" + "-fx-padding: 0 25px 20px 0;");
-            BorderPane.setAlignment(buttonBox, Pos.TOP_RIGHT);
+            buttonBox.setAlignment(Pos.CENTER);
+            buttonBox.setStyle("-fx-padding: 15px;");
+
+            modalRoot.setBottom(buttonBox);
+            BorderPane.setAlignment(buttonBox, Pos.CENTER);
 
 
-            Scene modalScene = new Scene(modalRoot, 415, 455);
+            Scene modalScene = new Scene(modalRoot, 475, 565);
 
             modalScene.setFill(Color.TRANSPARENT);
             modalRoot.setStyle("-fx-background-color: white;" + "-fx-background-radius: 2.5em;");
@@ -434,42 +550,100 @@ public class settingsController implements Initializable {
             modalStage.initStyle(StageStyle.UNDECORATED);
             modalStage.initStyle(StageStyle.TRANSPARENT);
 
-            Text pass_txt = new Text("UID");
-            pass_txt.setFont(new Font(16.0));
+            Text pass_txt = new Text("Password");
+            pass_txt.setFont(new Font("Arial", 16));
+            pass_txt.setFill(Color.DARKSLATEGRAY);
+
             PasswordField newPw = new PasswordField();
             newPw.setText(selectedUser.getPassword());
             newPw.setDisable(true);
+            newPw.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
             VBox currentFieldBox = new VBox(pass_txt, newPw);
+            currentFieldBox.setStyle("-fx-spacing: 8;");
 
             Text username = new Text("Username");
-            username.setFont(new Font(16.0));
+            username.setFont(new Font("Arial", 16));
+            username.setFill(Color.DARKSLATEGRAY);
+
             TextField username_field = new TextField();
             username_field.setText(selectedUser.getUsername());
+            username_field.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
             VBox userFieldBox = new VBox(username, username_field);
+            userFieldBox.setStyle("-fx-spacing: 8;");
 
             Text selectPrivilege = new Text("Privilege");
-            selectPrivilege.setFont(new Font(16.0));
+            selectPrivilege.setFont(new Font("Arial", 16));
+            selectPrivilege.setFill(Color.DARKSLATEGRAY);
+
             ComboBox<String> userPriv = new ComboBox<>();
             userPriv.getItems().addAll("staff", "admin");
             userPriv.getSelectionModel().select(selectedUser.getPrivilege());
+            userPriv.setStyle(
+                    "-fx-background-color: #ffffff; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
             VBox privBox = new VBox(selectPrivilege, userPriv);
+            privBox.setStyle("-fx-spacing: 8;");
 
             Text email = new Text("Enter Email");
-            email.setFont(new Font(16.0));
+            email.setFont(new Font("Arial", 16));
+            email.setFill(Color.DARKSLATEGRAY);
+
             TextField email_field = new TextField();
             email_field.setText(selectedUser.getEmail());
+            email_field.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
             VBox emailBox = new VBox(email, email_field);
+            emailBox.setStyle("-fx-spacing: 8;");
 
             Text phone_no = new Text("Enter Phone No.");
-            phone_no.setFont(new Font(16.0));
+            phone_no.setFont(new Font("Arial", 16));
+            phone_no.setFill(Color.DARKSLATEGRAY);
+
             TextField phno_field = new TextField();
             phno_field.setText(selectedUser.getPhone_no());
+            phno_field.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
             VBox phBox = new VBox(phone_no, phno_field);
+            phBox.setStyle("-fx-spacing: 8;");
 
-            HBox credBox = new HBox(emailBox, phBox);
+            HBox credBox = new HBox(15, emailBox, phBox);  // Added spacing between email and phone fields
+            credBox.setStyle("-fx-spacing: 15; -fx-padding: 10px;");
 
             VBox credentialsPane = new VBox(userFieldBox, credBox, currentFieldBox, privBox);
-            credentialsPane.setStyle("-fx-spacing: 15px;" + "-fx-padding: 30px;");
+            credentialsPane.setStyle(
+                    "-fx-spacing: 15; " +
+                            "-fx-padding: 30; " +
+                            "-fx-background-color: #f9f9f9; " +
+                            "-fx-border-radius: 10; " +
+                            "-fx-border-color: #eaeaea; " +
+                            "-fx-border-width: 1; "
+            );
 
             BorderPane modalRoot = new BorderPane();
 
@@ -488,15 +662,59 @@ public class settingsController implements Initializable {
 
             Button confirmButton = new Button("Confirm");
             Button cancelButton = new Button("Cancel");
+            cancelButton.setStyle(
+                    "-fx-background-color: #ff4d4d; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-family: Arial; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-background-radius: 10;"
+            );
+            cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
+                    "-fx-background-color: #ff1a1a; -fx-text-fill: white; -fx-background-radius: 10;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
+            cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
+                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;"+
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
 
-            HBox buttonBox = new HBox(cancelButton, confirmButton);
+            confirmButton.setStyle(
+                    "-fx-background-color: #4CAF50; " +
+                            "-fx-text-fill: #333333; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-family: Arial; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-background-radius: 10;"
+            );
+            confirmButton.setOnMouseEntered(e -> confirmButton.setStyle(
+                    "-fx-background-color: #3b9E4F; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
+            confirmButton.setOnMouseExited(e -> confirmButton.setStyle(
+                    "-fx-background-color: #4CAF50; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                            " -fx-font-size: 14px;" +
+                            " -fx-font-family: Arial;" +
+                            "  -fx-padding: 10px 20px;"
+            ));
+
+
+            HBox buttonBox = new HBox(15, cancelButton, confirmButton);
             modalRoot.setBottom(buttonBox);
-            buttonBox.setAlignment(Pos.CENTER_RIGHT);
-            buttonBox.setStyle("-fx-spacing: 15px;" + "-fx-padding: 0 25px 20px 0;");
 
-            BorderPane.setAlignment(buttonBox, Pos.TOP_RIGHT);
+            buttonBox.setAlignment(Pos.CENTER);
+            buttonBox.setStyle("-fx-padding: 15px;");
 
-            Scene modalScene = new Scene(modalRoot, 425, 425);
+            modalRoot.setBottom(buttonBox);
+            BorderPane.setAlignment(buttonBox, Pos.CENTER);
+
+            Scene modalScene = new Scene(modalRoot, 425, 535);
             modalStage.setScene(modalScene);
             modalScene.setFill(Color.TRANSPARENT);
             modalStage.setResizable(false);
@@ -530,32 +748,56 @@ public class settingsController implements Initializable {
             modalStage.initStyle(StageStyle.TRANSPARENT);
 
             Text uid_txt = new Text("UID");
-            uid_txt.setFont(new Font(16.0));
+            uid_txt.setFont(new Font("Arial", 16));
+            uid_txt.setFill(Color.DARKSLATEGRAY);
             Text currUID = new Text(selectedUser.getUid());
+            currUID.setFont(new Font("Arial", 14));
+            currUID.setFill(Color.DIMGRAY);
             VBox currentFieldBox = new VBox(uid_txt, currUID);
+            currentFieldBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
             Text username = new Text("Username");
-            username.setFont(new Font(16.0));
+            username.setFont(new Font("Arial", 16));
+            username.setFill(Color.DARKSLATEGRAY);
             Text username_field = new Text(selectedUser.getUsername());
+            username_field.setFont(new Font("Arial", 14));
+            username_field.setFill(Color.DIMGRAY);
             VBox userFieldBox = new VBox(username, username_field);
+            userFieldBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
             Text selectPrivilege = new Text("Privilege");
-            selectPrivilege.setFont(new Font(16.0));
+            selectPrivilege.setFont(new Font("Arial", 16));
+            selectPrivilege.setFill(Color.DARKSLATEGRAY);
             Text userPriv = new Text(selectedUser.getPrivilege());
+            userPriv.setFont(new Font("Arial", 14));
+            userPriv.setFill(Color.DIMGRAY);
             VBox privBox = new VBox(selectPrivilege, userPriv);
+            privBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
             VBox credentialsPane = new VBox(currentFieldBox, userFieldBox, privBox);
-            credentialsPane.setStyle("-fx-spacing: 15px;" + "-fx-padding: 30px;");
+            credentialsPane.setStyle(
+                    "-fx-spacing: 15; " +
+                            "-fx-padding: 30; " +
+                            "-fx-background-color: #f7f7f7; " +
+                            "-fx-border-radius: 10; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-width: 1; " +
+                            "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);"
+            );
 
             BorderPane modalRoot = new BorderPane();
 
             Text modalTitle = new Text("Remove User");
-            modalTitle.setFont(new Font(28.0));
+            modalTitle.setFont(new Font("Arial", 28));
+            modalTitle.setFill(Color.DARKRED);
 
             Text modalHint = new Text("Are you sure you want to remove this user?");
+            modalHint.setFont(new Font("Arial", 14));
+            modalHint.setFill(Color.DIMGRAY);
+
             VBox topBox = new VBox(modalTitle, modalHint);
             topBox.setAlignment(Pos.CENTER);
-            topBox.setStyle("-fx-padding: 10px;");
+            topBox.setStyle("-fx-spacing: 5; -fx-padding: 10px;");
 
             modalRoot.setTop(topBox);
             BorderPane.setAlignment(topBox, Pos.CENTER);
@@ -564,13 +806,55 @@ public class settingsController implements Initializable {
 
             Button confirmButton = new Button("Confirm");
             Button cancelButton = new Button("Cancel");
+            cancelButton.setStyle(
+                    "-fx-background-color: #ff4d4d; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-family: Arial; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-background-radius: 10;"
+            );
+            cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
+                    "-fx-background-color: #ff1a1a; -fx-text-fill: white; -fx-background-radius: 10;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
+            cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
+                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;"+
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
 
-            HBox buttonBox = new HBox(cancelButton, confirmButton);
+            confirmButton.setStyle(
+                    "-fx-background-color: #4CAF50; " +
+                            "-fx-text-fill: #333333; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-family: Arial; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-background-radius: 10;"
+            );
+            confirmButton.setOnMouseEntered(e -> confirmButton.setStyle(
+                    "-fx-background-color: #3b9E4F;; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-font-family: Arial;" +
+                            " -fx-padding: 10px 20px;"
+            ));
+            confirmButton.setOnMouseExited(e -> confirmButton.setStyle(
+                    "-fx-background-color: #4CAF50; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                            " -fx-font-size: 14px;" +
+                            " -fx-font-family: Arial;" +
+                            "  -fx-padding: 10px 20px;"
+            ));
+
+            HBox buttonBox = new HBox(15,  cancelButton, confirmButton);
+            buttonBox.setAlignment(Pos.CENTER);
+            buttonBox.setStyle("-fx-padding: 15px;");
+
             modalRoot.setBottom(buttonBox);
-            buttonBox.setAlignment(Pos.CENTER_RIGHT);
-            buttonBox.setStyle("-fx-spacing: 15px;" + "-fx-padding: 0 25px 20px 0;");
+            BorderPane.setAlignment(buttonBox, Pos.CENTER);
 
-            BorderPane.setAlignment(buttonBox, Pos.TOP_RIGHT);
 
             Scene modalScene = new Scene(modalRoot, 425, 425);
             modalStage.setScene(modalScene);
@@ -779,7 +1063,7 @@ public class settingsController implements Initializable {
 
             VBox section = new VBox();
             section.setId("sections");
-            section.setStyle("-fx-padding: 10px;");
+            section.setStyle("-fx-padding: 10px; -fx-border-width: 0px;");
 
             Text sectionTitle = new Text("Profile Settings");
             Text currentUID = new Text(String.format("UID: %s", ts.getUid()));
@@ -803,47 +1087,101 @@ public class settingsController implements Initializable {
             modalStage.initOwner(owner);
             modalStage.initStyle(StageStyle.UNDECORATED);
 
+            // Current Password section
             Text cur_pw_txt = new Text("Current Password");
-            cur_pw_txt.setFont(new Font(16.0));
-            PasswordField current_pw = new PasswordField();
-            VBox currentFieldBox = new VBox(cur_pw_txt, current_pw);
+            cur_pw_txt.setFont(new Font("Arial", 16));
+            cur_pw_txt.setFill(Color.DARKSLATEGRAY);
 
+            PasswordField current_pw = new PasswordField();
+            current_pw.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox currentFieldBox = new VBox(8, cur_pw_txt, current_pw);  // 8px spacing
+
+// New Password section
             Text new_pw_txt = new Text("New Password");
-            new_pw_txt.setFont(new Font(16.0));
+            new_pw_txt.setFont(new Font("Arial", 16));
+            new_pw_txt.setFill(Color.DARKSLATEGRAY);
+
             PasswordField new_pw = new PasswordField();
-            VBox newFieldBox = new VBox(new_pw_txt, new_pw);
+            new_pw.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox newFieldBox = new VBox(8, new_pw_txt, new_pw);
 
             Text confirm_new_pw_txt = new Text("Confirm New Password");
-            confirm_new_pw_txt.setFont(new Font(16.0));
+            confirm_new_pw_txt.setFont(new Font("Arial", 16));
+            confirm_new_pw_txt.setFill(Color.DARKSLATEGRAY);
+
             PasswordField confirm_new_pw = new PasswordField();
-            VBox confirmFieldBox = new VBox(confirm_new_pw_txt, confirm_new_pw);
+            confirm_new_pw.setStyle(
+                    "-fx-background-color: #f0f0f0; " +
+                            "-fx-border-color: #dcdcdc; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-padding: 8; " +
+                            "-fx-font-size: 14px; "
+            );
+            VBox confirmFieldBox = new VBox(8, confirm_new_pw_txt, confirm_new_pw);
 
-            VBox credentialsPane = new VBox(currentFieldBox, newFieldBox, confirmFieldBox);
-            credentialsPane.setStyle("-fx-spacing: 15px;" + "-fx-padding: 30px;");
+            VBox credentialsPane = new VBox(15, currentFieldBox, newFieldBox, confirmFieldBox);  // 15px spacing
+            credentialsPane.setStyle(
+                    "-fx-padding: 30px; " +
+                            "-fx-background-color: #f9f9f9; " +
+                            "-fx-border-radius: 10; " +
+                            "-fx-border-color: #eaeaea; " +
+                            "-fx-border-width: 1; "
+            );
 
-            BorderPane modalRoot = new BorderPane();
             Text modalTitle = new Text("Update Your Password");
-            modalTitle.setFont(new Font(28.0));
+            modalTitle.setFont(new Font("Arial", 28));
+            modalTitle.setFill(Color.DARKSLATEGRAY);
 
             Text modalHint = new Text("Enter your current and new password");
-            VBox topBox = new VBox(modalTitle, modalHint);
+            modalHint.setFont(new Font("Arial", 14));
+            modalHint.setFill(Color.GRAY);
+
+            VBox topBox = new VBox(10, modalTitle, modalHint);  // 10px spacing
             topBox.setAlignment(Pos.CENTER);
             topBox.setStyle("-fx-padding: 10px;");
 
+            BorderPane modalRoot = new BorderPane();
             modalRoot.setTop(topBox);
             BorderPane.setAlignment(topBox, Pos.CENTER);
-
             modalRoot.setCenter(credentialsPane);
 
             Button confirmButton = new Button("Confirm");
+            confirmButton.setStyle(
+                    "-fx-background-color: #4CAF50; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-font-size: 14px;"
+            );
+
             Button cancelButton = new Button("Cancel");
+            cancelButton.setStyle(
+                    "-fx-background-color: #f44336; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-padding: 10px 20px; " +
+                            "-fx-border-radius: 5; " +
+                            "-fx-font-size: 14px;"
+            );
 
-            HBox buttonBox = new HBox(cancelButton, confirmButton);
+            HBox buttonBox = new HBox(15, cancelButton, confirmButton);
+            buttonBox.setAlignment(Pos.CENTER);
+            buttonBox.setStyle("-fx-padding: 15px;");
+
             modalRoot.setBottom(buttonBox);
-            buttonBox.setAlignment(Pos.CENTER_RIGHT);
-            buttonBox.setStyle("-fx-spacing: 15px;" + "-fx-padding: 0 25px 20px 0;");
+            BorderPane.setAlignment(buttonBox, Pos.CENTER);
 
-            BorderPane.setAlignment(buttonBox, Pos.TOP_RIGHT);
 
             cancelButton.setOnAction(e -> {
                 modalStage.close();
@@ -860,7 +1198,9 @@ public class settingsController implements Initializable {
 
             });
 
-            Scene modalScene = new Scene(modalRoot, 425, 330);
+            Scene modalScene = new Scene(modalRoot, 425, 435);
+            modalRoot.setStyle("-fx-background-color: white;" + "-fx-background-radius: 2.5em;");
+
             modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
             modalStage.setScene(modalScene);

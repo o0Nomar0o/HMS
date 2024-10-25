@@ -17,6 +17,7 @@ import project.hotelsystem.settings.userSettings;
 import project.hotelsystem.util.authenticationManager;
 import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.database.connection.DBConnection;
+import project.hotelsystem.web.WebSocketCon;
 
 import java.io.File;
 import java.io.IOException;
@@ -179,6 +180,9 @@ public class loginController {
                     loaderSettings.removeDimmingEffect(event);
                     return;
                 }
+
+                WebSocketCon wsc = new WebSocketCon();
+                wsc.connect();
 
                 uSettings.applyTheme(root, viewName);
 
