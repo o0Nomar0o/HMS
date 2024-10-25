@@ -19,13 +19,12 @@ import java.net.URL;
  */
 public class switchSceneController {
 
+    userSettings ts = userSettings.getInstance();
+
     /**
      * @param priv admim or staff
-     * @param view  which fxml file, do not includee .fxml
+     * @param view  which fxml file, do not include .fxml
      */
-
-
-    userSettings ts = userSettings.getInstance();
 
     public void swithcTo(ActionEvent event, Stage mainStage, String priv, String view) throws IOException {
         loaderSettings.applyDimmingEffect(event);

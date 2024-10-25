@@ -21,6 +21,7 @@ public class LaunchLogIn extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         try {
+
             URL path = new File("src/main/resources/login.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());

@@ -20,7 +20,7 @@ public class authenticationManager {
 
             user userDetails = userController.getUserById(id);
             System.out.println(userDetails.getStatus());
-            if(userDetails.getStatus().matches("NIL")){
+            if (userDetails.getStatus().matches("NIL")) {
                 return false;
             }
 
@@ -40,20 +40,20 @@ public class authenticationManager {
     }
 
 
-    public static boolean updatePassword(String id , String password){
+    public static boolean updatePassword(String id, String password) {
         Hash hash = Password.hash(password).addSalt(privilege).with(scrypt);
         return userController.updatePassword(id, hash.getResult());
 
     }
 
-    public static boolean updatePasswordAndUser(String id , String password, String priv,
-                                                String name, String email, String ph){
-        if(password == null || password.isEmpty()) return userController.updateUser(
-                id,name,priv,ph,email
+    public static boolean updatePasswordAndUser(String id, String password, String priv,
+                                                String name, String email, String ph) {
+        if (password == null || password.isEmpty()) return userController.updateUser(
+                id, name, priv, ph, email
         );
 
         Hash hash = Password.hash(password).addSalt(privilege).with(scrypt);
-        return userController.updateUser(id,name,priv,hash.getResult(),ph,email);
+        return userController.updateUser(id, name, priv, hash.getResult(), ph, email);
 
     }
 
@@ -63,7 +63,7 @@ public class authenticationManager {
 
         Hash hash = Password.hash(password).addSalt(privilege).with(scrypt);
 
-        return userController.addUser(new user(uid, username, privilege, hash.getResult(), email,Ph,"offline"));
+        return userController.addUser(new user(uid, username, privilege, hash.getResult(), email, Ph, "offline"));
     }
 
     private static String username;
@@ -84,9 +84,5 @@ public class authenticationManager {
 
     public static String getPrivilege() {
         return privilege;
-    }
-
-    public static void main(String[] args) {
-        addNewUser("A1","Kenma","hotel","admin","hello@gmail.com","+6198113731");
     }
 }
