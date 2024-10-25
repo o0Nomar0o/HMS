@@ -8,6 +8,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Nomar
+ * @author Zin Min Oo
+ */
+
 public class bookingController {
 
     public static booking getBookingById(String bookingId) {

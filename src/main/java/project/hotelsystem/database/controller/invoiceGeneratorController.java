@@ -11,6 +11,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+
+/**
+ * @author Nomar
+ */
+
 public class invoiceGeneratorController {
 
     public static InvoiceData getData(String bkid) {

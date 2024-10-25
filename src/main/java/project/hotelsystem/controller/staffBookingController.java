@@ -24,7 +24,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class allBookingController {
+
+/**
+ * Staff Booking Controller class
+ *
+ * @author Khant Zin Hein
+ * @author Nomar
+ */
+
+public class staffBookingController {
 
     private final Service<List<booking>> bookingService = new Service<>() {
         @Override

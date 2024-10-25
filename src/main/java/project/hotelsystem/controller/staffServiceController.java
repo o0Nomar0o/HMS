@@ -34,6 +34,16 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
+
+/**
+ * Staff Service Controller class
+ *
+ * @author San Nyein Zaw
+ * @author Zin Min Oo
+ * @author Swun Saung
+ */
+
+
 public class staffServiceController {
 
     switchSceneController ssc = new switchSceneController();

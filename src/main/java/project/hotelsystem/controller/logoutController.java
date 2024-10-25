@@ -11,6 +11,12 @@ import project.hotelsystem.settings.userSettings;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * Logout Controller class
+ *
+ * @author Nomar
+ */
+
 public class logoutController {
 
     public static void logout(ActionEvent event) {

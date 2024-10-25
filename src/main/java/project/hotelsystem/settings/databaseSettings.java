@@ -2,6 +2,10 @@ package project.hotelsystem.settings;
 
 import java.util.prefs.Preferences;
 
+/**
+ * @author Nomar
+ */
+
 public class databaseSettings {
 
     public static databaseSettings instance;

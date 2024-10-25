@@ -16,6 +16,12 @@ import project.hotelsystem.util.notificationManager;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * Database Setup Controller class
+ *
+ * @author Nomar
+ */
+
 public class dbsetupController {
 
     @FXML

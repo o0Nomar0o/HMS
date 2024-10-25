@@ -30,6 +30,12 @@ import project.hotelsystem.util.notificationManager;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Room Controller class
+ *
+ * @author Nomar
+ */
+
 public class adminRoomsController {
 
     private final Service<List<room_type_details>> roomTypeService = new Service<>() {

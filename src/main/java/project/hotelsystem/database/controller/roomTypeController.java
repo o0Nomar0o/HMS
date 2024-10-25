@@ -8,6 +8,11 @@ import project.hotelsystem.database.models.room_type;
 
 import project.hotelsystem.database.connection.DBConnection;
 
+/**
+ * @author Nomar
+ * @author Zin Min Oo
+ */
+
 public class roomTypeController {
 
 	public static boolean saveroom_type(room_type s) {

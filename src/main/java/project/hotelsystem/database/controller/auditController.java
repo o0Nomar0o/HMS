@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * @author Nomar
+ */
+
 public class auditController {
     public static List<audit_logs> getAudits() {
         List<audit_logs> logs = new ArrayList<>();

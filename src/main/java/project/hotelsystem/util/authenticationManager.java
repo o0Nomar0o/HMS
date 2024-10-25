@@ -7,6 +7,9 @@ import project.hotelsystem.database.models.user;
 import project.hotelsystem.database.controller.userController;
 
 
+/**
+ * @author Nomar
+ */
 public class authenticationManager {
 
     private static final ScryptFunction scrypt = ScryptFunction.getInstance(128, 12, 4, 64);

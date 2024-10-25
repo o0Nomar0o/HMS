@@ -41,6 +41,14 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service Controller class
+ *
+ * @author Swun Saung
+ * @author Zin Min Oo
+ * @author Nomar
+ */
+
 public class adminServiceController {
 
 

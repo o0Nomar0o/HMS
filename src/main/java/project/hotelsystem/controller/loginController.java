@@ -35,6 +35,12 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Login Controller class
+ *
+ * @author Nomar
+ */
+
 public class loginController {
 
     @FXML

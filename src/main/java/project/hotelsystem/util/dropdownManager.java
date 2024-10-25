@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+/**
+ * @author Nomar
+ */
+
 public class dropdownManager {
 
     public static Popup createUserDropdown(Button dropdownButton, Stage owner, ObservableList<user> users, Service<List<audit_logs>> logs) {
@@ -171,7 +175,7 @@ public class dropdownManager {
         Popup popup = new Popup();
         popup.setAutoHide(true);
 
-        VBox container = new VBox(10); // Increase spacing for modern look
+        VBox container = new VBox(10);
         container.setStyle("""
                 -fx-background-color: #f4f4f9; 
                 -fx-border-color: #dcdde1; 
@@ -197,14 +201,12 @@ public class dropdownManager {
         roomListView.setPrefWidth(250);
 
         try {
-            // Provide the full path to the CSS file as a URI
             URI uri = new File("src/main/resources/css/dropdown.css").toURI();
             roomListView.getStylesheets().add(uri.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // Custom cell factory for list view with modern styling
         roomListView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(room item, boolean empty) {
@@ -219,19 +221,17 @@ public class dropdownManager {
                             -fx-font-size: 14px;
                             -fx-text-fill: #2f3640;
                             """);
-                    // Hover effect for modern UI feel
                     this.setOnMouseEntered(e -> setStyle("-fx-background-color: #dcdde1;"));
                     this.setOnMouseExited(e -> setStyle("-fx-background-color: transparent;"));
                 }
             }
         });
 
-        // Implementing search functionality with slight delay for performance
         AtomicBoolean isTyping = new AtomicBoolean(false);
         searchField.setOnKeyReleased(event -> {
             isTyping.set(true);
 
-            PauseTransition pause = new PauseTransition(Duration.millis(300)); // Slightly longer pause for better UX
+            PauseTransition pause = new PauseTransition(Duration.millis(300));
             pause.setOnFinished(e -> {
                 String filter = searchField.getText().toLowerCase();
 
@@ -247,21 +247,18 @@ public class dropdownManager {
             pause.play();
         });
 
-        // Handling selection of rooms and updating the dropdown button
         roomListView.getSelectionModel().selectedItemProperty().addListener((obs, oldRoom, newRoom) -> {
             if (newRoom != null && !isTyping.get()) {
-                String selectedText = newRoom.getRoom_no() ;
+                String selectedText = newRoom.getRoom_no();
                 dropdownButton.setText(selectedText + "  ▼");
                 dropdownButton.setUserData(newRoom);
                 popup.hide();
 
-                // Reset list and search field
                 roomListView.setItems(rooms);
                 searchField.clear();
             }
         });
 
-        // Add components to container
         container.getChildren().addAll(searchField, roomListView);
         popup.getContent().add(container);
 

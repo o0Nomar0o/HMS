@@ -1,5 +1,7 @@
 package project.hotelsystem.controller;
 
+
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -30,6 +32,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ * Audit Log Controller class
+ *
+ * @author Nomar
+ */
 
 public class adminAuditLogController {
 

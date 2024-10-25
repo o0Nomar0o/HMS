@@ -16,6 +16,10 @@ import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.database.models.customer;
 
 
+/**
+ * @author Nomar
+ * @author Zin Min Oo
+ */
 
 public class roomController {
 

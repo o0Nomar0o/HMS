@@ -35,6 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Settings Controller class
+ *
+ * @author Nomar
+ */
+
 public class settingsController implements Initializable {
 
     @FXML

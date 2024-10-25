@@ -9,6 +9,10 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * @author Nomar
+ */
+
 public class notificationManager {
 
     public static void showNotification(String message, String type, Stage owner) {

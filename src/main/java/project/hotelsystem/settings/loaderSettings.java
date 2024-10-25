@@ -18,6 +18,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
+/**
+ * @author Nomar
+ */
+
 public class loaderSettings {
     public static void applyDimmingEffect(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

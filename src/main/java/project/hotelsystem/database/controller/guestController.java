@@ -10,6 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * @author Zin Min Oo
+ */
+
 public class guestController {
     public static guest getGuestNameById(String gID) {
         String sql = "select * from customer where customer_id=?";

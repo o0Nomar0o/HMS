@@ -7,6 +7,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * @author Nomar
+ * @author Zin Min Oo
+ */
+
 public class foodController {
 
 

@@ -14,7 +14,12 @@ import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 
-public class StaffRoomDetailsController {
+/**
+ * Rooms Reservation/Booking Controller class
+ *
+ * @author Khant Zin Hein
+ */
+public class staffRoomDetailsController {
 
     @FXML
     private Button bookings_button;

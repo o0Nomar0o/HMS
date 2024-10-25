@@ -11,6 +11,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Nomar
+ * @author Zin Min Oo
+ */
+
 public class serviceController {
     public static double getServicePrice(int id) {
         String sql = "SELECT service_price from service WHERE service_id = ?";

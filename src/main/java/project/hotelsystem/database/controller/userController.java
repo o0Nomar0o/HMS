@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import project.hotelsystem.database.models.user;
 import project.hotelsystem.database.connection.DBConnection;
 
+/**
+ * @author Nomar
+ * @author Zin Min Oo
+ */
+
 public class userController {
 
 	public static boolean addUser(user s) {

@@ -21,6 +21,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
+/**
+ * @author Nomar
+ */
+
 public class invoiceManager {
 
     double total = 0;

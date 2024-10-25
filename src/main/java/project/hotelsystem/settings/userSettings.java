@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.prefs.Preferences;
 
+/**
+ * @author Nomar
+ */
+
 public class userSettings {
 
     private static userSettings instance;

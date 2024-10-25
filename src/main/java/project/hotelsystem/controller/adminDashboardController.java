@@ -22,6 +22,13 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
+/**
+ * Dashboard Controller class
+ *
+ * @author Nomar
+ * @author Kaung Thant Thu
+ */
+
 public class adminDashboardController {
 
     private final Service<List<booking>> bookingService = new Service<>() {
