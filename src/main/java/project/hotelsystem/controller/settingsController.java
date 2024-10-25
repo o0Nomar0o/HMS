@@ -336,7 +336,6 @@ public class settingsController implements Initializable {
             modalStage.initOwner(owner);
             modalStage.initStyle(StageStyle.TRANSPARENT);
 
-            // UID input section
             Text uid_txt = new Text("Enter UID");
             uid_txt.setFont(new Font("Arial", 16));
             uid_txt.setFill(Color.DARKSLATEGRAY);
@@ -349,9 +348,8 @@ public class settingsController implements Initializable {
                             "-fx-padding: 8; " +
                             "-fx-font-size: 14px; "
             );
-            VBox uidBox = new VBox(8, uid_txt, enterUID);  // 8px spacing between label and field
+            VBox uidBox = new VBox(8, uid_txt, enterUID);
 
-// Username input section
             Text username = new Text("Enter Username");
             username.setFont(new Font("Arial", 16));
             username.setFill(Color.DARKSLATEGRAY);
@@ -366,10 +364,8 @@ public class settingsController implements Initializable {
             );
             VBox userFieldBox = new VBox(8, username, username_field);
 
-// HBox for UID and Username
-            HBox userCred = new HBox(35, uidBox, userFieldBox);  // 35px spacing between UID and Username sections
+            HBox userCred = new HBox(35, uidBox, userFieldBox);
 
-// Email input section
             Text email = new Text("Enter Email");
             email.setFont(new Font("Arial", 16));
             email.setFill(Color.DARKSLATEGRAY);
@@ -384,7 +380,6 @@ public class settingsController implements Initializable {
             );
             VBox emailBox = new VBox(8, email, email_field);
 
-// Phone number input section
             Text phone_no = new Text("Enter Phone No.");
             phone_no.setFont(new Font("Arial", 16));
             phone_no.setFill(Color.DARKSLATEGRAY);
@@ -399,7 +394,6 @@ public class settingsController implements Initializable {
             );
             VBox phBox = new VBox(8, phone_no, phno_field);
 
-// Privilege selection section
             Text selectPrivilege = new Text("Select Privilege");
             selectPrivilege.setFont(new Font("Arial", 16));
             selectPrivilege.setFill(Color.DARKSLATEGRAY);
@@ -416,7 +410,6 @@ public class settingsController implements Initializable {
             );
             VBox privBox = new VBox(8, selectPrivilege, privilegeBox);
 
-// Password input section
             Text pw_txt = new Text("Enter Password");
             pw_txt.setFont(new Font("Arial", 16));
             pw_txt.setFill(Color.DARKSLATEGRAY);
@@ -431,14 +424,13 @@ public class settingsController implements Initializable {
             );
             VBox pwFieldBox = new VBox(8, pw_txt, pw_field);
 
-// Final layout for the form
             VBox credentialsPane = new VBox(15, userCred, emailBox, phBox, pwFieldBox, privBox);
             credentialsPane.setStyle(
-                    "-fx-spacing: 15px; " +  // Spacing between the form sections
-                            "-fx-padding: 30px; " +  // Padding around the entire form
-                            "-fx-background-color: #f9f9f9; " +  // Light background for the form
-                            "-fx-border-radius: 10; " +  // Rounded corners
-                            "-fx-border-color: #eaeaea; " +  // Subtle border color
+                    "-fx-spacing: 15px; " +
+                            "-fx-padding: 30px; " +
+                            "-fx-background-color: #f9f9f9; " +
+                            "-fx-border-radius: 10; " +
+                            "-fx-border-color: #eaeaea; " +
                             "-fx-border-width: 1; "
             );
 
@@ -632,7 +624,7 @@ public class settingsController implements Initializable {
             VBox phBox = new VBox(phone_no, phno_field);
             phBox.setStyle("-fx-spacing: 8;");
 
-            HBox credBox = new HBox(15, emailBox, phBox);  // Added spacing between email and phone fields
+            HBox credBox = new HBox(15, emailBox, phBox);  
             credBox.setStyle("-fx-spacing: 15; -fx-padding: 10px;");
 
             VBox credentialsPane = new VBox(userFieldBox, credBox, currentFieldBox, privBox);

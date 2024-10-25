@@ -14,7 +14,7 @@
     -fx-background-color: white !important;
 }
 #sections{
--fx-background-color: #F6F5F2 !important;
+-fx-background-color: sections !important;
 }
 #inner-sections{
 -fx-background-color: #F2F2EE !important;

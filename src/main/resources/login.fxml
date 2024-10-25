@@ -149,32 +149,56 @@
                   <Font name="Helvetica Oblique" size="13.0" />
                </font>
             </Label>
-            <HBox alignment="BOTTOM_LEFT" layoutX="58.0" layoutY="290.0" prefHeight="38.0" prefWidth="103.0">
-               <children>
-                  <Label fx:id="dblb" prefHeight="24.0" prefWidth="16.0" text=".">
-                     <font>
-                        <Font name="Hiragino Sans CNS W6" size="57.0" />
-                     </font>
-                  </Label>
-                  <ToggleButton fx:id="databasetoggle" mnemonicParsing="false" style="-fx-background-radius: 1.3em; -fx-background-color: #121212; -fx-text-fill: #2e4053;" text="Cloud DB">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <font>
-                        <Font name="JetBrains Mono NL Bold" size="14.0" />
-                     </font>
-                     <effect>
-                        <Bloom threshold="0.18" />
-                     </effect>
-                  </ToggleButton>
-               </children>
-            </HBox>
+            <Button fx:id="create_account" layoutX="57.0" layoutY="299.0" mnemonicParsing="false" onAction="#create_acc" style="-fx-background-color: transparent;" text="Create Account" textFill="#03c4ff" underline="true">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font name="Helvetica Oblique" size="13.0" />
+               </font>
+            </Button>
             </children>
         </AnchorPane>
-          <Text fill="#5e9cff" fontSmoothingType="LCD" layoutX="371.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome!" wrappingWidth="135.13671875">
+          <Text fill="#5e9cff" fontSmoothingType="LCD" layoutX="373.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome!" wrappingWidth="135.13671875">
               <font>
                   <Font name="Helvetica Bold Oblique" size="28.0" />
               </font>
           </Text>
+      <HBox alignment="TOP_RIGHT" layoutX="224.0" layoutY="11.0" prefHeight="60.0" prefWidth="113.0">
+         <children>
+            <ToggleButton fx:id="databasetoggle" mnemonicParsing="false" style="-fx-background-radius: 1.3em; -fx-background-color: #121212; -fx-text-fill: #2e4053;" text="Cloud DB">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font name="JetBrains Mono NL Bold" size="14.0" />
+               </font>
+               <effect>
+                  <Bloom threshold="0.18" />
+               </effect>
+            </ToggleButton>
+            <Label fx:id="dblb" prefHeight="20.0" prefWidth="16.0" rotate="180.0" text=".">
+               <font>
+                  <Font name="Hiragino Sans CNS W6" size="57.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <VBox alignment="TOP_RIGHT" layoutX="588.0" layoutY="12.0">
+         <children>
+            <Button fx:id="settings" mnemonicParsing="false" onAction="#tosettings" prefHeight="40.0" prefWidth="38.0" style="-fx-background-color: transparent;">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/settings_icn.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children>
+      </VBox>
     </children>
 </AnchorPane>

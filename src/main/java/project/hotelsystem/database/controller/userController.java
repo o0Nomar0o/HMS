@@ -210,13 +210,30 @@ public class userController {
 
 
 			psmt.executeUpdate();
-			System.out.println("here");
 			return true;
 
 		}catch(SQLException e){
-			System.out.println("herr");
 			return false;
 		}
+	}
+
+	public static boolean isUserTableEmpty() {
+
+		String sql = "SELECT COUNT(*) AS user_count FROM user";
+
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement stmt = connection.prepareStatement(sql);
+			 ResultSet rs = stmt.executeQuery()) {
+
+			if (rs.next()) {
+				int count = rs.getInt("user_count");
+				return count == 0;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

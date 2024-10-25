@@ -54,7 +54,7 @@ public class WebSocketCon {
         }
     }
 
-    private void sendUID() {
+    public void sendUID() {
         if (webSocketClient != null && webSocketClient.isOpen()) {
             webSocketClient.send(uss.getUid());
             System.out.println("Sent: " + uss.getUid());

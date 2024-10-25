@@ -79,7 +79,6 @@ public class adminDashboardController {
     @FXML
     void initialize() {
 
-
         Preferences p = ts.getNodePreference();
         ts.getUid();
 
