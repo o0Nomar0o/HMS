@@ -30,7 +30,7 @@ public class LaunchLogIn extends Application {
             Scene root = new Scene(fxmlLoader.load());
 
 //            path = getClass().getResource("/login.css");
-            path = new File("src/main/resources/login.css").toURI().toURL();
+            path = new File("src/main/resources/css/login.css").toURI().toURL();
 
             root.getStylesheets().add(path.toExternalForm());
 

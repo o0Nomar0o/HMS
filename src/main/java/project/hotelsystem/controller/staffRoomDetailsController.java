@@ -5,22 +5,25 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import project.hotelsystem.database.controller.*;
 import project.hotelsystem.database.models.*;
 import project.hotelsystem.settings.*;
-import project.hotelsystem.util.dropdownManager;
+import project.hotelsystem.util.*;
 
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * Rooms Reservation/Booking Controller class
@@ -570,7 +573,7 @@ public class staffRoomDetailsController {
     @FXML
     void SearchRoom(ActionEvent event) {
         String enteredRoomId = searchField.getText().trim();
-        AddingRooms(enteredRoomId, 0);  // Show filtered rooms based on input
+        AddingRooms(enteredRoomId, 0);
     }
 
     // Method to fetch room counts from the database
@@ -628,7 +631,8 @@ public class staffRoomDetailsController {
     @FXML
     void BookingAction(ActionEvent event) {
         if (selectedRoomNo == null || selectedRoomNo.isEmpty()) {
-            System.out.println("Please select a room before booking.");
+            notificationManager.showNotification("Select a room","faiure",
+                    (Stage)logout.getScene().getWindow());
             return;
         }
 
@@ -646,41 +650,8 @@ public class staffRoomDetailsController {
             int stayDurationNights = Integer.parseInt(duration1.getText());
             int stayDurationHours = 0;
 
-            String checkInSql = "CALL add_booking(?, ?, ?, ?, ?, ?, ?, ?)";
+            addBooking(guestName, phone_number,checkInDate,stayDurationNights);
 
-            if (FirstName11.getText().isBlank() || LastName11.getText().isBlank()
-                    || phoneNumber11.getText().isBlank() || duration1.getText().isBlank()) {
-                System.out.println("Input the details mf");
-            }
-
-            try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
-                 CallableStatement psmtCheckIn = con.prepareCall(checkInSql)) {
-
-                con.setAutoCommit(false);
-
-                psmtCheckIn.setString(2, guestName);
-                psmtCheckIn.setString(3, phone_number);
-                psmtCheckIn.setString(5, "-");
-                psmtCheckIn.setString(4, "-");
-                psmtCheckIn.setString(1, selectedRoomNo);
-                psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
-                psmtCheckIn.setInt(7, stayDurationNights);
-                psmtCheckIn.setInt(8, stayDurationHours);
-
-                int checkInResult = psmtCheckIn.executeUpdate();
-
-                if (checkInResult > 0) {
-                    con.commit();
-                    System.out.println("Check-in processed successfully.");
-                    AddingRooms(null, 0);
-                } else {
-                    System.out.println("Error during check-in.");
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println(e.getMessage() + " Error occurred during check-in.");
-            }
         }
         clearAll();
     }
@@ -711,43 +682,18 @@ public class staffRoomDetailsController {
             int stayDurationNights = Integer.parseInt(duration.getText());
             int stayDurationHours = 0;
 
-            String checkInSql = "CALL add_checkIn(?, ?, ?, ?, ?, ?, ?, ?)";
-
             if (FirstName.getText().isBlank() || LastName.getText().isBlank() || phoneNumber.getText().isBlank()
                     || idORnrc.getText().isBlank() || Email.getText().isBlank() || duration.getText().isBlank()) {
                 System.out.println("Input the details mf");
+                return;
             }
 
-            try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
-                 CallableStatement psmtCheckIn = con.prepareCall(checkInSql)) {
+           addCheckIn(guestName,phone_number,
+                   checkInDate,stayDurationNights,
+                   email,guestId);
 
-                con.setAutoCommit(false);
-
-                psmtCheckIn.setString(1, guestName);
-                psmtCheckIn.setString(2, phone_number);
-                psmtCheckIn.setString(3, guestId);
-                psmtCheckIn.setString(4, email);
-                psmtCheckIn.setString(5, selectedRoomNo);
-                psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
-                psmtCheckIn.setInt(7, stayDurationNights);
-                psmtCheckIn.setInt(8, stayDurationHours);
-
-                int checkInResult = psmtCheckIn.executeUpdate();
-
-                if (checkInResult > 0) {
-                    con.commit();
-                    System.out.println("Check-in processed successfully.");
-                    AddingRooms(null, 0);
-                } else {
-                    System.out.println("Error during check-in.");
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println(e.getMessage() + " Error occurred during check-in.");
-            }
         }
-        clearAll();
+
     }
 
     private void clearAll() {
@@ -794,6 +740,414 @@ public class staffRoomDetailsController {
         logoutController.logout(e);
     }
 
+    private void addCheckIn(String guestName, String phoneNumber,
+                            LocalDate checkInDate, int stayDurationNights,
+                            String email, String guestId) {
 
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        Stage owner = (Stage) logout.getScene().getWindow();
+        modalStage.initOwner(owner);
+        modalStage.initStyle(StageStyle.UNDECORATED);
+        modalStage.initStyle(StageStyle.TRANSPARENT);
+
+        Text guestNameText = new Text("Guest Name");
+        guestNameText.setFont(new Font("Arial", 16));
+        guestNameText.setFill(Color.DARKSLATEGRAY);
+        Text guestNameField = new Text(guestName);
+        guestNameField.setFont(new Font("Arial", 14));
+        guestNameField.setFill(Color.DIMGRAY);
+        VBox guestNameBox = new VBox(guestNameText, guestNameField);
+        guestNameBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text phoneNumberText = new Text("Phone Number");
+        phoneNumberText.setFont(new Font("Arial", 16));
+        phoneNumberText.setFill(Color.DARKSLATEGRAY);
+        Text phoneNumberField = new Text(phoneNumber);
+        phoneNumberField.setFont(new Font("Arial", 14));
+        phoneNumberField.setFill(Color.DIMGRAY);
+        VBox phoneNumberBox = new VBox(phoneNumberText, phoneNumberField);
+        phoneNumberBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text emailText = new Text("Email");
+        emailText.setFont(new Font("Arial", 16));
+        emailText.setFill(Color.DARKSLATEGRAY);
+        Text emailField = new Text(email);
+        emailField.setFont(new Font("Arial", 14));
+        emailField.setFill(Color.DIMGRAY);
+        VBox emailBox = new VBox(emailText, emailField);
+        emailBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text guestIdText = new Text("Guest ID");
+        guestIdText.setFont(new Font("Arial", 16));
+        guestIdText.setFill(Color.DARKSLATEGRAY);
+        Text guestIdField = new Text(guestId);
+        guestIdField.setFont(new Font("Arial", 14));
+        guestIdField.setFill(Color.DIMGRAY);
+        VBox guestIdBox = new VBox(guestIdText, guestIdField);
+        guestIdBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text checkInDateText = new Text("Check-In Date");
+        checkInDateText.setFont(new Font("Arial", 16));
+        checkInDateText.setFill(Color.DARKSLATEGRAY);
+        Text checkInDateField = new Text(checkInDate.toString());
+        checkInDateField.setFont(new Font("Arial", 14));
+        checkInDateField.setFill(Color.DIMGRAY);
+        VBox checkInDateBox = new VBox(checkInDateText, checkInDateField);
+        checkInDateBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text stayDurationText = new Text("Stay Duration (Nights)");
+        stayDurationText.setFont(new Font("Arial", 16));
+        stayDurationText.setFill(Color.DARKSLATEGRAY);
+        Text stayDurationField = new Text(String.valueOf(stayDurationNights));
+        stayDurationField.setFont(new Font("Arial", 14));
+        stayDurationField.setFill(Color.DIMGRAY);
+        VBox stayDurationBox = new VBox(stayDurationText, stayDurationField);
+        stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        VBox bookingDetailsPane = new VBox(guestNameBox, phoneNumberBox, guestIdBox, emailBox, checkInDateBox, stayDurationBox);
+
+        bookingDetailsPane.setStyle(
+                "-fx-spacing: 15; " +
+                        "-fx-padding: 30; " +
+                        "-fx-background-color: #f7f7f7; " +
+                        "-fx-border-radius: 10; " +
+                        "-fx-border-color: #dcdcdc; " +
+                        "-fx-border-width: 1; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);"
+        );
+
+        BorderPane modalRoot = new BorderPane();
+
+        Text modalTitle = new Text("Add Booking/Check-In");
+        modalTitle.setFont(new Font("Arial", 28));
+        modalTitle.setFill(Color.DARKGREEN);
+
+        Text modalHint = new Text("Are you sure you want to check in this guest?");
+        modalHint.setFont(new Font("Arial", 14));
+        modalHint.setFill(Color.DIMGRAY);
+
+        VBox topBox = new VBox(modalTitle, modalHint);
+        topBox.setAlignment(Pos.CENTER);
+        topBox.setStyle("-fx-spacing: 5; -fx-padding: 10px;");
+
+        modalRoot.setTop(topBox);
+        BorderPane.setAlignment(topBox, Pos.CENTER);
+        modalRoot.setCenter(bookingDetailsPane);
+
+        Button confirmButton = new Button("Confirm");
+        Button cancelButton = new Button("Cancel");
+        cancelButton.setStyle(
+                "-fx-background-color: #ff4d4d; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-family: Arial; " +
+                        "-fx-padding: 10px 20px; " +
+                        "-fx-background-radius: 10;"
+        );
+
+        cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
+                "-fx-background-color: #ff1a1a; -fx-text-fill: white; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+        cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
+                "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+
+        confirmButton.setStyle(
+                "-fx-background-color: #4CAF50; " +
+                        "-fx-text-fill: #333333; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-family: Arial; " +
+                        "-fx-padding: 10px 20px; " +
+                        "-fx-background-radius: 10;"
+        );
+
+        confirmButton.setOnMouseEntered(e -> confirmButton.setStyle(
+                "-fx-background-color: #3b9E4F; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+        confirmButton.setOnMouseExited(e -> confirmButton.setStyle(
+                "-fx-background-color: #4CAF50; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                        " -fx-font-size: 14px;" +
+                        " -fx-font-family: Arial;" +
+                        "  -fx-padding: 10px 20px;"
+        ));
+
+        HBox buttonBox = new HBox(15, cancelButton, confirmButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setStyle("-fx-padding: 15px;");
+
+        modalRoot.setBottom(buttonBox);
+        BorderPane.setAlignment(buttonBox, Pos.CENTER);
+
+        Scene modalScene = new Scene(modalRoot, 425, 645);
+        modalStage.setScene(modalScene);
+        modalScene.setFill(Color.TRANSPARENT);
+        modalStage.setResizable(false);
+        modalStage.show();
+        modalRoot.setStyle("-fx-background-color: white;" + "-fx-background-radius: 2.5em;");
+
+        modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
+        modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
+
+        cancelButton.setOnAction(e -> {
+
+            modalStage.close();
+        });
+        confirmButton.setOnAction(e -> {
+            addCheckInToDB(guestName, phoneNumber,
+                    checkInDate, stayDurationNights,
+                    email, guestId);
+            clearAll();
+            modalStage.close();
+        });
+    }
+
+    private void addCheckInToDB(String guestName, String phoneNumber,
+                                LocalDate checkInDate, int stayDurationNights,
+                                String email, String guestId){
+
+        String checkInSql = "CALL add_checkIn(?, ?, ?, ?, ?, ?, ?, ?)";
+
+
+        try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+             CallableStatement psmtCheckIn = con.prepareCall(checkInSql)) {
+
+            con.setAutoCommit(false);
+
+            psmtCheckIn.setString(1, guestName);
+            psmtCheckIn.setString(2, phoneNumber);
+            psmtCheckIn.setString(3, guestId);
+            psmtCheckIn.setString(4, email);
+            psmtCheckIn.setString(5, selectedRoomNo);
+            psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
+            psmtCheckIn.setInt(7, stayDurationNights);
+            psmtCheckIn.setInt(8, 0);
+
+            int checkInResult = psmtCheckIn.executeUpdate();
+
+            if (checkInResult > 0) {
+                con.commit();
+                System.out.println("Check-in processed successfully.");
+                AddingRooms(null, 0);
+                notificationManager.showNotification("Successfully Checked In",
+                        "Success",(Stage) room_filter.getScene().getWindow());
+            } else {
+                notificationManager.showNotification("Error During Checked In",
+                        "failure",(Stage) room_filter.getScene().getWindow());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage() + " Error occurred during check-in.");
+        }
+    }
+
+    private void addBooking(String guestName, String phoneNumber,
+                            LocalDate checkInDate, int stayDurationNights
+                            ) {
+
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        Stage owner = (Stage) logout.getScene().getWindow();
+        modalStage.initOwner(owner);
+        modalStage.initStyle(StageStyle.UNDECORATED);
+        modalStage.initStyle(StageStyle.TRANSPARENT);
+
+        Text guestNameText = new Text("Guest Name");
+        guestNameText.setFont(new Font("Arial", 16));
+        guestNameText.setFill(Color.DARKSLATEGRAY);
+        Text guestNameField = new Text(guestName);
+        guestNameField.setFont(new Font("Arial", 14));
+        guestNameField.setFill(Color.DIMGRAY);
+        VBox guestNameBox = new VBox(guestNameText, guestNameField);
+        guestNameBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text rnTxt = new Text("Room No");
+        rnTxt.setFont(new Font("Arial", 16));
+        rnTxt.setFill(Color.DARKSLATEGRAY);
+        Text rnText = new Text(selectedRoomNo);
+        rnText.setFont(new Font("Arial", 14));
+        rnText.setFill(Color.DIMGRAY);
+        VBox roomBox = new VBox(rnTxt, rnText);
+        roomBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text phoneNumberText = new Text("Phone Number");
+        phoneNumberText.setFont(new Font("Arial", 16));
+        phoneNumberText.setFill(Color.DARKSLATEGRAY);
+        Text phoneNumberField = new Text(phoneNumber);
+        phoneNumberField.setFont(new Font("Arial", 14));
+        phoneNumberField.setFill(Color.DIMGRAY);
+        VBox phoneNumberBox = new VBox(phoneNumberText, phoneNumberField);
+        phoneNumberBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+
+        Text checkInDateText = new Text("Check-In Date");
+        checkInDateText.setFont(new Font("Arial", 16));
+        checkInDateText.setFill(Color.DARKSLATEGRAY);
+        Text checkInDateField = new Text(checkInDate.toString());
+        checkInDateField.setFont(new Font("Arial", 14));
+        checkInDateField.setFill(Color.DIMGRAY);
+        VBox checkInDateBox = new VBox(checkInDateText, checkInDateField);
+        checkInDateBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text stayDurationText = new Text("Stay Duration (Nights)");
+        stayDurationText.setFont(new Font("Arial", 16));
+        stayDurationText.setFill(Color.DARKSLATEGRAY);
+        Text stayDurationField = new Text(String.valueOf(stayDurationNights));
+        stayDurationField.setFont(new Font("Arial", 14));
+        stayDurationField.setFill(Color.DIMGRAY);
+        VBox stayDurationBox = new VBox(stayDurationText, stayDurationField);
+        stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        VBox bookingDetailsPane = new VBox(roomBox, guestNameBox, phoneNumberBox, checkInDateBox, stayDurationBox);
+
+        bookingDetailsPane.setStyle(
+                "-fx-spacing: 15; " +
+                        "-fx-padding: 30; " +
+                        "-fx-background-color: #f7f7f7; " +
+                        "-fx-border-radius: 10; " +
+                        "-fx-border-color: #dcdcdc; " +
+                        "-fx-border-width: 1; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);"
+        );
+
+        BorderPane modalRoot = new BorderPane();
+
+        Text modalTitle = new Text("Add Booking/Check-In");
+        modalTitle.setFont(new Font("Arial", 28));
+        modalTitle.setFill(Color.DARKGREEN);
+
+        Text modalHint = new Text("Are you sure you want to check in this guest?");
+        modalHint.setFont(new Font("Arial", 14));
+        modalHint.setFill(Color.DIMGRAY);
+
+        VBox topBox = new VBox(modalTitle, modalHint);
+        topBox.setAlignment(Pos.CENTER);
+        topBox.setStyle("-fx-spacing: 5; -fx-padding: 10px;");
+
+        modalRoot.setTop(topBox);
+        BorderPane.setAlignment(topBox, Pos.CENTER);
+        modalRoot.setCenter(bookingDetailsPane);
+
+        Button confirmButton = new Button("Confirm");
+        Button cancelButton = new Button("Cancel");
+        cancelButton.setStyle(
+                "-fx-background-color: #ff4d4d; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-family: Arial; " +
+                        "-fx-padding: 10px 20px; " +
+                        "-fx-background-radius: 10;"
+        );
+
+        cancelButton.setOnMouseEntered(e -> cancelButton.setStyle(
+                "-fx-background-color: #ff1a1a; -fx-text-fill: white; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+        cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
+                "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+
+        confirmButton.setStyle(
+                "-fx-background-color: #4CAF50; " +
+                        "-fx-text-fill: #333333; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-family: Arial; " +
+                        "-fx-padding: 10px 20px; " +
+                        "-fx-background-radius: 10;"
+        );
+
+        confirmButton.setOnMouseEntered(e -> confirmButton.setStyle(
+                "-fx-background-color: #3b9E4F; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+        confirmButton.setOnMouseExited(e -> confirmButton.setStyle(
+                "-fx-background-color: #4CAF50; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                        " -fx-font-size: 14px;" +
+                        " -fx-font-family: Arial;" +
+                        "  -fx-padding: 10px 20px;"
+        ));
+
+        HBox buttonBox = new HBox(15, cancelButton, confirmButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setStyle("-fx-padding: 15px;");
+
+        modalRoot.setBottom(buttonBox);
+        BorderPane.setAlignment(buttonBox, Pos.CENTER);
+
+        Scene modalScene = new Scene(modalRoot, 425, 585);
+        modalStage.setScene(modalScene);
+        modalScene.setFill(Color.TRANSPARENT);
+        modalStage.setResizable(false);
+        modalStage.show();
+        modalRoot.setStyle("-fx-background-color: white;" + "-fx-background-radius: 2.5em;");
+
+        modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
+
+        cancelButton.setOnAction(e -> {
+
+            modalStage.close();
+        });
+        confirmButton.setOnAction(e -> {
+            addBookingToDB(guestName, phoneNumber,
+                    checkInDate, stayDurationNights);
+            clearAll();
+            modalStage.close();
+        });
+    }
+
+
+    private void addBookingToDB(String guestName, String phoneNumber,
+                                LocalDate checkInDate, int stayDurationNights){
+
+        String checkInSql = "CALL add_booking(?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+             CallableStatement psmtCheckIn = con.prepareCall(checkInSql)) {
+
+            con.setAutoCommit(false);
+
+            psmtCheckIn.setString(2, guestName);
+            psmtCheckIn.setString(3, phoneNumber);
+            psmtCheckIn.setString(5, "-");
+            psmtCheckIn.setString(4, "-");
+            psmtCheckIn.setString(1, selectedRoomNo);
+            psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
+            psmtCheckIn.setInt(7, stayDurationNights);
+            psmtCheckIn.setInt(8, 0);
+
+            int checkInResult = psmtCheckIn.executeUpdate();
+
+            if (checkInResult > 0) {
+                con.commit();
+                System.out.println("Check-in processed successfully.");
+                AddingRooms(null, 0);
+                notificationManager.showNotification("Successfully Booked",
+                        "success",(Stage)logout.getScene().getWindow());
+            } else {
+                System.out.println("Error during check-in.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage() + " Error occurred during check-in.");
+        }
+    }
 
 }
