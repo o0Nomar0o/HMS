@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.settings.userSettings;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.util.notificationManager;
@@ -48,6 +49,10 @@ public class switchSceneController {
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 Parent root = loadSceneTask.getValue();
+
+                stage.setOnCloseRequest(ev -> {
+                    userController.updateStatus(ts.getUid(), "offline");
+                });
 
                 ts.applyTheme(root, view);
 

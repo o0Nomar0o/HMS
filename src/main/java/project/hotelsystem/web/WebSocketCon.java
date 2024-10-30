@@ -4,6 +4,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import project.hotelsystem.settings.databaseSettings;
 import project.hotelsystem.settings.userSettings;
+import project.hotelsystem.database.controller.transactionController;
 
 import java.net.URI;
 import java.util.UUID;
@@ -80,8 +81,24 @@ public class WebSocketCon {
     public void sendID() {
 
         if (webSocketClient != null && webSocketClient.isOpen()) {
+            String transactionId = "LOGIN";
+            String userId = uss.getUid();
+
+            String message = "{\"transaction_id\": \"" + transactionId + "\", " +
+                    "\"user_id\": \"" + userId + "\"}";
+
+            webSocketClient.send(message);
+            System.out.println("Sent: " + message);
+        }
+    }
+
+    public void sendTID() {
+
+        if (webSocketClient != null && webSocketClient.isOpen()) {
             String transactionId = UUID.randomUUID().toString();
             String userId = uss.getUid();
+
+            transactionController.newTransaction(transactionId, userId);
 
             String message = "{\"transaction_id\": \"" + transactionId + "\", " +
                     "\"user_id\": \"" + userId + "\"}";

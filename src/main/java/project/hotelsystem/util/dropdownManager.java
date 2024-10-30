@@ -269,7 +269,7 @@ public class dropdownManager {
         Popup popup = new Popup();
         popup.setAutoHide(true);
 
-        rooms.add(new room_type_details("All"));
+        rooms.addFirst(new room_type_details("All"));
 
         VBox container = new VBox(10);
         container.setStyle("""
@@ -387,7 +387,7 @@ public class dropdownManager {
         Popup popup = new Popup();
         popup.setAutoHide(true);
 
-        rooms.add(new room(0));
+        rooms.addFirst(new room(0));
 
         VBox container = new VBox(10);
         container.setStyle("""
@@ -494,7 +494,7 @@ public class dropdownManager {
                 if (newRoom.getFloor() == 0)
                     dropdownButton.setText("All Floors  ▼");
                 else
-                    dropdownButton.setText(selectedText + "");
+                    dropdownButton.setText("Floor "+selectedText);
 
                 Text text = new Text(dropdownButton.getText());
                 double width = text.getLayoutBounds().getWidth() + 20;

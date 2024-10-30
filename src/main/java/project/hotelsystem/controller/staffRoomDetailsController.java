@@ -33,6 +33,7 @@ import java.time.LocalDate;
  * Rooms Reservation/Booking Controller class
  *
  * @author Khant Zin Hein
+ * @author Nomar
  */
 
 public class staffRoomDetailsController {
@@ -194,17 +195,30 @@ public class staffRoomDetailsController {
         });
 
         floor_filter.textProperty().addListener((ob, ov, nv) -> {
+
             if (nv != null) {
+
+                if (floor_filter.getText().contains("All")
+                        && room_filter.getText().contains("All")) {
+                    AddingRooms(null, 0, null);
+                    return;
+                }
 
                 boolean flag = true;
                 int floor = 0;
+                String[] parts = nv.split(" ");
+                floor = Integer.parseInt(parts[1]);
+
                 try {
-                    int flootToSearch = Integer.parseInt(nv);
+                    int flootToSearch = Integer.parseInt(parts[1]);
                 } catch (Exception e) {
                     flag = false;
                 }
-                if (flag)
-                    floor = Integer.parseInt(nv);
+
+                if (flag) {
+                    floor = Integer.parseInt(parts[1]);
+                }
+
                 if (room_filter.getText().contains("All")) {
                     AddingRooms(null, floor, null);
                     return;
@@ -231,7 +245,8 @@ public class staffRoomDetailsController {
                     return;
                 }
 
-                int floor = Integer.parseInt(floor_filter.getText());
+                String[] parts = floor_filter.getText().split(" ");
+                int floor = Integer.parseInt(parts[1]);
 
                 if (room_filter.getText().contains("All")) {
                     AddingRooms(null, floor, null);
@@ -264,7 +279,7 @@ public class staffRoomDetailsController {
 
             if (floorFilter != 0) {
                 query += " AND room.floor = ?";
-                qIndex ++;
+                qIndex++;
             }
 
             String floor_f = "All";

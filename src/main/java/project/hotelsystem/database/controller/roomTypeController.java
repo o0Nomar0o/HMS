@@ -112,7 +112,7 @@ public class roomTypeController extends abstractDatabaseController {
     }
 
     public static boolean updateRoomType(String rtid, String desc, double np, double hp) {
-        return executeTransaction(() -> {
+
             String sql = "{call change_room_type(?,?,?,?)}";
 
             try (Connection con = DBConnection.getConnection();
@@ -130,7 +130,7 @@ public class roomTypeController extends abstractDatabaseController {
                 e.printStackTrace();
                 return false;
             }
-        });
+
 
     }
 }

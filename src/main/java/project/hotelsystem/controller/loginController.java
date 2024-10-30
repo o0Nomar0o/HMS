@@ -218,6 +218,10 @@ public class loginController {
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 Parent root = loadSceneTask.getValue();
 
+                stage.setOnCloseRequest(ev -> {
+                    userController.updateStatus(uSettings.getUid(), "offline");
+                });
+
                 if (!auth) {
                     loadingStage.hide();
                     loaderSettings.removeDimmingEffect(event);
