@@ -21,11 +21,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import project.hotelsystem.database.connection.DBConnection;
+import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.settings.userSettings;
 import project.hotelsystem.util.authenticationManager;
-import project.hotelsystem.database.controller.userController;
-import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.util.notificationManager;
 import project.hotelsystem.web.WebSocketCon;
 
@@ -113,13 +113,13 @@ public class loginController {
         clearPassword.setUserData("pw");
         clearPassword.setOnAction(this::clearField);
 
-        if(!userController.isUserTableEmpty()){
+        if (!userController.isUserTableEmpty()) {
             create_account.setDisable(true);
-            return;
         }
 
         showPassword.setOnMousePressed(e -> {
             Password.setVisible(false);
+
             PasswordTextField.setText(Password.getText());
             PasswordTextField.setVisible(true);
         });
@@ -128,7 +128,6 @@ public class loginController {
             Password.setVisible(true);
             PasswordTextField.setVisible(false);
         });
-
 
 
         databasetoggle.setOnAction(e -> {
@@ -151,7 +150,7 @@ public class loginController {
                 notificationManager.showNotification(
                         "Cannot Connect",
                         "failure",
-                        (Stage)login.getScene().getWindow());
+                        (Stage) login.getScene().getWindow());
                 databasetoggle.setSelected(!selected);
                 DBConnection.setDb(!selected);
 
@@ -162,6 +161,8 @@ public class loginController {
         });
 
     }
+
+
 
     boolean auth = false;
     String viewName = "";
@@ -223,7 +224,7 @@ public class loginController {
                     return;
                 }
 
-                WebSocketCon wsc = new WebSocketCon();
+                WebSocketCon wsc = WebSocketCon.getWebSocketClient();
                 wsc.connect();
 
                 uSettings.applyTheme(root, viewName);
@@ -287,15 +288,15 @@ public class loginController {
             stage.getScene().setRoot(root);
 
             stage.show();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
     @FXML
-    void create_acc(ActionEvent event){
+    void create_acc(ActionEvent event) {
 
-    createNewUser();
+        createNewUser();
     }
 
     private void createNewUser() {
@@ -437,7 +438,7 @@ public class loginController {
                         " -fx-padding: 10px 20px;"
         ));
         cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
-                "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;"+
+                "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;" +
                         "-fx-font-size: 14px;" +
                         "-fx-font-family: Arial;" +
                         " -fx-padding: 10px 20px;"

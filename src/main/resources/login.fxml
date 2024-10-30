@@ -164,7 +164,7 @@
                   <Font name="Helvetica Bold Oblique" size="28.0" />
               </font>
           </Text>
-      <HBox alignment="TOP_RIGHT" layoutX="224.0" layoutY="11.0" prefHeight="60.0" prefWidth="113.0">
+      <HBox alignment="TOP_RIGHT" layoutX="224.0" layoutY="11.0" prefHeight="60.0" prefWidth="113.0" visible="false">
          <children>
             <ToggleButton fx:id="databasetoggle" mnemonicParsing="false" style="-fx-background-radius: 1.3em; -fx-background-color: #121212; -fx-text-fill: #2e4053;" text="Cloud DB">
                <cursor>

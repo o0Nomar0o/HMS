@@ -9,8 +9,10 @@ import java.util.List;
 
 
 /**
- * @author Nomar
  * @author Zin Min Oo
+ * @author Swun Saung
+ * @author San Nyein Zaw
+ * @author Nomar
  */
 
 public class foodController {
@@ -331,6 +333,33 @@ public class foodController {
             }
         } catch (Throwable var25) {
             SQLException e = (SQLException) var25;
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static List<food> getFoodByCat(){
+        List<food> allFood = new ArrayList<>();
+
+        String sql = "SELECT food_name, food_price, food_image, current_stock, food_category FROM food JOIN food_category ON food.category_id = food_category.category_id;";
+
+        try(Connection con = DBConnection.getConnection();
+            PreparedStatement psmt = con.prepareStatement(sql)){
+
+            ResultSet rs = psmt.executeQuery();
+            while(rs.next()) {
+                String name = rs.getString(1);
+                double price = rs.getDouble(2);
+                Blob img = rs.getBlob(3);
+                int stock = rs.getInt(4);
+                String category = rs.getString(5);
+
+
+                food newFood = new food(name,price,img,stock,category);
+                allFood.add(newFood);
+            }
+            return allFood;
+
+        }catch(SQLException e) {
             e.printStackTrace();
             return null;
         }

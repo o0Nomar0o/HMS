@@ -40,11 +40,11 @@
          <children>
             <TabPane layoutX="56.0" layoutY="54.0" prefHeight="333.0" prefWidth="439.0">
                <tabs>
-                  <Tab closable="false" text="Local">
+                  <Tab closable="false" text="Database ">
                      <content>
                         <VBox alignment="CENTER" prefHeight="244.0" prefWidth="239.0" style="-fx-spacing: 15px; -fx-padding: 10px; -fx-background-color: #FFEFEF; -fx-background-radius: 1.5em;">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Local Database">
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Database">
                                  <font>
                                     <Font name="Helvetica Neue" size="15.0" />
                                  </font>
@@ -84,15 +84,24 @@
                         </VBox>
                      </content>
                   </Tab>
-                  <Tab closable="false" text="Cloud">
+                  <Tab closable="false" text="WebSocket">
                      <content>
-                        <VBox alignment="CENTER" prefHeight="244.0" prefWidth="239.0" style="-fx-spacing: 15px; -fx-padding: 10px; -fx-background-color: #FFEFEF; -fx-background-radius: 1.5em;">
+                        <VBox alignment="CENTER" prefHeight="244.0" prefWidth="239.0" style="-fx-spacing: 10px; -fx-padding: 10px; -fx-background-color: #FFEFEF; -fx-background-radius: 1.5em;">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Cloud Database">
-                                 <font>
-                                    <Font name="Helvetica Neue" size="15.0" />
-                                 </font>
-                              </Text>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="WebSocket">
+                                       <font>
+                                          <Font name="Helvetica Neue" size="15.0" />
+                                       </font>
+                                    </Text>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Optional">
+                                       <font>
+                                          <Font name="Helvetica Neue" size="10.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
                               <VBox prefWidth="168.0" style="-fx-spacing: 8px;">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="URL">
@@ -103,7 +112,7 @@
                                     <TextField fx:id="cloud_url" />
                                  </children>
                               </VBox>
-                              <VBox layoutX="10.0" layoutY="82.0" prefWidth="168.0" style="-fx-spacing: 8px;">
+                              <VBox layoutX="10.0" layoutY="82.0" prefWidth="168.0" style="-fx-spacing: 8px;" visible="false">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="USER">
                                        <font>
@@ -113,7 +122,7 @@
                                     <TextField fx:id="cloud_user" />
                                  </children>
                               </VBox>
-                              <VBox layoutX="10.0" layoutY="27.0" prefHeight="33.0" prefWidth="168.0" style="-fx-spacing: 8px;">
+                              <VBox layoutX="10.0" layoutY="27.0" prefHeight="33.0" prefWidth="168.0" style="-fx-spacing: 8px;" visible="false">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PASSWORD">
                                        <font>
@@ -130,7 +139,7 @@
                   </Tab>
                </tabs>
             </TabPane>
-            <Text layoutX="17.0" layoutY="33.17041015625" strokeType="OUTSIDE" strokeWidth="0.0" text="Database Setup" AnchorPane.leftAnchor="17.0" AnchorPane.topAnchor="17.0">
+            <Text layoutX="18.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Server Setup" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="16.0">
                <font>
                   <Font name="Helvetica" size="21.0" />
                </font>

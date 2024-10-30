@@ -23,19 +23,24 @@ public class invoiceGeneratorController {
         String sql = "SELECT " +
                 "g.customer_name, g.phone_no, g.id_card, g.email, " +
                 "b.booking_date, b.check_in, b.check_out, " +
-                "r.room_no, rt.description as room_type_desc, " +
-                "os.order_service_id, os.order_time,s.service_name, s.service_price, os.service_charges, " +
-                "orf.order_food_id, orf.food_quantity, f.food_name,food_price, orf.food_charges   " +
+                "r.room_no, rt.description AS room_type_desc, " +
+                "os.order_service_id, os.order_time, s.service_name, s.service_price, os.service_charges, " +
+                "orf.order_food_id, orf.food_quantity, f.food_name, f.food_price, orf.food_charges, " +
+                "bc.total_room_charges, bc.deposite, bc.total_order_charges, bc.total_booking_charges, bc.remaining_amount, " +
+                "rp.price_per_night, rp.price_per_hour " +
                 "FROM booking b " +
                 "INNER JOIN customer g ON b.customer_id = g.customer_id " +
                 "INNER JOIN booking_room_detail brd ON b.booking_id = brd.booking_id " +
                 "INNER JOIN room r ON r.room_no = brd.room_no " +
                 "INNER JOIN room_type rt ON r.room_type_id = rt.room_type_id " +
+                "LEFT JOIN room_price rp ON rt.room_type_id = rp.room_type_id " +
                 "LEFT JOIN service_order_detail os ON b.booking_id = os.booking_id " +
                 "LEFT JOIN service s ON os.service_id = s.service_id " +
                 "LEFT JOIN food_order_detail orf ON b.booking_id = orf.booking_id " +
                 "LEFT JOIN food f ON orf.food_id = f.food_id " +
+                "LEFT JOIN booking_charges bc ON b.booking_id = bc.booking_id " +
                 "WHERE b.booking_id = ?;";
+
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -57,7 +62,8 @@ public class invoiceGeneratorController {
                     invoiceData.setCheckOut(rs.getTimestamp("check_out").toLocalDateTime());
                     invoiceData.setRoomNo(rs.getString("room_no"));
                     invoiceData.setRoomType(rs.getString("room_type_desc"));
-
+                    invoiceData.setTotal_room_cost(rs.getDouble("total_room_charges"));
+                    invoiceData.setRoom_unit_cost(rs.getDouble("price_per_night"));
                 }
                 if (rs.getString("service_name") != null) {
                     order_service os = new order_service(rs.getInt("order_service_id"),

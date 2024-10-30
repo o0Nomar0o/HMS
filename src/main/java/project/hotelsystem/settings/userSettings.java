@@ -80,10 +80,6 @@ public class userSettings {
         return invoice_path;
     }
 
-    public void setInvoice_path(String invoice_path) {
-        this.invoice_path = invoice_path;
-    }
-
     public void loadWindowsSettings() {
         if (uid != null && !uid.isEmpty()) {
             Preferences userPref = Preferences.userRoot().node(PREFERENCE_NODE_NAME + "/" + uid);
@@ -138,7 +134,7 @@ public class userSettings {
     public void logout() {
         this.uid = null;
         this.theme = "light";
-        this.invoice_path = null;
+        this.invoice_path =  System.getProperty("user.home") + File.separator + "Invoices";
         Preferences userPref = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
         try {
             userPref.clear();

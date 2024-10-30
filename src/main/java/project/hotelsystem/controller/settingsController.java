@@ -39,6 +39,7 @@ import java.util.ResourceBundle;
  * Settings Controller class
  *
  * @author Nomar
+ * @author Kaung Khant Thu
  */
 
 public class settingsController implements Initializable {
@@ -1077,6 +1078,8 @@ public class settingsController implements Initializable {
 
         private void changePassword() {
 
+            loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
+
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
 
@@ -1182,6 +1185,7 @@ public class settingsController implements Initializable {
 
 
             cancelButton.setOnAction(e -> {
+                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                 modalStage.close();
             });
 
@@ -1239,6 +1243,7 @@ public class settingsController implements Initializable {
             loadSceneTask.setOnSucceeded(ev -> {
                 try {
 
+                    loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                     st.close();
 
                 } catch (Exception ex) {

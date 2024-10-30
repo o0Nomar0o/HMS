@@ -4,16 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 import java.sql.*;
 import project.hotelsystem.database.models.room;
 import project.hotelsystem.database.models.room_type;
-import project.hotelsystem.database.models.booking;
 import project.hotelsystem.database.connection.DBConnection;
-import project.hotelsystem.database.models.customer;
+import project.hotelsystem.web.WebSocketCon;
 
 
 /**
@@ -22,6 +19,7 @@ import project.hotelsystem.database.models.customer;
  */
 
 public class roomController {
+
 
 	public static boolean addRoom(room s) {
 		String sql = "call add_room(?,?,?)";
@@ -88,6 +86,8 @@ public class roomController {
 	public static boolean saveRoom(String roomNo, String rtid, int floor, String status){
 		String sql = "{call add_new_room(?,?,?)}";
 
+		WebSocketCon.getWebSocketClient().sendID();
+
 		try(Connection con = DBConnection.getConnection();
 			CallableStatement clst = con.prepareCall(sql);){
 
@@ -96,6 +96,7 @@ public class roomController {
 			clst.setInt(3, floor);
 
 			clst.execute();
+
 			return true;
 
 		}catch(SQLException e){
@@ -103,6 +104,7 @@ public class roomController {
 			return false;
 		}
 	}
+
 	public static boolean editRoom(String roomNo, String rtid, int floor, String status){
 		String sql = "UPDATE room SET room_type_id = ?, floor = ? , room_status = ? " +
 				"        WHERE room_no = ?;";
@@ -115,6 +117,7 @@ public class roomController {
 			clst.setInt(2, floor);
 			clst.setString(3,status);
 			clst.execute();
+
 			return true;
 
 		}catch(SQLException e){

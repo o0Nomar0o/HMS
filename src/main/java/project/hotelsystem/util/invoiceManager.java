@@ -93,15 +93,18 @@ public class invoiceManager {
 
         InvoiceData ivd = invoiceGeneratorController.getData(bkid);
         Duration duration = Duration.between(ivd.getCheckIn(), LocalDateTime.now());
-        String durationDays = Long.toString(duration.toDays()) + "nights";
+        String durationDays = duration.toDays() + " nights";
 
         table.addCell(ivd.getRoomType());
         table.addCell(durationDays).setTextAlignment(TextAlignment.RIGHT);
-        table.addCell("50.00");
-        table.addCell("100");
-
 
         double sum  = 0;
+
+        table.addCell(ivd.getRoom_unit_cost()+"");
+        table.addCell(ivd.getTotal_room_cost()+"");
+
+        sum += ivd.getTotal_room_cost();
+
         HashMap<Integer, String> service_check = new HashMap<>();
         for(order_service os : ivd.getServices())
         {

@@ -170,6 +170,74 @@ public class bookingController {
         }
     }
 
+    public static List<bookingDetails> getBookingDetails(){
+
+        List<bookingDetails> bk_details = new ArrayList<>();
+        String query = "SELECT DISTINCT \n" +
+                "    b.booking_id,\n" +
+                "    c.customer_id,\n" +
+                "    c.customer_name,\n" +
+                "    c.phone_no,\n" +
+                "    c.id_card,\n" +
+                "    c.email,\n" +
+                "    r.room_no,\n" +
+                "    r.room_type_id,\n" +
+                "    rt.description AS room_type_description,\n" +
+                "    r.floor,\n" +
+                "    r.room_status,\n" +
+                "    b.check_in,\n" +
+                "    (SELECT p.payment_method \n" +
+                "     FROM payment p \n" +
+                "     WHERE p.booking_id = b.booking_id \n" +
+                "       AND p.payment_date = b.check_in) AS ci_payment_method,\n" +
+                "    b.check_out,\n" +
+                "    (SELECT p.payment_method \n" +
+                "     FROM payment p \n" +
+                "     WHERE p.booking_id = b.booking_id \n" +
+                "       AND p.payment_date = b.check_out) AS co_payment_method\n" +
+                "FROM \n" +
+                "    booking b\n" +
+                "JOIN \n" +
+                "    customer c ON b.customer_id = c.customer_id\n" +
+                "JOIN \n" +
+                "    booking_room_detail brd ON b.booking_id = brd.booking_id\n" +
+                "JOIN \n" +
+                "    room r ON brd.room_no = r.room_no\n" +
+                "JOIN \n" +
+                "    room_type rt ON r.room_type_id = rt.room_type_id\n" +
+                "LEFT JOIN \n" +
+                "    payment p_ci ON b.booking_id = p_ci.booking_id AND p_ci.payment_date = b.check_in\n" +
+                "LEFT JOIN \n" +
+                "    payment p_co ON b.booking_id = p_co.booking_id AND p_co.payment_date = b.check_out;\n";
+
+        try(Connection con = DBConnection.getConnection();
+        PreparedStatement psmt = con.prepareStatement(query)){
+
+            ResultSet rs = psmt.executeQuery();
+            while(rs.next()){
+                String bkid = rs.getString("booking_id");
+                String c_name = rs.getString("customer_name");
+                String r_no = rs.getString("room_no");
+                LocalDateTime c_in = rs.getTimestamp("check_in").toLocalDateTime();
+                LocalDateTime c_out = rs.getTimestamp("check_out").toLocalDateTime();
+                String ci_payment = rs.getString("ci_payment_method");
+                String co_payment = rs.getString("co_payment_method");
+
+                bk_details.add(new bookingDetails
+                        (new booking(bkid),
+                        new customer(c_name),
+                        new room(r_no),
+                        c_in,ci_payment,
+                        c_out,co_payment));
+            }
+
+            return bk_details;
+
+        }catch (SQLException e){
+            return null;
+        }
+
+    }
 
 
 }

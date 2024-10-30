@@ -13,20 +13,12 @@ public class InvoiceData {
     private LocalDateTime checkOut;
     private String roomNo;
     private String roomType;
+    private double total_room_cost;
+    private double room_unit_cost;
 
     private List<order_service> services = new ArrayList<>();
     private List<order_food> foods = new ArrayList<>();
 
-    public InvoiceData(String guestName, String phoneNo, String email, LocalDateTime bookingDate, LocalDateTime checkIn, LocalDateTime checkOut, String roomNo, String roomType) {
-        this.guestName = guestName;
-        this.phoneNo = phoneNo;
-        this.email = email;
-        this.bookingDate = bookingDate;
-        this.checkIn = checkIn;
-        this.checkOut = checkOut;
-        this.roomNo = roomNo;
-        this.roomType = roomType;
-    }
 
     public InvoiceData() {
         this.services = services;
@@ -119,6 +111,22 @@ public class InvoiceData {
 
     public void addFood(order_food food) {
         this.foods.add(food);
+    }
+
+    public double getTotal_room_cost() {
+        return total_room_cost;
+    }
+
+    public void setTotal_room_cost(double total_room_cost) {
+        this.total_room_cost = total_room_cost;
+    }
+
+    public double getRoom_unit_cost() {
+        return room_unit_cost;
+    }
+
+    public void setRoom_unit_cost(double room_unit_cost) {
+        this.room_unit_cost = room_unit_cost;
     }
 
     @Override

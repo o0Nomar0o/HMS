@@ -151,6 +151,8 @@ public class adminRoomsController {
     class roomBuilder {
         private void createRoom() {
 
+            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
+
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
             Stage owner = (Stage) rooms.getScene().getWindow();
@@ -218,7 +220,10 @@ public class adminRoomsController {
             modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
-            cancelButton.setOnAction(e -> modalStage.close());
+            cancelButton.setOnAction(e -> {
+                modalStage.close();
+                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+            });
             confirmButton.setOnAction(e -> {
                 createRoom(roomNo.getText(), rtype.getSelectionModel().getSelectedItem(),
                         floor_field.getText(), rmstus_field.getSelectionModel().getSelectedItem(), e, modalStage);
@@ -257,6 +262,7 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully added %s", room_no), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
+                    loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                     loadingStage.hide();
                     generateRooms();
                     System.out.println("Room added successfully.");
@@ -311,6 +317,7 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully updated %s", room_no), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
+                    loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                     loadingStage.hide();
                     generateRooms();
                     System.out.println("Room updated successfully.");
@@ -338,7 +345,7 @@ public class adminRoomsController {
 
             List<room> lr = roomController.getAllRooms();
             roomsView.getChildren().add(addRoom);
-            addRoom.setStyle("-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+            addRoom.setStyle("-fx-pref-width: 135;" + "-fx-pref-height:90;" +
                     "-fx-background-color: #F6F5F2; " +
                     "-fx-text-fill: #333333; " +
                     "-fx-font-size: 16px; " +
@@ -349,7 +356,7 @@ public class adminRoomsController {
                     "-fx-padding: 10; " +
                     "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);");
             addRoom.setOnMouseEntered(e -> addRoom.setStyle(
-                    "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+                    "-fx-pref-width: 135;" + "-fx-pref-height:90;" +
                             "-fx-background-color: #e0e0e0; " +
                             "-fx-text-fill: #333333; " +
                             "-fx-font-size: 16px; " +
@@ -361,7 +368,7 @@ public class adminRoomsController {
                             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0.0, 0, 1);"));
 
             addRoom.setOnMouseExited(e -> addRoom.setStyle(
-                    "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+                    "-fx-pref-width: 135;" + "-fx-pref-height:90;" +
                             "-fx-background-color: #F6F5F2; " +
                             "-fx-text-fill: #333333; " +
                             "-fx-font-size: 16px; " +
@@ -373,7 +380,7 @@ public class adminRoomsController {
                             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);"));
             for (room r : lr) {
                 Button hotelrooms = new Button(r.getRoom_no());
-                hotelrooms.setStyle("-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+                hotelrooms.setStyle("-fx-pref-width: 135;" + "-fx-pref-height:90;" +
                         "-fx-background-color: #F6F5F2; " +
                         "-fx-text-fill: #333333; " +
                         "-fx-font-size: 16px; " +
@@ -385,7 +392,7 @@ public class adminRoomsController {
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0.0, 0, 1);");
 
                 hotelrooms.setOnMouseEntered(e -> hotelrooms.setStyle(
-                        "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+                        "-fx-pref-width: 135;" + "-fx-pref-height:90;" +
                                 "-fx-background-color: #e0e0e0; " +
                                 "-fx-text-fill: #333333; " +
                                 "-fx-font-size: 16px; " +
@@ -397,7 +404,7 @@ public class adminRoomsController {
                                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0.0, 0, 1);"));
 
                 hotelrooms.setOnMouseExited(e -> hotelrooms.setStyle(
-                        "-fx-pref-width: 150;" + "-fx-pref-height:90;" +
+                        "-fx-pref-width: 135;" + "-fx-pref-height:90;" +
                                 "-fx-background-color: #F6F5F2; " +
                                 "-fx-text-fill: #333333; " +
                                 "-fx-font-size: 16px; " +
@@ -416,6 +423,8 @@ public class adminRoomsController {
         }
 
         private void editRoom(room r) {
+
+            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
 
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -488,7 +497,10 @@ public class adminRoomsController {
             modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
-            cancelButton.setOnAction(e -> modalStage.close());
+            cancelButton.setOnAction(e -> {
+                modalStage.close();
+                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+            });
             confirmButton.setOnAction(e -> {
                 EditRoom(roomNo.getText(), rtype.getSelectionModel().getSelectedItem(),
                         floorField.getText(), rmstus_field.getSelectionModel().getSelectedItem(), e, modalStage);
@@ -498,6 +510,8 @@ public class adminRoomsController {
 
     class roomTypeBuilder {
         private void createRoomType() {
+
+            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
 
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -561,7 +575,10 @@ public class adminRoomsController {
             modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
-            cancelButton.setOnAction(e -> modalStage.close());
+            cancelButton.setOnAction(e -> {
+                modalStage.close();
+                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+            });
             confirmButton.setOnAction(e -> {
                 createRoomType(rtIdField.getText(), rtDescriptionField.getText(),
                         nightprice.getValue(), hourprice.getValue(), e, modalStage);
@@ -571,6 +588,7 @@ public class adminRoomsController {
         private void editRoomType() {
 
             room_type_details selected_rt = typeTable.getSelectionModel().getSelectedItem();
+            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
 
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -603,10 +621,10 @@ public class adminRoomsController {
 
             BorderPane modalRoot = new BorderPane();
 
-            Text modalTitle = new Text("Create Room Type");
+            Text modalTitle = new Text("Edit Room Type");
             modalTitle.setFont(new Font(28.0));
 
-            Text modalHint = new Text("Create a new room type for your rooms");
+            Text modalHint = new Text("Edit details for this room");
             VBox topBox = new VBox(modalTitle, modalHint);
             topBox.setAlignment(Pos.CENTER);
             topBox.setStyle("-fx-padding: 10px;");
@@ -636,7 +654,10 @@ public class adminRoomsController {
             modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
-            cancelButton.setOnAction(e -> modalStage.close());
+            cancelButton.setOnAction(e -> {
+                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+                modalStage.close();
+            });
             confirmButton.setOnAction(e -> {
                 updateRoomType(rtIdField.getText(), rtDescriptionField.getText(),
                         nightprice.getValue(), hourprice.getValue(), e, modalStage);
@@ -718,6 +739,7 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully added %s", rtid), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
+                    loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                     loadingStage.hide();
                     roomTypeService.restart();
                     System.out.println("Room Type added successfully.");
@@ -771,9 +793,9 @@ public class adminRoomsController {
                     notificationManager.showNotification(String.format("Successfully updated %s", rtid), "success", (Stage) logout.getScene().getWindow());
                     st.close();
                     loaderSettings.removeDimmingEffect(e);
+                    loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                     loadingStage.hide();
                     roomTypeService.restart();
-                    System.out.println("Room Type updated successfully.");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

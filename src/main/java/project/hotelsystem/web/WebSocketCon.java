@@ -2,20 +2,43 @@ package project.hotelsystem.web;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import project.hotelsystem.settings.databaseSettings;
 import project.hotelsystem.settings.userSettings;
 
 import java.net.URI;
+import java.util.UUID;
 
 public class WebSocketCon {
 
-    private WebSocketClient webSocketClient;
+    WebSocketClient webSocketClient;
+    static WebSocketCon instance;
     userSettings uss = userSettings.getInstance();
+    databaseSettings dbs = databaseSettings.getInstance();
+
+    public WebSocketCon() {
+    }
+
+    public static WebSocketCon getWebSocketClient() {
+
+        if (instance == null) {
+            instance = new WebSocketCon();
+
+        }
+
+        return instance;
+    }
+
 
     public void connect() {
 
-        String ip = "youraddress";
+        if (webSocketClient != null && webSocketClient.isOpen()) {
+            return;
+        }
 
-        String serverUri = "ws://" + ip + ":8080";
+        dbs.loadSettings();
+
+
+        String serverUri = dbs.getWeb_url();
 
         connectWebSocket(serverUri);
 
@@ -28,12 +51,12 @@ public class WebSocketCon {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
                     System.out.println("Connected to WebSocket server");
-                    sendUID();
+                    sendID();
                 }
 
                 @Override
                 public void onMessage(String message) {
-                    System.out.println("Hello");
+                    System.out.println("Received: " + message);
                 }
 
                 @Override
@@ -54,10 +77,17 @@ public class WebSocketCon {
         }
     }
 
-    public void sendUID() {
+    public void sendID() {
+
         if (webSocketClient != null && webSocketClient.isOpen()) {
-            webSocketClient.send(uss.getUid());
-            System.out.println("Sent: " + uss.getUid());
+            String transactionId = UUID.randomUUID().toString();
+            String userId = uss.getUid();
+
+            String message = "{\"transaction_id\": \"" + transactionId + "\", " +
+                    "\"user_id\": \"" + userId + "\"}";
+
+            webSocketClient.send(message);
+            System.out.println("Sent: " + message);
         }
     }
 

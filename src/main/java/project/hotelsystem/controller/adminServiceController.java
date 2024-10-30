@@ -1365,7 +1365,7 @@ public class adminServiceController {
             iv.setFitHeight(100.0);
             iv.setFitWidth(70.0);
             iv.setPreserveRatio(true);
-            newPane.setStyle("-fx-background-color:  #2f847c;");
+            newPane.setStyle("-fx-background-color:  #4CE4AE;");
             newPane.setPrefWidth(193.0);
             newPane.getChildren().add(iv);
             ((Node) newPane.getChildren().get(0)).setLayoutX(8.0);
@@ -1498,7 +1498,7 @@ public class adminServiceController {
             iv.setFitHeight(60.0);
             iv.setFitWidth(84.0);
             iv.setPreserveRatio(true);
-            newCatPane.setStyle("-fx-background-color:  #2f847c;");
+            newCatPane.setStyle("-fx-background-color:  #4CE4AE;");
             newCatPane.setPrefHeight(130.0);
             newCatPane.setPrefWidth(106.0);
             Label foodCategory = new Label(fcm.getCategory());

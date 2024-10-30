@@ -1,55 +1,49 @@
 package project.hotelsystem.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
-import project.hotelsystem.settings.invoiceSettings;
+import project.hotelsystem.database.controller.*;
+import project.hotelsystem.database.models.*;
+import project.hotelsystem.settings.*;
+import project.hotelsystem.util.dropdownManager;
 
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Rooms Reservation/Booking Controller class
  *
  * @author Khant Zin Hein
  */
+
 public class staffRoomDetailsController {
 
     @FXML
-    private Button bookings_button;
-
-    @FXML
-    private Button logout;
-
-    @FXML
-    private Button orders_button;
-
-    @FXML
-    private Button rooms_button;
-
-    @FXML
-    private Button services_button;
-
-    @FXML
-    private Button settings;
-
-    @FXML
-    private Button BookingDetailsbtn;
+    private TextField Email;
 
     @FXML
     private TextField FirstName;
 
     @FXML
+    private TextField FirstName11;
+
+    @FXML
     private TextField LastName;
 
     @FXML
-    private Button LogOutbtn;
+    private TextField LastName11;
 
     @FXML
     private Text NumberOfAR;
@@ -61,34 +55,58 @@ public class staffRoomDetailsController {
     private AnchorPane RoomShowBody;
 
     @FXML
-    private Button RoomDetailsbtn;
-
-    @FXML
-    private Button Servicesbtn;
-
-    @FXML
-    private Button Settingbtn;
-
-    @FXML
     private Text StaffName;
+
+    @FXML
+    private DatePicker ToCheckWithCheckInDate;
 
     @FXML
     private DatePicker ToCheckWithCheckOutDate;
 
     @FXML
-    private TextField deposit;
+    private DatePicker arrivalDate;
+
+    @FXML
+    private AnchorPane body;
+
+    @FXML
+    private Button bookings_button;
+
+    @FXML
+    private ComboBox<?> ck_payment_method;
+
+    @FXML
+    private ComboBox<?> bk_payment_method;
+
+    @FXML
+    private TextField deposit11;
 
     @FXML
     private TextField duration;
 
     @FXML
+    private TextField duration1;
+
+    @FXML
     private Text floorText;
+
+    @FXML
+    private Button floor_filter;
 
     @FXML
     private TextField idORnrc;
 
     @FXML
+    private Button logout;
+
+    @FXML
+    private Button orders_button;
+
+    @FXML
     private TextField phoneNumber;
+
+    @FXML
+    private TextField phoneNumber11;
 
     @FXML
     private Text roomID;
@@ -97,60 +115,33 @@ public class staffRoomDetailsController {
     private Text roomPrice;
 
     @FXML
+    private Text roomPrice1;
+
+    @FXML
     private Text roomType;
 
     @FXML
-    private TextField FirstName1;
+    private Button room_filter;
 
     @FXML
-    private TextField LastName1;
-
-    @FXML
-    private TextField phoneNumber1;
-
-    @FXML
-    private TextField total;
-
-    @FXML
-    private TextField deposit1;
+    private Button rooms_button;
 
     @FXML
     private TextField searchField;
 
     @FXML
-    private CheckBox singleRoomCheckBox;
+    private Button services_button;
 
     @FXML
-    private CheckBox doubleRoomCheckBox;
-
-    @FXML
-    private Text roomPrice1;
-
-    @FXML
-    private ComboBox<String> selectRoomscheckBox;
-
-    @FXML
-    private ComboBox<String> selectRoomscheckBox1;
-
-    @FXML
-    private TextField NoOfRooms;
-
-    @FXML
-    private TextField NoOfRooms1;
-
-    @FXML
-    private TextField Email;
-
-    @FXML
-    private AnchorPane body;
+    private Button settings;
 
     private String selectedRoomNo;
     switchSceneController ssc = new switchSceneController();
+    static databaseSettings dbs = databaseSettings.getInstance();
 
-
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/snowy_resort";//add your database_url
-    private static final String DB_USER = "root";//add your user name
-    private static final String DB_PASSWORD = "12345678";//add your password
+    private static final String JDBC_URL = dbs.getLocal_url();
+    private static final String DB_USER = dbs.getLocal_user();
+    private static final String DB_PASSWORD = dbs.getLocal_password();
 
 
     @FXML
@@ -158,13 +149,41 @@ public class staffRoomDetailsController {
         orders_button.setDisable(true);
         AddingRooms(null, 0);
         updateRoomCounts();
-        selectRoomscheckBox.getItems().addAll("Select Rooms", "Single", "Double");
-        selectRoomscheckBox1.getItems().addAll("Select Rooms", "Single", "Double");
-        NoOfRooms.setText("0");
-        NoOfRooms1.setText("0");
+
+        //initialize dropdown box for floor and room type
+        floor_filter.setUserData("All");
+        room_filter.setUserData("All");
+
+        arrivalDate.setValue(LocalDate.now());
+        arrivalDate.setDayCellFactory(dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;");
+                }
+            }
+        });
+
+
+        ObservableList<room_type_details> ols = FXCollections.observableArrayList(roomTypeController.getAllRoomType());
+
+        Popup roomDp = dropdownManager.createRoomTypeDropdown(room_filter, ols);
+        room_filter.setOnAction(event -> {
+            if (!roomDp.isShowing()) {
+                Bounds bounds = room_filter.localToScreen(room_filter.getBoundsInLocal());
+                roomDp.show(room_filter.getScene().getWindow(),
+                        bounds.getMinX(), bounds.getMinY()-280);
+            }
+        });
+
+
     }
 
     public void AddingRooms(String roomIdToSearch, int floorFilter) {
+
         RoomShowBody.getChildren().clear();
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
 
@@ -180,13 +199,16 @@ public class staffRoomDetailsController {
             if (floorFilter != 0) {
                 query += " AND room.floor = ?";
             }
-            if (singleRoomCheckBox.isSelected() && !doubleRoomCheckBox.isSelected()) {
-                query += " AND room_type.description = 'Single'";
-            } else if (doubleRoomCheckBox.isSelected() && !singleRoomCheckBox.isSelected()) {
-                query += " AND room_type.description = 'Double'";
+
+            String floor_f = "All";
+            if (!floor_f.matches("All")) {
+                query += " AND room_type.description = ? ";
             }
 
             PreparedStatement stmt = conn.prepareStatement(query);
+
+            if (!floor_f.matches("All")) stmt.setString(2, floor_f);
+
             int index = 1;
             if (roomIdToSearch != null && !roomIdToSearch.isEmpty()) {
                 stmt.setString(index++, roomIdToSearch);
@@ -226,7 +248,7 @@ public class staffRoomDetailsController {
 
                 // Color coding based on room status
                 switch (status) {
-                    case "Unavailable":
+                    case "Unavailable", "Under Maintenance":
                         roomButton.setStyle(
                                 "-fx-background-color: #FF4C4C; " + // Bright red for unavailable
                                         "-fx-text-fill: white; " +
@@ -605,7 +627,62 @@ public class staffRoomDetailsController {
 
     @FXML
     void BookingAction(ActionEvent event) {
+        if (selectedRoomNo == null || selectedRoomNo.isEmpty()) {
+            System.out.println("Please select a room before booking.");
+            return;
+        }
 
+        if (FirstName11.getText().isBlank() || LastName11.getText().isBlank() || phoneNumber11.getText().isBlank()
+                || duration1.getText().isBlank()) {
+            System.out.println("Input the details mf");
+            return;
+        } else {
+            String firstName = FirstName11.getText();
+            String lastName = LastName11.getText();
+            String guestName = firstName + " " + lastName;
+            String phone_number = phoneNumber11.getText();
+
+            LocalDate checkInDate = arrivalDate.getValue();
+            int stayDurationNights = Integer.parseInt(duration1.getText());
+            int stayDurationHours = 0;
+
+            String checkInSql = "CALL add_booking(?, ?, ?, ?, ?, ?, ?, ?)";
+
+            if (FirstName11.getText().isBlank() || LastName11.getText().isBlank()
+                    || phoneNumber11.getText().isBlank() || duration1.getText().isBlank()) {
+                System.out.println("Input the details mf");
+            }
+
+            try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+                 CallableStatement psmtCheckIn = con.prepareCall(checkInSql)) {
+
+                con.setAutoCommit(false);
+
+                psmtCheckIn.setString(2, guestName);
+                psmtCheckIn.setString(3, phone_number);
+                psmtCheckIn.setString(5, "-");
+                psmtCheckIn.setString(4, "-");
+                psmtCheckIn.setString(1, selectedRoomNo);
+                psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
+                psmtCheckIn.setInt(7, stayDurationNights);
+                psmtCheckIn.setInt(8, stayDurationHours);
+
+                int checkInResult = psmtCheckIn.executeUpdate();
+
+                if (checkInResult > 0) {
+                    con.commit();
+                    System.out.println("Check-in processed successfully.");
+                    AddingRooms(null, 0);
+                } else {
+                    System.out.println("Error during check-in.");
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage() + " Error occurred during check-in.");
+            }
+        }
+        clearAll();
     }
 
     @FXML
@@ -689,36 +766,10 @@ public class staffRoomDetailsController {
     }
 
     @FXML
-    void SwitchToLogInPage(ActionEvent event) {
-
-    }
-
-
-    @FXML
     void SwitchToServices(ActionEvent event) throws IOException {
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "staff", "services");
     }
 
-    @FXML
-    void increaseAction(ActionEvent event) {
-
-
-    }
-
-    @FXML
-    void decreaseAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void increaseAction1(ActionEvent event) {
-
-    }
-
-    @FXML
-    void decreaseAction1(ActionEvent event) {
-
-    }
 
     @FXML
     void SwitchToSetting(ActionEvent event) throws IOException {
@@ -732,17 +783,17 @@ public class staffRoomDetailsController {
         idORnrc.setText("");
         phoneNumber.setText("");
         duration.setText("");
-        deposit.setText("");
-        FirstName1.setText("");
-        LastName1.setText("");
-        phoneNumber1.setText("");
-        total.setText("");
-        deposit1.setText("");
+        FirstName.setText("");
+        LastName.setText("");
+        phoneNumber.setText("");
+        deposit11.setText("");
     }
 
     @FXML
     void logoutAct(ActionEvent e) {
         logoutController.logout(e);
     }
+
+
 
 }

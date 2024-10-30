@@ -1,7 +1,6 @@
 package project.hotelsystem.controller;
 
 
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -55,6 +54,7 @@ public class adminAuditLogController {
             };
         }
     };
+
     boolean flag = false;
     Timeline timeline;
     @FXML
@@ -96,7 +96,6 @@ public class adminAuditLogController {
 
     @FXML
     void initialize() {
-
 
         logs.setOnSucceeded(workerStateEvent -> {
 

@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import project.hotelsystem.database.models.audit_logs;
 import project.hotelsystem.database.models.room;
+import project.hotelsystem.database.models.room_type_details;
 import project.hotelsystem.database.models.user;
 
 import java.io.File;
@@ -265,5 +266,99 @@ public class dropdownManager {
         return popup;
     }
 
+    public static Popup createRoomTypeDropdown(Button dropdownButton, ObservableList<room_type_details> rooms) {
 
+        Popup popup = new Popup();
+        popup.setAutoHide(true);
+
+        VBox container = new VBox(10);
+        container.setStyle("""
+                -fx-background-color: #f4f4f9; 
+                -fx-border-color: #dcdde1; 
+                -fx-border-radius: 10; 
+                -fx-background-radius: 10;
+                -fx-padding: 10;
+                -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 0);
+                """);
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search rooms...");
+        searchField.setPrefWidth(250);
+        searchField.setStyle("""
+                -fx-background-color: #ffffff; 
+                -fx-border-color: #ced6e0;
+                -fx-border-radius: 8; 
+                -fx-padding: 8;
+                -fx-font-size: 14px;
+                """);
+
+        ListView<room_type_details> roomListView = new ListView<>(rooms);
+        roomListView.setPrefHeight(200);
+        roomListView.setPrefWidth(250);
+
+        try {
+            URI uri = new File("src/main/resources/css/dropdown.css").toURI();
+            roomListView.getStylesheets().add(uri.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        roomListView.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(room_type_details item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getDescription());
+                    setStyle("""
+                            -fx-padding: 10; 
+                            -fx-background-color: transparent;
+                            -fx-font-size: 14px;
+                            -fx-text-fill: #2f3640;
+                            """);
+                    this.setOnMouseEntered(e -> setStyle("-fx-background-color: #dcdde1;"));
+                    this.setOnMouseExited(e -> setStyle("-fx-background-color: transparent;"));
+                }
+            }
+        });
+
+        AtomicBoolean isTyping = new AtomicBoolean(false);
+        searchField.setOnKeyReleased(event -> {
+            isTyping.set(true);
+
+            PauseTransition pause = new PauseTransition(Duration.millis(300));
+            pause.setOnFinished(e -> {
+                String filter = searchField.getText().toLowerCase();
+
+                roomListView.getSelectionModel().clearSelection();
+
+                ObservableList<room_type_details> filteredRooms = rooms.stream()
+                        .filter(room -> room.getDescription().toLowerCase().contains(filter))
+                        .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+                roomListView.setItems(filteredRooms);
+                isTyping.set(false);
+            });
+            pause.play();
+        });
+
+        roomListView.getSelectionModel().selectedItemProperty().addListener((obs, oldRoom, newRoom) -> {
+            if (newRoom != null && !isTyping.get()) {
+                String selectedText = newRoom.getDescription();
+                dropdownButton.setText(selectedText + "  ▼");
+                dropdownButton.setUserData(newRoom);
+                popup.hide();
+
+                roomListView.setItems(rooms);
+                searchField.clear();
+            }
+        });
+
+        container.getChildren().addAll(roomListView,searchField);
+
+        popup.getContent().add(container);
+
+        return popup;
+    }
 }

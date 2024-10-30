@@ -16,6 +16,7 @@ module project.hotelsystem {
     requires javafx.swing;
     requires commons;
     requires Java.WebSocket;
+    requires redis.clients.jedis;
 
 
     opens project.hotelsystem to javafx.fxml;

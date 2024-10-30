@@ -69,13 +69,22 @@ public class dbsetupController {
         local_url.setText(dbs.getLocal_url());
         local_user.setText(dbs.getLocal_user());
 
-        cloud_url.setText(dbs.getCloud_url());
+        cloud_url.setText(dbs.getWeb_url());
         cloud_user.setText(dbs.getCloud_user());
     }
 
     @FXML
     void save_cloud_db(ActionEvent event) {
 
+        String url = cloud_url.getText().replaceAll("\\s+","");
+
+        dbs.saveWebSettings(url);
+
+        notificationManager.showNotification(
+                "Saved Web Address",
+                "success",
+                (Stage) go_back.getScene().getWindow()
+        );
 
     }
 
@@ -95,7 +104,7 @@ public class dbsetupController {
         }
 
 
-        String url = local_url.getText();
+        String url = local_url.getText().replaceAll("\\s+","");
         String user = local_user.getText();
         String pw = local_pw.getText();
 

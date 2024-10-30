@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -123,6 +124,8 @@ public class staffServiceController {
     private Button txfRoomNo;
     @FXML
     private TextField txfServiceName;
+    @FXML
+    private Pane selectedPane;
     @FXML
     private Button roomNo;
     private final Map<String, Pane> paneMap = new HashMap();
@@ -706,7 +709,7 @@ public class staffServiceController {
 
         Pane catePane = new Pane();
         catePane.setPrefSize(120, 166);
-        catePane.setStyle("-fx-background-color: #007f66;");
+        catePane.setStyle("-fx-background-color: #4CE4AE;");
 
         try {
             Blob b = fm.getImage();
@@ -719,16 +722,20 @@ public class staffServiceController {
             catePane.getChildren().add(iv);
             catePane.getChildren().get(0).setLayoutX(15);
             catePane.getChildren().get(0).setLayoutY(14);
+            Label CategoryName = new Label(fm.getCategory());
+
+            CategoryName.setFont(new Font(20.0));
+            catePane.getChildren().add(CategoryName);
+            CategoryName.setPrefWidth(100);
+            CategoryName.setAlignment(Pos.CENTER);
+            catePane.getChildren().get(1).setLayoutX(16);
+            catePane.getChildren().get(1).setLayoutY(120);
+            catePane.setOnMouseClicked(event -> showFoodByCat(event, CategoryName, catePane));
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Label CategoryName = new Label(fm.getCategory());
-
-        CategoryName.setFont(new Font(20.0));
-        catePane.getChildren().add(CategoryName);
-        catePane.getChildren().get(1).setLayoutX(16);
-        catePane.getChildren().get(1).setLayoutY(120);
 
 
         return catePane;
@@ -737,36 +744,41 @@ public class staffServiceController {
     private Pane createFoodPane(food fm) {
 
         Pane newPane = new Pane();
-        newPane.setStyle("-fx-background-color: #007f66;");
-        newPane.setPrefWidth(220);
-        newPane.setPrefHeight(189);
+        newPane.setStyle("-fx-background-color: #4CE4AE;");
+        newPane.setPrefWidth(190);
+        newPane.setPrefHeight(160);
+
 
         try {
             Blob b = fm.getImage();
             byte[] imgByte = b.getBytes(1, (int) b.length());
             Image img = new Image(new ByteArrayInputStream(imgByte));
             ImageView iv = new ImageView(img);
-            iv.setFitHeight(111);
-            iv.setFitWidth(89);
+            iv.setFitHeight(100);
+            iv.setFitWidth(80);
             iv.setPreserveRatio(true);
             newPane.getChildren().add(iv);
-            newPane.getChildren().get(0).setLayoutX(15);
-            newPane.getChildren().get(0).setLayoutY(14);
+            newPane.getChildren().get(0).setLayoutX(8);
+            newPane.getChildren().get(0).setLayoutY(15);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         Label foodName = new Label(fm.getName());
-        foodName.setStyle("-fx-font-size: 20; -fx-font-family: Arial;");
+        //foodName.setStyle("-fx-font-size: 20; -fx-font-family: Arial;");
         newPane.getChildren().add(foodName);
-        newPane.getChildren().get(1).setLayoutX(119);
-        newPane.getChildren().get(1).setLayoutY(21);
-        foodName.setStyle("-fx-font-size: 20px;");
+        foodName.setPrefWidth(80);
+        foodName.setPrefHeight(45);
+        foodName.maxWidth(80);
+        foodName.setWrapText(true);
+        foodName.maxWidthProperty().bind(newPane.widthProperty());
+        newPane.getChildren().get(1).setLayoutX(100);
+        newPane.getChildren().get(1).setLayoutY(5);
 
         TextField text = new TextField();
-        text.setPrefWidth(54);
-        text.setPrefHeight(31);
+        text.setPrefWidth(35);
+        text.setPrefHeight(26);
         text.setStyle("-fx-background-radius: 10;");
         text.setText("0");
         text.setPromptText("0");
@@ -790,39 +802,39 @@ public class staffServiceController {
         });
         addBtn.setUserData(fm);
         newPane.getChildren().add(addBtn);
-        newPane.getChildren().get(2).setLayoutX(148);
-        newPane.getChildren().get(2).setLayoutY(139);
-        addBtn.setPrefSize(67, 36);
+        newPane.getChildren().get(2).setLayoutX(110);
+        newPane.getChildren().get(2).setLayoutY(120);
+        addBtn.setPrefSize(55, 35);
         addBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
 
         Label currency1 = new Label("ks");
         currency1.setStyle("fx-font-size: 15px");
         newPane.getChildren().add(currency1);
-        newPane.getChildren().get(3).setLayoutX(120);
-        newPane.getChildren().get(3).setLayoutY(64);
+        newPane.getChildren().get(3).setLayoutX(110);
+        newPane.getChildren().get(3).setLayoutY(55);
 
         Label price = new Label(fm.getPrice() + "");
         price.setStyle("fx-font-size: 15px");
         newPane.getChildren().add(price);
-        newPane.getChildren().get(4).setLayoutX(148);
-        newPane.getChildren().get(4).setLayoutY(64);
+        newPane.getChildren().get(4).setLayoutX(120);
+        newPane.getChildren().get(4).setLayoutY(55);
 
         Label stock = new Label("Stock:");
         stock.setStyle("fx-font-size: 15px");
         newPane.getChildren().add(stock);
-        newPane.getChildren().get(5).setLayoutX(120);
-        newPane.getChildren().get(5).setLayoutY(93);
+        newPane.getChildren().get(5).setLayoutX(100);
+        newPane.getChildren().get(5).setLayoutY(82);
 
         Label stockLabel = new Label(fm.getStock() + "");
         stockLabel.setStyle("fx-font-size: 15px");
         newPane.getChildren().add(stockLabel);
-        newPane.getChildren().get(6).setLayoutX(171);
-        newPane.getChildren().get(6).setLayoutY(93);
+        newPane.getChildren().get(6).setLayoutX(140);
+        newPane.getChildren().get(6).setLayoutY(82);
 
         HBox hbox = new HBox();
         newPane.getChildren().add(hbox);
-        hbox.setLayoutX(14);
-        hbox.setLayoutY(142);
+        hbox.setLayoutX(10);
+        hbox.setLayoutY(120);
 
         Button incBtn = new Button(">");
         incBtn.setStyle("-fx-background-radius: 10; -fx-background-color: white;");
@@ -947,6 +959,30 @@ public class staffServiceController {
 
 
         return newPane;
+    }
+    private void showFoodByCat(MouseEvent event, Label category, Pane clickedPane) {
+        foodView.getChildren().clear();
+        foodView.getChildren().removeAll();
+        List<food> allFood = foodController.getFoodByCat();
+        for (food selectedFood : allFood) {
+            if (selectedFood.getCategory().equals(category.getText())) {
+
+                Pane nfp = createFoodPane(selectedFood);
+                foodView.getChildren().add(nfp);
+            }
+        }
+        // Check if there's a previously selected pane and reset its color
+        for (Node node : catPane.getChildren()) {
+            if (node instanceof Pane) {
+                Pane pane = (Pane) node;
+                pane.setStyle("-fx-background-color:  #2f847c;");
+            }
+        }
+        // Change the color of the clicked pane
+        clickedPane.setStyle("-fx-border-color: blue; -fx-border-width: 2;"); // Change color to indicate selection
+
+        // Update the selectedPane to the current one
+        selectedPane = clickedPane;
     }
 
 }

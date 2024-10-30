@@ -1,7 +1,10 @@
 package project.hotelsystem.database.connection;
 
-import java.sql.*;
 import project.hotelsystem.settings.databaseSettings;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBConnection {
 
@@ -21,17 +24,11 @@ public class DBConnection {
 
         dbs.loadSettings();
 
-        if(!db){
-            String url = dbs.getLocal_url();
-            String username = dbs.getLocal_user();
-            String password = dbs.getLocal_password();
 
-            return DriverManager.getConnection(url, username, password);
-        }
+        String url = dbs.getLocal_url();
+        String username = dbs.getLocal_user();
+        String password = dbs.getLocal_password();
 
-        String url = "jdbc:mysql://pleaseinputyourcloudhere";
-        String username = "cloudcloud";
-        String password = "quite a secure password";
 
         return DriverManager.getConnection(url, username, password);
 

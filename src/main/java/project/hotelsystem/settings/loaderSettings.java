@@ -31,6 +31,13 @@ public class loaderSettings {
         currentScene.getRoot().setEffect(dim);
     }
 
+    public static void applyDimmingEffect(Stage stage) {
+        Scene currentScene = stage.getScene();
+        ColorAdjust dim = new ColorAdjust();
+        dim.setBrightness(-0.5);
+        currentScene.getRoot().setEffect(dim);
+    }
+
     public static void removeDimmingEffect(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene currentScene = stage.getScene();
@@ -38,6 +45,14 @@ public class loaderSettings {
         dim.setBrightness(0);
         currentScene.getRoot().setEffect(dim);
     }
+
+    public static void removeDimmingEffect(Stage stage) {
+        Scene currentScene = stage.getScene();
+        ColorAdjust dim = new ColorAdjust();
+        dim.setBrightness(0);
+        currentScene.getRoot().setEffect(dim);
+    }
+
 
 
     public static Stage showLoadingScreen(Task<Parent> loadSceneTask, Stage mainStage) {

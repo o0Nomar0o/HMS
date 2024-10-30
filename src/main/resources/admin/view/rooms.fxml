@@ -101,7 +101,7 @@
                                     <children>
                                         <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="18.0" layoutY="17.0" prefHeight="607.0" prefWidth="637.0" style="-fx-background-color: transparent; -fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="17.0">
                                             <content>
-                                                <TilePane id="inner-sections" fx:id="roomsView" prefHeight="605.0" prefWidth="641.0" style="-fx-padding: 15px; -fx-vgap: 25px; -fx-hgap: 25px; -fx-background-radius: 1.25em;">
+                                                <TilePane id="inner-sections" fx:id="roomsView" alignment="TOP_CENTER" prefHeight="605.0" prefWidth="641.0" style="-fx-padding: 15px; -fx-vgap: 25px; -fx-hgap: 25px; -fx-background-radius: 1.25em;" tileAlignment="TOP_CENTER">
                                                     <children>
                                                         <Pane prefHeight="90.0" prefWidth="150.0" style="-fx-background-color: #EDEDED; -fx-background-radius: 1.25em;">
                                                             <children>

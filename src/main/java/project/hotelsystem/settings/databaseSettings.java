@@ -19,11 +19,11 @@ public class databaseSettings {
     private String local_user = "root";
     private String local_password;
 
-    private static final String CLOUD_URL_KEY = "url_cloud";
+    private static final String WEB_URL_KEY = "url_web";
     private static final String CLOUD_USER_KEY = "user_cloud";
     private static final String CLOUD_PASSWORD_KEY = "password_cloud";
 
-    private String cloud_url;
+    private String web_url;
     private String cloud_user;
     private String cloud_password;
 
@@ -67,14 +67,14 @@ public class databaseSettings {
         preferences.put(LOCAL_PASSWORD_KEY, local_password);
     }
 
-    public String getCloud_url() {
-        return cloud_url;
+    public String getWeb_url() {
+        return web_url;
     }
 
-    public void setCloud_url(String cloud_url) {
+    public void setWeb_url(String web_url) {
         Preferences preferences = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
-        this.cloud_url = cloud_url;
-        preferences.put(CLOUD_URL_KEY, cloud_url);
+        this.web_url = web_url;
+        preferences.put(WEB_URL_KEY, web_url);
 
     }
 
@@ -104,7 +104,7 @@ public class databaseSettings {
         this.local_user = preferences.get(LOCAL_USER_KEY, local_user);
         this.local_password = preferences.get(LOCAL_PASSWORD_KEY, "");
 
-        this.cloud_url = preferences.get(CLOUD_URL_KEY, "jdbc:mysql://cloud-host:3306/defaultDB");
+        this.web_url = preferences.get(WEB_URL_KEY, "ws://xxxx:8080");
         this.cloud_user = preferences.get(CLOUD_USER_KEY, "");
         this.cloud_password = preferences.get(CLOUD_PASSWORD_KEY, "");
     }
@@ -115,7 +115,7 @@ public class databaseSettings {
         preferences.put(LOCAL_USER_KEY, local_user);
         preferences.put(LOCAL_PASSWORD_KEY, local_password);
 
-        preferences.put(CLOUD_URL_KEY, cloud_url);
+        preferences.put(WEB_URL_KEY, web_url);
         preferences.put(CLOUD_USER_KEY, cloud_user);
         preferences.put(CLOUD_PASSWORD_KEY, cloud_password);
     }
@@ -130,6 +130,15 @@ public class databaseSettings {
         preferences.put(LOCAL_URL_KEY, local_url);
         preferences.put(LOCAL_USER_KEY, local_user);
         preferences.put(LOCAL_PASSWORD_KEY, local_password);
+
+    }
+
+    public void saveWebSettings(String url){
+        Preferences preferences = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
+
+        this.web_url = url;
+
+        preferences.put(WEB_URL_KEY, web_url);
 
     }
 
