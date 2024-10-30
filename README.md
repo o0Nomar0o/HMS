@@ -3,7 +3,7 @@
 ## Disclaimer
 This project was created as part of a school assignment and is only intended for educational purposes. It is not a commercially viable program.
 
-Feel free to use and modify this code for learning purposes. If you intend to utilize major portions of this code in your own project, please include proper attribution.
+Feel free to use and modify this code for learning purposes.
 
 ## Overview
 This Hotel Management System project is intended to help hotel employees with daily operations by allowing for effective handling of room reservations, real-time room status updates, order placements, and service management. This solution is meant for internal usage, not direct customer access.
