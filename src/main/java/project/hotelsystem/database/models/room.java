@@ -16,6 +16,10 @@ public class room {
         this.room_status = room_status;
     }
 
+    public room(int floor) {
+        this.floor = floor;
+    }
+
     public room(String room_no) {
         this.room_no = room_no;
     }

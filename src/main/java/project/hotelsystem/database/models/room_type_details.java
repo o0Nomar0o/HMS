@@ -13,6 +13,10 @@ public class room_type_details {
         this.pricePerHour = pricePerHour;
     }
 
+    public room_type_details(String description) {
+        this.description = description;
+    }
+
     public String getId() {
         return id;
     }

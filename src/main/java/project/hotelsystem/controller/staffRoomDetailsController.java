@@ -16,10 +16,14 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import project.hotelsystem.database.controller.*;
-import project.hotelsystem.database.models.*;
-import project.hotelsystem.settings.*;
-import project.hotelsystem.util.*;
+import project.hotelsystem.database.controller.roomController;
+import project.hotelsystem.database.controller.roomTypeController;
+import project.hotelsystem.database.models.room;
+import project.hotelsystem.database.models.room_type_details;
+import project.hotelsystem.settings.databaseSettings;
+import project.hotelsystem.settings.invoiceSettings;
+import project.hotelsystem.util.dropdownManager;
+import project.hotelsystem.util.notificationManager;
 
 import java.io.IOException;
 import java.sql.*;
@@ -150,12 +154,8 @@ public class staffRoomDetailsController {
     @FXML
     public void initialize() {
         orders_button.setDisable(true);
-        AddingRooms(null, 0);
+        AddingRooms(null, 0, null);
         updateRoomCounts();
-
-        //initialize dropdown box for floor and room type
-        floor_filter.setUserData("All");
-        room_filter.setUserData("All");
 
         arrivalDate.setValue(LocalDate.now());
         arrivalDate.setDayCellFactory(dp -> new DateCell() {
@@ -178,14 +178,74 @@ public class staffRoomDetailsController {
             if (!roomDp.isShowing()) {
                 Bounds bounds = room_filter.localToScreen(room_filter.getBoundsInLocal());
                 roomDp.show(room_filter.getScene().getWindow(),
-                        bounds.getMinX(), bounds.getMinY()-280);
+                        bounds.getMinX(), bounds.getMinY() - 280);
             }
         });
 
+        ObservableList<room> olr = FXCollections.observableArrayList(roomController.getFloors());
+
+        Popup floorDp = dropdownManager.createFloorDropdown(floor_filter, olr);
+        floor_filter.setOnAction(event -> {
+            if (!floorDp.isShowing()) {
+                Bounds bounds = floor_filter.localToScreen(floor_filter.getBoundsInLocal());
+                floorDp.show(floor_filter.getScene().getWindow(),
+                        bounds.getMinX(), bounds.getMinY() - 280);
+            }
+        });
+
+        floor_filter.textProperty().addListener((ob, ov, nv) -> {
+            if (nv != null) {
+
+                boolean flag = true;
+                int floor = 0;
+                try {
+                    int flootToSearch = Integer.parseInt(nv);
+                } catch (Exception e) {
+                    flag = false;
+                }
+                if (flag)
+                    floor = Integer.parseInt(nv);
+                if (room_filter.getText().contains("All")) {
+                    AddingRooms(null, floor, null);
+                    return;
+                }
+
+                AddingRooms(null, floor, room_filter.getText());
+
+
+            }
+        });
+
+        room_filter.textProperty().addListener((ob, ov, nv) -> {
+            if (nv != null) {
+
+                if (room_filter.getText().contains("All")
+                        && floor_filter.getText().contains("All")) {
+                    AddingRooms(null, 0, null);
+                    return;
+                }
+
+                if (!room_filter.getText().contains("All")
+                        && floor_filter.getText().contains("All")) {
+                    AddingRooms(null, 0, nv);
+                    return;
+                }
+
+                int floor = Integer.parseInt(floor_filter.getText());
+
+                if (room_filter.getText().contains("All")) {
+                    AddingRooms(null, floor, null);
+                    return;
+                }
+
+                AddingRooms(null, floor, nv);
+
+            }
+        });
 
     }
 
-    public void AddingRooms(String roomIdToSearch, int floorFilter) {
+    public void AddingRooms(String roomIdToSearch, int floorFilter, String rt) {
 
         RoomShowBody.getChildren().clear();
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
@@ -199,18 +259,29 @@ public class staffRoomDetailsController {
             if (roomIdToSearch != null && !roomIdToSearch.isEmpty()) {
                 query += " AND room.room_no = ?";
             }
+
+            int qIndex = 1;
+
             if (floorFilter != 0) {
                 query += " AND room.floor = ?";
+                qIndex ++;
             }
 
             String floor_f = "All";
-            if (!floor_f.matches("All")) {
-                query += " AND room_type.description = ? ";
-            }
+
+//            if (!floor_f.matches("All")) {
+//                query += " AND room_type.description = ? ";
+//            }
+
+            if (rt != null) query += " AND room_type.description = ? ";
+
+            query += " ORDER BY room.room_no ASC; ";
 
             PreparedStatement stmt = conn.prepareStatement(query);
 
-            if (!floor_f.matches("All")) stmt.setString(2, floor_f);
+//            if (!floor_f.matches("All")) stmt.setString(2, floor_f);
+
+            if (rt != null) stmt.setString(qIndex, rt);
 
             int index = 1;
             if (roomIdToSearch != null && !roomIdToSearch.isEmpty()) {
@@ -553,7 +624,7 @@ public class staffRoomDetailsController {
                             updateCheckOutDateStmt.executeUpdate();        // Execute the third update
                         }
                         body.getChildren().removeAll(overlayPane, customerDetailsPane);
-                        AddingRooms(null, 0);
+                        AddingRooms(null, 0, null);
 
                     } catch (SQLException ex) {
                         ex.printStackTrace();
@@ -573,7 +644,7 @@ public class staffRoomDetailsController {
     @FXML
     void SearchRoom(ActionEvent event) {
         String enteredRoomId = searchField.getText().trim();
-        AddingRooms(enteredRoomId, 0);
+        AddingRooms(enteredRoomId, 0, null);
     }
 
     // Method to fetch room counts from the database
@@ -599,7 +670,7 @@ public class staffRoomDetailsController {
 
     @FXML
     void RoomTypeAction(ActionEvent event) {
-        AddingRooms("", 0);  // Call the AddingRooms method to update the room list based on the selected filters
+        AddingRooms("", 0, null);  // Call the AddingRooms method to update the room list based on the selected filters
     }
 
 
@@ -624,15 +695,15 @@ public class staffRoomDetailsController {
                 floor = 0;
                 break;
         }
-        AddingRooms("", floor);
+        AddingRooms("", floor, "");
     }
 
 
     @FXML
     void BookingAction(ActionEvent event) {
         if (selectedRoomNo == null || selectedRoomNo.isEmpty()) {
-            notificationManager.showNotification("Select a room","faiure",
-                    (Stage)logout.getScene().getWindow());
+            notificationManager.showNotification("Select a room", "faiure",
+                    (Stage) logout.getScene().getWindow());
             return;
         }
 
@@ -650,7 +721,7 @@ public class staffRoomDetailsController {
             int stayDurationNights = Integer.parseInt(duration1.getText());
             int stayDurationHours = 0;
 
-            addBooking(guestName, phone_number,checkInDate,stayDurationNights);
+            addBooking(guestName, phone_number, checkInDate, stayDurationNights);
 
         }
         clearAll();
@@ -688,9 +759,9 @@ public class staffRoomDetailsController {
                 return;
             }
 
-           addCheckIn(guestName,phone_number,
-                   checkInDate,stayDurationNights,
-                   email,guestId);
+            addCheckIn(guestName, phone_number,
+                    checkInDate, stayDurationNights,
+                    email, guestId);
 
         }
 
@@ -913,7 +984,7 @@ public class staffRoomDetailsController {
 
     private void addCheckInToDB(String guestName, String phoneNumber,
                                 LocalDate checkInDate, int stayDurationNights,
-                                String email, String guestId){
+                                String email, String guestId) {
 
         String checkInSql = "CALL add_checkIn(?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -937,12 +1008,12 @@ public class staffRoomDetailsController {
             if (checkInResult > 0) {
                 con.commit();
                 System.out.println("Check-in processed successfully.");
-                AddingRooms(null, 0);
+                AddingRooms(null, 0, null);
                 notificationManager.showNotification("Successfully Checked In",
-                        "Success",(Stage) room_filter.getScene().getWindow());
+                        "Success", (Stage) room_filter.getScene().getWindow());
             } else {
                 notificationManager.showNotification("Error During Checked In",
-                        "failure",(Stage) room_filter.getScene().getWindow());
+                        "failure", (Stage) room_filter.getScene().getWindow());
             }
 
         } catch (SQLException e) {
@@ -953,7 +1024,7 @@ public class staffRoomDetailsController {
 
     private void addBooking(String guestName, String phoneNumber,
                             LocalDate checkInDate, int stayDurationNights
-                            ) {
+    ) {
 
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -1114,7 +1185,7 @@ public class staffRoomDetailsController {
 
 
     private void addBookingToDB(String guestName, String phoneNumber,
-                                LocalDate checkInDate, int stayDurationNights){
+                                LocalDate checkInDate, int stayDurationNights) {
 
         String checkInSql = "CALL add_booking(?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -1137,9 +1208,9 @@ public class staffRoomDetailsController {
             if (checkInResult > 0) {
                 con.commit();
                 System.out.println("Check-in processed successfully.");
-                AddingRooms(null, 0);
+                AddingRooms(null, 0, null);
                 notificationManager.showNotification("Successfully Booked",
-                        "success",(Stage)logout.getScene().getWindow());
+                        "success", (Stage) logout.getScene().getWindow());
             } else {
                 System.out.println("Error during check-in.");
             }

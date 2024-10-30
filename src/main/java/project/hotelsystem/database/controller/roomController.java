@@ -83,6 +83,27 @@ public class roomController {
 
 		return list;
 	}
+
+	public static ArrayList<room> getFloors(){
+		String sql = "SELECT DISTINCT floor from room";
+		ArrayList<room> list = new ArrayList<>();
+
+		try (Connection con = DBConnection.getConnection();
+			 PreparedStatement psmt = con.prepareStatement(sql)){
+			ResultSet rs = psmt.executeQuery();
+
+			while (rs.next()) {
+				int floor = rs.getInt(1);
+
+				list.add(new room(floor));
+			}
+			rs.close();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
 	public static boolean saveRoom(String roomNo, String rtid, int floor, String status){
 		String sql = "{call add_new_room(?,?,?)}";
 

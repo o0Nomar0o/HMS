@@ -6,11 +6,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -271,6 +269,8 @@ public class dropdownManager {
         Popup popup = new Popup();
         popup.setAutoHide(true);
 
+        rooms.add(new room_type_details("All"));
+
         VBox container = new VBox(10);
         container.setStyle("""
                 -fx-background-color: #f4f4f9; 
@@ -317,8 +317,19 @@ public class dropdownManager {
                             -fx-font-size: 14px;
                             -fx-text-fill: #2f3640;
                             """);
-                    this.setOnMouseEntered(e -> setStyle("-fx-background-color: #dcdde1;"));
-                    this.setOnMouseExited(e -> setStyle("-fx-background-color: transparent;"));
+                    this.setOnMouseEntered(e -> setStyle("""
+                            -fx-background-color: #dcdde1;
+                            -fx-padding: 10; 
+                            
+                            -fx-font-size: 14px;
+                            -fx-text-fill: #2f3640;
+                            """));
+                    this.setOnMouseExited(e -> setStyle("""
+                            -fx-background-color: transparent;
+                            -fx-padding: 10; 
+                            -fx-font-size: 14px;
+                            -fx-text-fill: #2f3640;
+                            """));
                 }
             }
         });
@@ -346,7 +357,16 @@ public class dropdownManager {
         roomListView.getSelectionModel().selectedItemProperty().addListener((obs, oldRoom, newRoom) -> {
             if (newRoom != null && !isTyping.get()) {
                 String selectedText = newRoom.getDescription();
-                dropdownButton.setText(selectedText + "  ▼");
+                if (newRoom.getDescription().matches("All"))
+                    dropdownButton.setText(selectedText + "Rooms  ▼");
+                else
+                    dropdownButton.setText(selectedText);
+
+                Text text = new Text(dropdownButton.getText());
+                double width = text.getLayoutBounds().getWidth() + 20;
+                dropdownButton.setPrefWidth(width);
+                dropdownButton.setMinWidth(width);
+
                 dropdownButton.setUserData(newRoom);
                 popup.hide();
 
@@ -355,10 +375,145 @@ public class dropdownManager {
             }
         });
 
-        container.getChildren().addAll(roomListView,searchField);
+        container.getChildren().addAll(roomListView, searchField);
 
         popup.getContent().add(container);
 
         return popup;
     }
+
+    public static Popup createFloorDropdown(Button dropdownButton, ObservableList<room> rooms) {
+
+        Popup popup = new Popup();
+        popup.setAutoHide(true);
+
+        rooms.add(new room(0));
+
+        VBox container = new VBox(10);
+        container.setStyle("""
+                -fx-background-color: #f4f4f9; 
+                -fx-border-color: #dcdde1; 
+                -fx-border-radius: 10; 
+                -fx-background-radius: 10;
+                -fx-padding: 10;
+                -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0.5, 0, 0);
+                """);
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search rooms...");
+        searchField.setPrefWidth(250);
+        searchField.setStyle("""
+                -fx-background-color: #ffffff; 
+                -fx-border-color: #ced6e0;
+                -fx-border-radius: 8; 
+                -fx-padding: 8;
+                -fx-font-size: 14px;
+                """);
+
+        ListView<room> roomListView = new ListView<>(rooms);
+        roomListView.setPrefHeight(200);
+        roomListView.setPrefWidth(250);
+
+        try {
+            URI uri = new File("src/main/resources/css/dropdown.css").toURI();
+            roomListView.getStylesheets().add(uri.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        roomListView.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(room item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    if(item.getFloor() == 0) setText("All Floors");
+                    else setText("Floor "+item.getFloor());
+
+                    setStyle("""
+                            -fx-padding: 10; 
+                            -fx-background-color: transparent;
+                            -fx-font-size: 14px;
+                            -fx-text-fill: #2f3640;
+                            """);
+                    this.setOnMouseEntered(e -> setStyle("""
+                            -fx-background-color: #dcdde1;
+                            -fx-padding: 10; 
+                            
+                            -fx-font-size: 14px;
+                            -fx-text-fill: #2f3640;
+                            """));
+                    this.setOnMouseExited(e -> setStyle("""
+                            -fx-background-color: transparent;
+                            -fx-padding: 10; 
+                            -fx-font-size: 14px;
+                            -fx-text-fill: #2f3640;
+                            """));
+                }
+            }
+        });
+
+        AtomicBoolean isTyping = new AtomicBoolean(false);
+
+        TextFormatter<String> formatter = new TextFormatter<>(change -> {
+            if (change.getControlNewText().matches("\\d*")) {
+                return change;
+            }
+            return null;
+        });
+        searchField.setTextFormatter(formatter);
+
+        searchField.setOnKeyReleased(event -> {
+            isTyping.set(true);
+
+            PauseTransition pause = new PauseTransition(Duration.millis(300));
+            pause.setOnFinished(e -> {
+
+                if (!event.getCharacter().matches("[0-9]")) {
+                    event.consume();
+                }
+
+                int filter = Integer.parseInt(searchField.getText());
+
+                roomListView.getSelectionModel().clearSelection();
+
+                ObservableList<room> filteredRooms = rooms.stream()
+                        .filter(room -> room.getFloor() == filter)
+                        .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+                roomListView.setItems(filteredRooms);
+                isTyping.set(false);
+            });
+            pause.play();
+        });
+
+        roomListView.getSelectionModel().selectedItemProperty().addListener((obs, oldRoom, newRoom) -> {
+            if (newRoom != null && !isTyping.get()) {
+                int selectedText = newRoom.getFloor();
+                if (newRoom.getFloor() == 0)
+                    dropdownButton.setText("All Floors  ▼");
+                else
+                    dropdownButton.setText(selectedText + "");
+
+                Text text = new Text(dropdownButton.getText());
+                double width = text.getLayoutBounds().getWidth() + 20;
+                dropdownButton.setPrefWidth(width);
+                dropdownButton.setMinWidth(width);
+
+                dropdownButton.setUserData(newRoom);
+                popup.hide();
+
+                roomListView.setItems(rooms);
+                searchField.clear();
+            }
+        });
+
+        container.getChildren().addAll(roomListView, searchField);
+
+        popup.getContent().add(container);
+
+        return popup;
+    }
+
 }
