@@ -21,13 +21,17 @@ import project.hotelsystem.database.controller.roomTypeController;
 import project.hotelsystem.database.models.room;
 import project.hotelsystem.database.models.room_type_details;
 import project.hotelsystem.settings.databaseSettings;
-import project.hotelsystem.settings.invoiceSettings;
+import project.hotelsystem.settings.*;
 import project.hotelsystem.util.dropdownManager;
 import project.hotelsystem.util.notificationManager;
 
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Rooms Reservation/Booking Controller class
@@ -81,10 +85,10 @@ public class staffRoomDetailsController {
     private Button bookings_button;
 
     @FXML
-    private ComboBox<?> ck_payment_method;
+    private ComboBox<String> ck_payment_method;
 
     @FXML
-    private ComboBox<?> bk_payment_method;
+    private ComboBox<String> bk_payment_method;
 
     @FXML
     private TextField deposit11;
@@ -257,6 +261,14 @@ public class staffRoomDetailsController {
 
             }
         });
+
+        List<String> paymentMethodsList = new ArrayList<>(Arrays.asList("Cash","Credit Card", "Debit Card", "Bank Transfer"));
+        ObservableList<String> paymentMethods = FXCollections.observableArrayList(paymentMethodsList);
+        bk_payment_method.setItems(paymentMethods);
+        ck_payment_method.setItems(paymentMethods);
+
+        bk_payment_method.getSelectionModel().selectFirst();
+        ck_payment_method.getSelectionModel().selectFirst();
 
     }
 
@@ -442,6 +454,7 @@ public class staffRoomDetailsController {
             AnchorPane.setTopAnchor(roomPane, 20.0);
             AnchorPane.setLeftAnchor(roomPane, 20.0);
             AnchorPane.setRightAnchor(roomPane, 20.0);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -612,7 +625,7 @@ public class staffRoomDetailsController {
                 });
 
                 checkOutButton.setOnAction(e -> {
-                    LocalDate currentDate = LocalDate.now();
+                    LocalDateTime currentDate = LocalDateTime.now();
                     ivs.openPdfModal(bookingId + "", (Stage) overlayPane.getScene().getWindow());
 
                     try (Connection connForUpdate = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
@@ -634,7 +647,7 @@ public class staffRoomDetailsController {
                         String updateCheckOutDateQuery = "UPDATE booking SET check_out = ? WHERE booking_id = ?";
 
                         try (PreparedStatement updateCheckOutDateStmt = connForUpdate.prepareStatement(updateCheckOutDateQuery)) {
-                            updateCheckOutDateStmt.setDate(1, java.sql.Date.valueOf(currentDate));
+                            updateCheckOutDateStmt.setTimestamp(1, java.sql.Timestamp.valueOf(currentDate));
                             updateCheckOutDateStmt.setInt(2, bookingId);   // Use the booking ID
                             updateCheckOutDateStmt.executeUpdate();        // Execute the third update
                         }
@@ -736,6 +749,8 @@ public class staffRoomDetailsController {
             int stayDurationNights = Integer.parseInt(duration1.getText());
             int stayDurationHours = 0;
 
+            loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
+
             addBooking(guestName, phone_number, checkInDate, stayDurationNights);
 
         }
@@ -773,6 +788,8 @@ public class staffRoomDetailsController {
                 System.out.println("Input the details mf");
                 return;
             }
+
+            loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
 
             addCheckIn(guestName, phone_number,
                     checkInDate, stayDurationNights,
@@ -985,6 +1002,7 @@ public class staffRoomDetailsController {
         modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
         cancelButton.setOnAction(e -> {
+            loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
 
             modalStage.close();
         });
@@ -993,6 +1011,7 @@ public class staffRoomDetailsController {
                     checkInDate, stayDurationNights,
                     email, guestId);
             clearAll();
+            loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
             modalStage.close();
         });
     }
@@ -1001,7 +1020,7 @@ public class staffRoomDetailsController {
                                 LocalDate checkInDate, int stayDurationNights,
                                 String email, String guestId) {
 
-        String checkInSql = "CALL add_checkIn(?, ?, ?, ?, ?, ?, ?, ?)";
+        String checkInSql = "CALL add_checkIn(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
@@ -1017,6 +1036,7 @@ public class staffRoomDetailsController {
             psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
             psmtCheckIn.setInt(7, stayDurationNights);
             psmtCheckIn.setInt(8, 0);
+            psmtCheckIn.setString(9, ck_payment_method.getSelectionModel().getSelectedItem());
 
             int checkInResult = psmtCheckIn.executeUpdate();
 
@@ -1184,9 +1204,11 @@ public class staffRoomDetailsController {
         modalStage.show();
         modalRoot.setStyle("-fx-background-color: white;" + "-fx-background-radius: 2.5em;");
 
+        modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
         modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
         cancelButton.setOnAction(e -> {
+            loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
 
             modalStage.close();
         });
@@ -1194,6 +1216,7 @@ public class staffRoomDetailsController {
             addBookingToDB(guestName, phoneNumber,
                     checkInDate, stayDurationNights);
             clearAll();
+            loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
             modalStage.close();
         });
     }
@@ -1202,7 +1225,7 @@ public class staffRoomDetailsController {
     private void addBookingToDB(String guestName, String phoneNumber,
                                 LocalDate checkInDate, int stayDurationNights) {
 
-        String checkInSql = "CALL add_booking(?, ?, ?, ?, ?, ?, ?, ?)";
+        String checkInSql = "CALL add_booking(?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
              CallableStatement psmtCheckIn = con.prepareCall(checkInSql)) {
@@ -1211,12 +1234,11 @@ public class staffRoomDetailsController {
 
             psmtCheckIn.setString(2, guestName);
             psmtCheckIn.setString(3, phoneNumber);
-            psmtCheckIn.setString(5, "-");
-            psmtCheckIn.setString(4, "-");
+            psmtCheckIn.setInt(6, 0);
             psmtCheckIn.setString(1, selectedRoomNo);
-            psmtCheckIn.setDate(6, java.sql.Date.valueOf(checkInDate));
-            psmtCheckIn.setInt(7, stayDurationNights);
-            psmtCheckIn.setInt(8, 0);
+            psmtCheckIn.setDate(4, java.sql.Date.valueOf(checkInDate));
+            psmtCheckIn.setInt(5, stayDurationNights);
+            psmtCheckIn.setString(7, bk_payment_method.getSelectionModel().getSelectedItem());
 
             int checkInResult = psmtCheckIn.executeUpdate();
 

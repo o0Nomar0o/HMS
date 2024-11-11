@@ -35,7 +35,9 @@ public class foodController {
         }
         return -1;
     }
+
     public static List<food> getAllFood() {
+
         List<food> allFood = new ArrayList<>();
         String sql = "SELECT f.food_name, f.food_price, f.food_image, f.current_stock, fc.food_category, f.stock_status \n" +
                 "FROM food f\n" +

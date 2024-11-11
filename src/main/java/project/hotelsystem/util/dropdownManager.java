@@ -220,8 +220,18 @@ public class dropdownManager {
                             -fx-font-size: 14px;
                             -fx-text-fill: #2f3640;
                             """);
-                    this.setOnMouseEntered(e -> setStyle("-fx-background-color: #dcdde1;"));
-                    this.setOnMouseExited(e -> setStyle("-fx-background-color: transparent;"));
+                    this.setOnMouseEntered(e -> setStyle("""
+                            -fx-background-color: #dcdde1;
+                            -fx-padding: 10; 
+                                    -fx-font-size: 14px;
+                                    -fx-text-fill: #2f3640;
+                            """));
+                    this.setOnMouseExited(e -> setStyle("""
+                            -fx-background-color: transparent;
+                            -fx-padding: 10; 
+                                        -fx-font-size: 14px;
+                                        -fx-text-fill: #2f3640;
+                            """));
                 }
             }
         });
@@ -428,8 +438,8 @@ public class dropdownManager {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    if(item.getFloor() == 0) setText("All Floors");
-                    else setText("Floor "+item.getFloor());
+                    if (item.getFloor() == 0) setText("All Floors");
+                    else setText("Floor " + item.getFloor());
 
                     setStyle("""
                             -fx-padding: 10; 
@@ -494,7 +504,7 @@ public class dropdownManager {
                 if (newRoom.getFloor() == 0)
                     dropdownButton.setText("All Floors  ▼");
                 else
-                    dropdownButton.setText("Floor "+selectedText);
+                    dropdownButton.setText("Floor " + selectedText);
 
                 Text text = new Text(dropdownButton.getText());
                 double width = text.getLayoutBounds().getWidth() + 20;

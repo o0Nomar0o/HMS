@@ -135,6 +135,8 @@ public class staffServiceController {
     private final Map<food, Integer> currentOrders = new HashMap<>();
     private double totalFoodCost = 0.0;
 
+    private final String[] currency = {"$","ks"};
+
     private static void styleDropdownButton(Button button) {
         button.setStyle("""
                     -fx-background-color: #f5f6fa; 
@@ -503,8 +505,15 @@ public class staffServiceController {
             if (serviceController.batchOrder(orderedService, r.getRoom_no())) {
                 orderedService.clear();
                 orderListVbox.getChildren().clear();
+                totalCost.setText("Total Cost: 0");
                 notificationManager.showNotification("Successfully ordered!", "success", (Stage) logout.getScene().getWindow());
             }
+        });
+
+        btnConfirm1.setOnAction(e->{
+            orderedService.clear();
+            orderListVbox.getChildren().clear();
+            totalCost.setText("Total Cost: 0");
         });
 
         this.cancelOrder.setOnAction((e) -> {
@@ -513,7 +522,6 @@ public class staffServiceController {
         });
 
         List<food> allFood = foodController.getAllFood();
-
         HashSet<String> allCats = new HashSet<>();
 
 
@@ -528,6 +536,7 @@ public class staffServiceController {
             }
 
         }
+
         cancelOrder.setOnAction(e -> {
             for (Node orderNode : orderListContainer.getChildren()) {
                 if (orderNode instanceof Pane orderPane) {
@@ -571,13 +580,18 @@ public class staffServiceController {
                 ee.printStackTrace();
             }
 
-
+            notificationManager.showNotification("Successfully ordered!", "success", (Stage) logout.getScene().getWindow());
             orderListContainer.getChildren().clear();
             totalFoodCost = 0.0;
             updateTotalCost(showTotalCost);
             showTotalCost.setText("0");
             currentOrders.clear();
         });
+
+    }
+
+
+    void clearOrderConfirmation(){
 
     }
 
@@ -748,7 +762,6 @@ public class staffServiceController {
         newPane.setPrefWidth(190);
         newPane.setPrefHeight(160);
 
-
         try {
             Blob b = fm.getImage();
             byte[] imgByte = b.getBytes(1, (int) b.length());
@@ -796,10 +809,12 @@ public class staffServiceController {
         addBtn.setOnAction(e -> {
             try {
                 add_Order(e, text.getText(), fm);
+                text.setText("0");
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
         });
+
         addBtn.setUserData(fm);
         newPane.getChildren().add(addBtn);
         newPane.getChildren().get(2).setLayoutX(110);
@@ -807,7 +822,9 @@ public class staffServiceController {
         addBtn.setPrefSize(55, 35);
         addBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
 
-        Label currency1 = new Label("ks");
+        int cur_pt = 0;
+        Label currency1 = new Label(currency[cur_pt]);
+
         currency1.setStyle("fx-font-size: 15px");
         newPane.getChildren().add(currency1);
         newPane.getChildren().get(3).setLayoutX(110);
@@ -816,7 +833,7 @@ public class staffServiceController {
         Label price = new Label(fm.getPrice() + "");
         price.setStyle("fx-font-size: 15px");
         newPane.getChildren().add(price);
-        newPane.getChildren().get(4).setLayoutX(120);
+        newPane.getChildren().get(4).setLayoutX(130);
         newPane.getChildren().get(4).setLayoutY(55);
 
         Label stock = new Label("Stock:");
@@ -852,6 +869,26 @@ public class staffServiceController {
         decbtn.setUserData(text);
         decbtn.setDisable(true);
 
+        if(fm.getStock()<= 0) {
+            addBtn.setDisable(true);
+            incBtn.setDisable(true);
+            text.setDisable(true);
+        }
+
+        text.textProperty().addListener((ob,ov,nv)->{
+            int s = Integer.parseInt(nv);
+
+            if(text.getText().equals("0"))
+                decbtn.setDisable(true);
+
+            if(s>=fm.getStock()) {
+                incBtn.setDisable(true);
+                text.setText(fm.getStock() + "");
+                return;
+            }
+            incBtn.setDisable(false);
+        });
+
 
         hbox.getChildren().addAll(decbtn, text, incBtn);
 
@@ -862,7 +899,6 @@ public class staffServiceController {
 
     private void updateTotalCost(Label tprice) {
         try {
-
             tprice.setText(String.format("%.2f ks", totalFoodCost));
         } catch (Exception e) {
             e.printStackTrace();

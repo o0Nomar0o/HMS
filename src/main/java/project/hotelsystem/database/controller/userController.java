@@ -31,6 +31,7 @@ public class userController {
 			psmt.setString(7, s.getStatus());
 
 			int r = psmt.executeUpdate();
+			con.close();
 			return r>0;
 		} catch (Exception e) {
 			e.printStackTrace();

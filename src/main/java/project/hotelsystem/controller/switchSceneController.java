@@ -1,5 +1,6 @@
 package project.hotelsystem.controller;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.settings.userSettings;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.util.notificationManager;
+import project.hotelsystem.web.WebSocketCon;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.net.URL;
 public class switchSceneController {
 
     userSettings ts = userSettings.getInstance();
+    WebSocketCon wsc = WebSocketCon.getWebSocketClient();
 
     /**
      * @param priv admim or staff
@@ -34,7 +37,7 @@ public class switchSceneController {
             @Override
             protected Parent call() throws Exception {
 
-                String rawPath = "src/main/resources/" + priv + "/view/" + view + ".fxml";
+                String rawPath = "src/main/resources/project/hotelsystem/" + priv + "/view/" + view + ".fxml";
                 URL path = new File(rawPath).toURI().toURL();
 
                 return FXMLLoader.load(path);
@@ -45,6 +48,7 @@ public class switchSceneController {
         Stage loadingStage = loaderSettings.showLoadingScreen(loadSceneTask, mainStage);
 
         loadSceneTask.setOnSucceeded(e -> {
+
             try {
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -52,6 +56,8 @@ public class switchSceneController {
 
                 stage.setOnCloseRequest(ev -> {
                     userController.updateStatus(ts.getUid(), "offline");
+                    wsc.closeConnection();
+                    Platform.exit();
                 });
 
                 ts.applyTheme(root, view);
@@ -78,11 +84,18 @@ public class switchSceneController {
 
     public void toSettings(ActionEvent event, Stage mainStage) throws IOException {
         try {
-            URL path = new File("src/main/resources/settings.fxml").toURI().toURL();
+            URL path = new File("src/main/resources/project/hotelsystem/settings.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Parent root = fxmlLoader.load();
+
+            stage.setOnCloseRequest(ev -> {
+                userController.updateStatus(ts.getUid(), "offline");
+                wsc.closeConnection();
+                Platform.exit();
+                System.exit(0);
+            });
 
             ts.applyTheme(root, "settings");
 

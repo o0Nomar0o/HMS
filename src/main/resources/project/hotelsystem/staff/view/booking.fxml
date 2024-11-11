@@ -126,7 +126,7 @@
                                           <TableColumn fx:id="col_name" prefWidth="83.63687133789062" text="Name" />
                                           <TableColumn fx:id="col_room" prefWidth="75.0" text="Room No." />
                                           <TableColumn fx:id="col_ph" prefWidth="104.36752319335938" text="Phone Number" />
-                                          <TableColumn fx:id="col_detail" editable="false" minWidth="0.0" prefWidth="75.1324462890625" sortable="false" text="Show More Details" />
+                                          <TableColumn fx:id="col_detail" editable="false" minWidth="0.0" prefWidth="75.1324462890625" sortable="false" text="Check-In" />
                                           <TableColumn fx:id="col_note" minWidth="5.5667724609375" prefWidth="137.08935546875" text="Note" />
                                           <TableColumn editable="false" prefWidth="120.0" sortable="false" text="Action">
                                              <columns>

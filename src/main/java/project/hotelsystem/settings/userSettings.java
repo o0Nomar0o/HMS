@@ -115,7 +115,7 @@ public class userSettings {
 
             loadWindowsSettings();
 
-            String cssPath = "src/main/resources/css/" + baseFilename;
+            String cssPath = "src/main/resources/project/hotelsystem/css/" + baseFilename;
             if (theme.equals("dark")) {
                 cssPath += "dark.css";
             } else {

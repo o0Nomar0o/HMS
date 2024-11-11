@@ -193,12 +193,12 @@ public class loginController {
 
                 switch (authenticationManager.getPrivilege()) {
                     case "admin":
-                        URL path = new File("src/main/resources/admin/view/dashboard.fxml").toURI().toURL();
+                        URL path = new File("src/main/resources/project/hotelsystem/admin/view/dashboard.fxml").toURI().toURL();
                         viewName = "dashboard";
                         return FXMLLoader.load(path);
 
                     case "staff":
-                        URL pathpath = new File("src/main/resources/staff/view/rooms.fxml").toURI().toURL();
+                        URL pathpath = new File("src/main/resources/project/hotelsystem/staff/view/rooms.fxml").toURI().toURL();
                         viewName = "booking";
                         return FXMLLoader.load(pathpath);
 
@@ -279,14 +279,14 @@ public class loginController {
     void tosettings(ActionEvent event) {
         try {
 
-            URL path = new File("src/main/resources/dbsetup.fxml").toURI().toURL();
+            URL path = new File("src/main/resources/project/hotelsystem/dbsetup.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
 
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Parent root = fxmlLoader.load();
 
-            path = new File("src/main/resources/css/dbsetup.css").toURI().toURL();
+            path = new File("src/main/resources/project/hotelsystem/css/dbsetup.css").toURI().toURL();
             root.getStylesheets().add(path.toExternalForm());
 
             stage.getScene().setRoot(root);

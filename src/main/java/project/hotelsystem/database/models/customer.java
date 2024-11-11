@@ -16,7 +16,12 @@ public customer(String guest_id, String guest_name, String phone_no, String iden
 	this.email = email;
 }
 
-public String getGuest_id() {
+	public customer(String guest_name, String phone_no) {
+		this.guest_name = guest_name;
+		this.phone_no = phone_no;
+	}
+
+	public String getGuest_id() {
 	return guest_id;
 }
 public void setGuest_id(String guest_id) {

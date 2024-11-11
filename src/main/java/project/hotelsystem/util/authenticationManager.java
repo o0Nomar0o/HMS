@@ -85,4 +85,8 @@ public class authenticationManager {
     public static String getPrivilege() {
         return privilege;
     }
+
+    public static void main(String[] args) {
+        addNewUser("help","Help","hotel", "admin","","");
+    }
 }

@@ -29,7 +29,7 @@
                         <Font size="18.0" />
                     </font>
                 </Button>
-                <Button id="currentPage" fx:id="rooms_button" layoutX="57.0" layoutY="237.0" mnemonicParsing="false" onAction="#switchTorooms" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-color: #F3D0D7; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Bookings" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
+                <Button id="currentPage" fx:id="bookings_button" layoutX="57.0" layoutY="237.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-color: #F3D0D7; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Bookings" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>
@@ -37,7 +37,7 @@
                         <Font size="18.0" />
                     </font>
                 </Button>
-                <Button id="buttons" fx:id="bookings_button" layoutX="57.0" layoutY="317.0" mnemonicParsing="false" onAction="#switchTorooms" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-radius: 2em 0 0 2em;" text="Rooms" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="234.0">
+                <Button id="buttons" fx:id="rooms_button" layoutX="57.0" layoutY="317.0" mnemonicParsing="false" onAction="#switchTorooms" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-radius: 2em 0 0 2em;" text="Rooms" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="234.0">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>

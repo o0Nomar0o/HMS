@@ -21,6 +21,7 @@ import project.hotelsystem.database.models.booking;
 import project.hotelsystem.settings.userSettings;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,27 +29,14 @@ import java.util.stream.Collectors;
 /**
  * Staff Booking Controller class
  *
- * @author Khant Zin Hein
  * @author Nomar
+ * @author Khant Zin Hein
  */
 
 public class staffBookingController {
 
-    private final Service<List<booking>> bookingService = new Service<>() {
-        @Override
-        protected Task<List<booking>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<booking> call() throws Exception {
-                    return bookingController.getAllBookings();
 
-                }
-            };
-        }
-    };
-    // Data for table
-    switchSceneController ssc = new switchSceneController();
-    userSettings tss = userSettings.getInstance();
+
     @FXML
     private Text StaffName;
     @FXML
@@ -62,7 +50,7 @@ public class staffBookingController {
     @FXML
     private TableColumn<booking, Void> col_cancel; // For cancel action button
     @FXML
-    private TableColumn<booking, Void> col_detail; // For check-in action button
+    private TableColumn<booking, String> col_detail; // For check-in action button
     @FXML
     private TableColumn<booking, String> col_id; // booking ID
     @FXML
@@ -94,15 +82,38 @@ public class staffBookingController {
     @FXML
     private Button settings;
 
+    private final Service<List<booking>> bookingService = new Service<>() {
+        @Override
+        protected Task<List<booking>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<booking> call() throws Exception {
+                    return bookingController.getAllBookings();
+
+                }
+            };
+        }
+    };
+
+    switchSceneController ssc = new switchSceneController();
+    userSettings tss = userSettings.getInstance();
+
     @FXML
     void initialize() {
 
         if (tss.getPrivilege().matches("staff")) StaffName.setText(tss.getUsername());
         else StaffName.setText("");
 
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
         col_id.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBooking_id()));
         col_name.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGuest().getGuest_name()));
         col_room.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRoom().getRoom_no()));
+        col_ph.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGuest().getPhone_no()));
+        col_detail.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getCheck_in().format(fmt))
+        );
+
 
         col_cancel.setCellFactory(param -> new TableCell<booking, Void>() {
             private final Button cancelButton = new Button("Cancel");
@@ -332,8 +343,10 @@ public class staffBookingController {
             grid.add(roomNoText, 0, 0);
             grid.add(guestNameText, 0, 1);
 
+            grid.setPrefWidth(pane.getWidth());
             pane.getChildren().add(grid);
         }
+
     }
 
     class BookingFunc {

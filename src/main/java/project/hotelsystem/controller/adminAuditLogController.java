@@ -105,6 +105,7 @@ public class adminAuditLogController {
                 audit_view.getChildren().clear();
 
                 for (audit_logs al : newData) {
+
                     VBox logsRoot = new VBox();
                     GridPane logsGrid = new GridPane();
 
@@ -117,8 +118,7 @@ public class adminAuditLogController {
                     else
                         actionButton.setUserData("0");
 
-
-                    actionButton.setText(al.getAction() + " >");
+                    actionButton.setText(al.getAction() + "▶");
                     Label dataLabel = new Label(al.getData());
                     Label timestampLabel = new Label(al.getTimestamp().toString());
 
@@ -126,6 +126,11 @@ public class adminAuditLogController {
 
                     actionButton.setOnAction(e -> {
                         handleNodeToggle(al.getId(), actionButton, logsRoot, dataView);
+                        if (!logsRoot.getChildren().contains(dataView)) {
+                            actionButton.setText(al.getAction() + " ▶");
+                            return;
+                        }
+                        actionButton.setText(al.getAction()+" ▼");
                     });
 
                     logsGrid.add(userLabel, 0, 0, 1, 2);
@@ -133,22 +138,84 @@ public class adminAuditLogController {
                     logsGrid.add(timestampLabel, 1, 1);
 
                     GridPane.setValignment(userLabel, VPos.CENTER);
-                    logsGrid.setStyle("-fx-padding:15px;" +
-                            "-fx-vgap:10px;" + "-fx-hgap:10px;" + "-fx-background-radius: 1.25em;");
+                    logsGrid.setStyle(
+                            "-fx-padding: 15px;" +
+                                    "-fx-vgap: 8px;" +
+                                    "-fx-hgap: 20px;" +
+                                    "-fx-background-color: #FFFFFF;" +
+                                    "-fx-background-radius: 10px;" +
+                                    "-fx-border-color: #D9D9D9;" +
+                                    "-fx-border-width: 1px;" +
+                                    "-fx-border-radius: 10px;"
+                    );
 
-                    dataView.setStyle("-fx-background-color: #EDEDED;" +
-                            "-fx-background-radius: 0.5em 0.5em 1.25em 1.25em; " +
-                            "-fx-padding: 15px;");
+                    dataView.setStyle(
+                            "-fx-background-color: #F7F7F7;" +
+                                    "-fx-background-radius: 8px;" +
+                                    "-fx-padding: 15px;" +
+                                    "-fx-margin: 5px 0 0 0;"
+                    );
 
-                    logsRoot.setStyle("-fx-background-color: #EAEAEA; -fx-background-radius: 1.25em;");
+                    logsRoot.setStyle(
+                            "-fx-background-color: #F2F2F2;" +
+                                    "-fx-background-radius: 12px;" +
+                                    "-fx-padding: 20px;"
+                    );
                     VBox.setVgrow(logsRoot, Priority.ALWAYS);
 
                     logsRoot.getChildren().add(logsGrid);
                     logsRootList.add(logsRoot);
 
-                    restoreExpandedNodes(logsRoot, actionButton, dataView);
+                    actionButton.setStyle(
+                            "-fx-background-color: #007BFF;" +
+                                    "-fx-text-fill: white;" +
+                                    "-fx-background-radius: 8px;" +
+                                    "-fx-padding: 5px 15px;" +
+                                    "-fx-font-size: 14px;" +
+                                    "-fx-cursor: hand;" +
+                                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+                    );
 
+                    actionButton.setOnMouseEntered(e -> actionButton.setStyle(
+                            "-fx-background-color: #0056b3;" +
+                                    "-fx-text-fill: white;" +
+                                    "-fx-background-radius: 8px;" +
+                                    "-fx-padding: 5px 15px;" +
+                                    "-fx-font-size: 14px;" +
+                                    "-fx-cursor: hand;" +
+                                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 3);"
+                    ));
+
+                    actionButton.setOnMouseExited(e -> actionButton.setStyle(
+                            "-fx-background-color: #007BFF;" +  // Original color
+                                    "-fx-text-fill: white;" +
+                                    "-fx-background-radius: 8px;" +
+                                    "-fx-padding: 5px 15px;" +
+                                    "-fx-font-size: 14px;" +
+                                    "-fx-cursor: hand;" +
+                                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+                    ));
+
+
+                    userLabel.setStyle(
+                            "-fx-font-size: 16px;" +
+                                    "-fx-font-weight: bold;" +
+                                    "-fx-text-fill: #333333;"
+                    );
+
+                    dataLabel.setStyle(
+                            "-fx-font-size: 14px;" +
+                                    "-fx-text-fill: #666666;"
+                    );
+
+                    timestampLabel.setStyle(
+                            "-fx-font-size: 12px;" +
+                                    "-fx-text-fill: #999999;"
+                    );
+
+                    restoreExpandedNodes(logsRoot, actionButton, dataView, al);
                     audit_view.getChildren().add(logsRoot);
+
 
                 }
             });
@@ -283,15 +350,18 @@ public class adminAuditLogController {
         }
     }
 
-    private void restoreExpandedNodes(VBox logsRoot, Button actionButton, HBox dataView) {
+    private void restoreExpandedNodes(VBox logsRoot, Button actionButton, HBox dataView, audit_logs al) {
 
         String currentState = actionButton.getUserData().toString();
 
         if ("1".equals(currentState)) {
             if (!logsRoot.getChildren().contains(dataView)) {
                 logsRoot.getChildren().add(dataView);
+                actionButton.setText(al.getAction()+"▼");
+                return;
             }
         }
+        actionButton.setText(al.getAction() + "▶");
     }
 
 

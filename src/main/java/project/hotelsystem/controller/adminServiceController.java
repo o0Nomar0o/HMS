@@ -475,10 +475,12 @@ public class adminServiceController {
         Button delbtn = new Button("Delete");
         delbtn.setUserData(s);
         editbtn.setOnAction(e -> {
+            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
             editService(e);
         });
 
         delbtn.setOnAction(e -> {
+            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
             removeService(e);
         });
 
@@ -614,7 +616,7 @@ public class adminServiceController {
         modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
         cancelButton.setOnAction(act -> {
-
+            loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
             modalStage.close();
         });
         confirmButton.setOnAction(act -> {
@@ -651,6 +653,7 @@ public class adminServiceController {
                 notificationManager.showNotification(String.format("Successfully removed %d", sid), "success", (Stage) logout.getScene().getWindow());
                 st.close();
                 generateService();
+                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                 loaderSettings.removeDimmingEffect(e);
                 loadingStage.hide();
                 System.out.println("Service removed successfully.");
@@ -755,7 +758,7 @@ public class adminServiceController {
         modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
         cancelButton.setOnAction(act -> {
-
+            loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
             modalStage.close();
         });
         confirmButton.setOnAction(act -> {
@@ -795,7 +798,10 @@ public class adminServiceController {
                 notificationManager.showNotification(String.format("Successfully updated %d", sid), "success", (Stage) logout.getScene().getWindow());
                 st.close();
                 generateService();
+
+                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
                 loaderSettings.removeDimmingEffect(e);
+
                 loadingStage.hide();
                 System.out.println("Service updated successfully.");
             } catch (Exception ex) {
@@ -849,7 +855,7 @@ public class adminServiceController {
         } catch (IOException var3) {
             IOException e = var3;
             e.printStackTrace();
-            this.showAlert("Error", "Error reading image file: " + e.getMessage());
+            //this.showAlert("Error", "Error reading image file: " + e.getMessage());
         }
 
     }
@@ -869,7 +875,7 @@ public class adminServiceController {
         } catch (Exception var8) {
             Exception err = var8;
             err.printStackTrace();
-            this.showAlert("Error", "Error saving image: " + err.getMessage());
+            //this.showAlert("Error", "Error saving image: " + err.getMessage());
         }
 
     }
@@ -980,7 +986,7 @@ public class adminServiceController {
             } catch (Throwable var37) {
                 SQLException e = (SQLException) var37;
                 e.printStackTrace();
-                this.showAlert("Error", "Error saving image to database: " + e.getMessage());
+               // this.showAlert("Error", "Error saving image to database: " + e.getMessage());
             }
 
         }
@@ -1012,7 +1018,7 @@ public class adminServiceController {
         } catch (IOException var3) {
             IOException e = var3;
             e.printStackTrace();
-            this.showAlert("Error", "Error reading image file: " + e.getMessage());
+           // this.showAlert("Error", "Error reading image file: " + e.getMessage());
         }
 
     }
@@ -1025,7 +1031,7 @@ public class adminServiceController {
         } catch (Exception var2) {
             Exception err = var2;
             err.printStackTrace();
-            this.showAlert("Error", "Error saving image: " + err.getMessage());
+            //this.showAlert("Error", "Error saving image: " + err.getMessage());
         }
 
     }
@@ -1093,7 +1099,7 @@ public class adminServiceController {
             } catch (Throwable var27) {
                 SQLException e = (SQLException) var27;
                 e.printStackTrace();
-                this.showAlert("Error", "Error saving image to database: " + e.getMessage());
+               //this.showAlert("Error", "Error saving image to database: " + e.getMessage());
             }
 
         }

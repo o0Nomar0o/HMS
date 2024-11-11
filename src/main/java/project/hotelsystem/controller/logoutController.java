@@ -22,11 +22,11 @@ public class logoutController {
     public static void logout(ActionEvent event) {
         userSettings ts = userSettings.getInstance();
         try {
-            URL path = new File("src/main/resources/login.fxml").toURI().toURL();
+            URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            path = new File("src/main/resources/css/login.css").toURI().toURL();
+            path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
             stage.setTitle("Hotel Manager Login");
             stage.setWidth(650.0);
             stage.setHeight(448.0);
@@ -47,11 +47,11 @@ public class logoutController {
     public static void logout(Stage st) {
         userSettings ts = userSettings.getInstance();
         try {
-            URL path = new File("src/main/resources/login.fxml").toURI().toURL();
+            URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
             Stage stage = st;
-            path = new File("src/main/resources/css/login.css").toURI().toURL();
+            path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
             stage.setTitle("Hotel Manager Login");
             stage.setWidth(650.0);
             stage.setHeight(448.0);

@@ -78,6 +78,13 @@ public class WebSocketCon {
         }
     }
 
+    public void closeConnection() {
+        if (webSocketClient != null && webSocketClient.isOpen()) {
+            webSocketClient.close();
+            System.out.println("WebSocket connection closed");
+        }
+    }
+
     public void sendID() {
 
         if (webSocketClient != null && webSocketClient.isOpen()) {
@@ -92,7 +99,7 @@ public class WebSocketCon {
         }
     }
 
-    public void sendTID() {
+    public void sendUID_logout() {
 
         if (webSocketClient != null && webSocketClient.isOpen()) {
             String transactionId = UUID.randomUUID().toString();

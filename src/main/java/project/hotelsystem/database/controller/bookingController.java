@@ -72,7 +72,7 @@ public class bookingController {
     public static List<booking> getAllBookings() {
         List<booking> bookings = new ArrayList<>();
         String sql = "SELECT " +
-                "b.booking_id, g.customer_name, r.room_no, b.booking_date, b.check_in, b.check_out, brd.booking_status " +
+                "b.booking_id, g.customer_name, g.phone_no, r.room_no, b.booking_date, b.check_in, b.check_out, brd.booking_status " +
                 "FROM booking b " +
                 "INNER JOIN booking_room_detail brd ON b.booking_id = brd.booking_id " +
                 "INNER JOIN room r ON brd.room_no = r.room_no " +
@@ -86,6 +86,7 @@ public class bookingController {
                 // Create a guest object
                 guest guestData = new guest();
                 guestData.setGuest_name(rs.getString("customer_name"));
+                guestData.setPhone_no(rs.getString("phone_no"));
 
                 // Create a room object
                 room roomData = new room();
@@ -208,16 +209,22 @@ public class bookingController {
                 "LEFT JOIN \n" +
                 "    payment p_ci ON b.booking_id = p_ci.booking_id AND p_ci.payment_date = b.check_in\n" +
                 "LEFT JOIN \n" +
-                "    payment p_co ON b.booking_id = p_co.booking_id AND p_co.payment_date = b.check_out;\n";
-
+                "    payment p_co ON b.booking_id = p_co.booking_id AND p_co.payment_date = b.check_out\n" +
+                "WHERE \n" +
+                "    brd.booking_status IN ('leaved', 'Checked-Out')\n" +
+                "ORDER BY \n" +
+                "    b.check_out DESC;";
         try(Connection con = DBConnection.getConnection();
         PreparedStatement psmt = con.prepareStatement(query)){
 
             ResultSet rs = psmt.executeQuery();
             while(rs.next()){
+
                 String bkid = rs.getString("booking_id");
                 String c_name = rs.getString("customer_name");
                 String r_no = rs.getString("room_no");
+                String ph = rs.getString("phone_no");
+                System.out.println(ph);
                 LocalDateTime c_in = rs.getTimestamp("check_in").toLocalDateTime();
                 LocalDateTime c_out = rs.getTimestamp("check_out").toLocalDateTime();
                 String ci_payment = rs.getString("ci_payment_method");
@@ -225,7 +232,7 @@ public class bookingController {
 
                 bk_details.add(new bookingDetails
                         (new booking(bkid),
-                        new customer(c_name),
+                        new customer(c_name,ph),
                         new room(r_no),
                         c_in,ci_payment,
                         c_out,co_payment));

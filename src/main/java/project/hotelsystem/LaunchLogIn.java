@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.settings.userSettings;
+import project.hotelsystem.web.WebSocketCon;
 
 import java.io.File;
 import java.net.URL;
@@ -18,23 +19,24 @@ public class LaunchLogIn extends Application {
     }
 
     userSettings urS = userSettings.getInstance();
+    WebSocketCon wsc = WebSocketCon.getWebSocketClient();
 
     @Override
     public void start(Stage stage) throws Exception {
         try {
 
 //            URL path = getClass().getResource("/login.fxml");
-            URL path = new File("src/main/resources/login.fxml").toURI().toURL();
+            URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
 
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
 
 //            path = getClass().getResource("/login.css");
-            path = new File("src/main/resources/css/login.css").toURI().toURL();
+            path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
 
             root.getStylesheets().add(path.toExternalForm());
 
-            path = new File("src/main/resources/images/hotel_7499247.png").toURI().toURL();
+            path = new File("src/main/resources/project/hotelsystem/images/hotel_7499247.png").toURI().toURL();
             Image icn = new Image(path.toExternalForm());
             stage.getIcons().add(icn);
 
@@ -47,6 +49,7 @@ public class LaunchLogIn extends Application {
 
             stage.setOnCloseRequest(e -> {
                 userController.updateStatus(urS.getUid(), "offline");
+                wsc.closeConnection();
             });
 
         } catch (Exception e) {

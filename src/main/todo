@@ -1,13 +1,31 @@
-css
 
-invoice price update for room -> todo
+admin booking history -> services/food history todo
 
-staff order tracking -> todo
+search available rooms, from ~ to ~ todo
 
-admin booking history -> todo
+payment method -> during check-in(booking) / check-out todo
 
-auditLog()methods -> todo
+service images {image type}
 
-service images
+fix dashboard chart labels todo
 
-dimming for modalStages -> todo
+revamp service creation UI todo
+
+admin delete admin acc ?
+
+floor change room type bug
+
+refresh after database update todo
+{food cat, service insert, mostly services UI}
+
+forget password todo
+
+image type bug todo
+
+food service stock dynamic todo
+
+return if order list == null; fix notification on no order todo
+
+invoice qnty for service and food orders todo
+
+deposit todo {duration * roomprice * 0.3}
