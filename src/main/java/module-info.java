@@ -17,6 +17,7 @@ module project.hotelsystem {
     requires commons;
     requires json;
     requires Java.WebSocket;
+    requires org.json;
 
 
     opens project.hotelsystem to javafx.fxml;
