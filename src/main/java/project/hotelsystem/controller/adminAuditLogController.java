@@ -14,6 +14,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -40,23 +41,7 @@ import java.util.Map;
 
 public class adminAuditLogController {
 
-    private final Service<List<user>> userlist = new Service<>() {
-        @Override
-        protected Task<List<user>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<user> call() throws Exception {
-                    List<user> results = new ArrayList<>();
-                    results.add(new user("", "All Users", ""));
-                    results.addAll(userController.getAllUsers());
-                    return results;
-                }
-            };
-        }
-    };
 
-    boolean flag = false;
-    Timeline timeline;
     @FXML
     private VBox audit_view;
     @FXML
@@ -67,20 +52,6 @@ public class adminAuditLogController {
     private Button dropdownAction;
     @FXML
     private Button dropdownUser;
-    private final Service<List<audit_logs>> logs = new Service<>() {
-        @Override
-        protected Task<List<audit_logs>> createTask() {
-            return new Task<>() {
-                @Override
-                protected List<audit_logs> call() throws Exception {
-                    user u = (user) dropdownUser.getUserData();
-                    if (u == null || u.getUsername().matches("All Users"))
-                        return auditController.getAudits();
-                    return auditController.getAuditsByID(u.getUid());
-                }
-            };
-        }
-    };
     @FXML
     private Button guests;
     @FXML
@@ -89,10 +60,15 @@ public class adminAuditLogController {
     private Button services;
     @FXML
     private Button setting;
+    @FXML
+    private ScrollPane audit_scroll_pane;
+
     private final switchSceneController ssc = new switchSceneController();
     private int count = 0;
     private final Map<Integer, String> nodeMap = new HashMap<>();
     private final List<VBox> logsRootList = new ArrayList<>();
+    boolean flag = false;
+    Timeline timeline;
 
     @FXML
     void initialize() {
@@ -271,8 +247,40 @@ public class adminAuditLogController {
             flag = true;
             logs.reset();
         });
+        dropdownAction.setVisible(false);
 
     }
+    private final Service<List<audit_logs>> logs = new Service<>() {
+        @Override
+        protected Task<List<audit_logs>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<audit_logs> call() throws Exception {
+                    user u = (user) dropdownUser.getUserData();
+                    if (u == null || u.getUsername().matches("All Users"))
+                        return auditController.getAudits();
+                    return auditController.getAuditsByID(u.getUid());
+                }
+            };
+        }
+    };
+
+    private final Service<List<user>> userlist = new Service<>() {
+        @Override
+        protected Task<List<user>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<user> call() throws Exception {
+                    List<user> results = new ArrayList<>();
+                    results.add(new user("", "All Users", ""));
+                    results.addAll(userController.getAllUsers());
+                    return results;
+                }
+            };
+        }
+    };
+
+
 
     @FXML
     void switchToDashboard(ActionEvent event) throws Exception {

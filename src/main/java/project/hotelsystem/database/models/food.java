@@ -71,6 +71,11 @@ public class food {
         this.image = image;
     }
 
+    public food(String name, int stock) {
+        this.name = name;
+        this.stock = stock;
+    }
+
     public int getId() {
         return id;
     }

@@ -82,6 +82,7 @@ public class staffBookingController {
     @FXML
     private Button settings;
 
+
     private final Service<List<booking>> bookingService = new Service<>() {
         @Override
         protected Task<List<booking>> createTask() {
@@ -101,6 +102,11 @@ public class staffBookingController {
     @FXML
     void initialize() {
 
+        System.gc();
+
+        Runtime runtime = Runtime.getRuntime();
+        System.out.println("Memory used {booking}: " + (runtime.totalMemory() - runtime.freeMemory()));
+
         if (tss.getPrivilege().matches("staff")) StaffName.setText(tss.getUsername());
         else StaffName.setText("");
 
@@ -112,6 +118,9 @@ public class staffBookingController {
         col_ph.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGuest().getPhone_no()));
         col_detail.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getCheck_in().format(fmt))
+        );
+        col_note.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getCheck_out().format(fmt))
         );
 
 

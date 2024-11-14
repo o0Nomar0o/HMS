@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Zin Min Oo
  */
 
-public class roomTypeController extends abstractDatabaseController {
+public class roomTypeController {
 
     public static boolean saveroom_type(room_type s) {
         String sql = "insert into room values(? , ? )";

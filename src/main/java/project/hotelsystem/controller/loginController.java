@@ -85,7 +85,11 @@ public class loginController {
     @FXML
     private Label dblb;
 
+    @FXML
+    private Button forgot_pw;
+
     userSettings uSettings = userSettings.getInstance();
+    WebSocketCon wsc = WebSocketCon.getWebSocketClient();
 
     @FXML
     void initialize() {
@@ -161,7 +165,6 @@ public class loginController {
         });
 
     }
-
 
 
     boolean auth = false;
@@ -281,7 +284,6 @@ public class loginController {
 
             URL path = new File("src/main/resources/project/hotelsystem/dbsetup.fxml").toURI().toURL();
             FXMLLoader fxmlLoader = new FXMLLoader(path);
-
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Parent root = fxmlLoader.load();
@@ -468,6 +470,7 @@ public class loginController {
                         " -fx-font-family: Arial;" +
                         "  -fx-padding: 10px 20px;"
         ));
+
         HBox buttonBox = new HBox(15, cancelButton, confirmButton);
         modalRoot.setBottom(buttonBox);
         buttonBox.setAlignment(Pos.CENTER);
@@ -475,7 +478,6 @@ public class loginController {
 
         modalRoot.setBottom(buttonBox);
         BorderPane.setAlignment(buttonBox, Pos.CENTER);
-
 
         Scene modalScene = new Scene(modalRoot, 380, 420);
 
@@ -555,6 +557,113 @@ public class loginController {
         });
 
         new Thread(loadSceneTask).start();
+    }
+
+    @FXML
+    void reset_acc(ActionEvent e){
+
+        wsc.connect();
+
+        loaderSettings.applyDimmingEffect((Stage)login.getScene().getWindow());
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        Stage owner = (Stage) login.getScene().getWindow();
+        modalStage.initOwner(owner);
+        modalStage.initStyle(StageStyle.TRANSPARENT);
+
+        Text title = new Text("Forgot Password");
+        Text text_tip = new Text("Email");
+        title.setFont(new Font(28.0));
+        TextField email_field = new TextField();
+        email_field.setPromptText("Enter your email address");
+
+        VBox email_view = new VBox(text_tip,email_field);
+        email_view.setStyle("-fx-spacing: 5px;");
+
+        Button confirmButton = new Button("Confirm");
+        Button cancelButton = new Button("Cancel");
+        HBox button_box = new HBox(cancelButton,confirmButton);
+        button_box.setAlignment(Pos.CENTER);
+        button_box.setStyle("-fx-spacing: 10px; ");
+
+        cancelButton.setStyle(
+                "-fx-background-color: #ff4d4d; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-family: Arial; " +
+                        "-fx-padding: 10px 20px; " +
+                        "-fx-background-radius: 10;"
+        );
+        cancelButton.setOnMouseEntered(ev -> cancelButton.setStyle(
+                "-fx-background-color: #ff1a1a; -fx-text-fill: white; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+        cancelButton.setOnMouseExited(ev -> cancelButton.setStyle(
+                "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+
+        confirmButton.setStyle(
+                "-fx-background-color: #4CAF50; " +
+                        "-fx-text-fill: #333333; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-family: Arial; " +
+                        "-fx-padding: 10px 20px; " +
+                        "-fx-background-radius: 10;"
+        );
+        confirmButton.setOnMouseEntered(ev -> confirmButton.setStyle(
+                "-fx-background-color: #3b9E4F;; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-family: Arial;" +
+                        " -fx-padding: 10px 20px;"
+        ));
+        confirmButton.setOnMouseExited(ev -> confirmButton.setStyle(
+                "-fx-background-color: #4CAF50;; -fx-text-fill: #333333; -fx-background-radius: 10;" +
+                        " -fx-font-size: 14px;" +
+                        " -fx-font-family: Arial;" +
+                        "  -fx-padding: 10px 20px;"
+        ));
+
+        VBox modalRoot = new VBox(title ,email_view, button_box);
+        modalRoot.setAlignment(Pos.CENTER);
+        Scene modalScene = new Scene(modalRoot, 380, 220);
+
+        modalScene.setFill(Color.TRANSPARENT);
+        modalRoot.setStyle("-fx-background-color: #EDEDED;"
+                + "-fx-background-radius: 2.5em;"+"-fx-padding: 25px;" + "-fx-spacing: 20px;");
+        modalStage.setScene(modalScene);
+        modalStage.setResizable(false);
+        modalStage.show();
+
+        cancelButton.setOnAction(ev->{
+            loaderSettings.removeDimmingEffect((Stage)login.getScene().getWindow());
+            modalStage.close();
+        });
+
+        confirmButton.setOnAction(ev->{
+            if( email_field.getText() == null || email_field.getText().isEmpty()) {
+                notificationManager.showNotification("Please enter your email","failure",modalStage);
+                return;
+            }
+
+            if(wsc.sendPasswordResetNotification(email_field.getText())){
+                notificationManager.showNotification("Your new password has been sent to your email",
+                        "success", (Stage)login.getScene().getWindow());
+                loaderSettings.removeDimmingEffect((Stage)login.getScene().getWindow());
+                wsc.closeConnection();
+                modalStage.close();
+            }
+            notificationManager.showNotification("Email does not exist","failure",modalStage);
+            wsc.closeConnection();
+        });
+
+
+        modalStage.setX((owner.getX() + owner.getWidth() / 2d) - (modalScene.getWidth() / 2d));
+        modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
     }
 
 

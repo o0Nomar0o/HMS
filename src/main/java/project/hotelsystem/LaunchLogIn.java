@@ -25,8 +25,8 @@ public class LaunchLogIn extends Application {
     public void start(Stage stage) throws Exception {
         try {
 
-//            URL path = getClass().getResource("/login.fxml");
-            URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
+
+           URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
 
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
@@ -40,7 +40,7 @@ public class LaunchLogIn extends Application {
             Image icn = new Image(path.toExternalForm());
             stage.getIcons().add(icn);
 
-            stage.setTitle("Hotel Manager Login");
+            stage.setTitle("Breeze Hub");
             stage.setScene(root);
             stage.setResizable(false);
             stage.show();

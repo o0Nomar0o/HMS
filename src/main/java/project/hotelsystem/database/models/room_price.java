@@ -11,6 +11,9 @@ public class room_price {
         this.pricePerHour = pricePerHour;
     }
 
+    public room_price() {
+    }
+
     public String getId() {
         return id;
     }

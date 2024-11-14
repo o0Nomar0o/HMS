@@ -18,10 +18,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import project.hotelsystem.database.controller.roomController;
 import project.hotelsystem.database.controller.roomTypeController;
-import project.hotelsystem.database.models.room;
+import project.hotelsystem.database.models.*;
 import project.hotelsystem.database.models.room_type_details;
 import project.hotelsystem.settings.databaseSettings;
-import project.hotelsystem.settings.*;
+import project.hotelsystem.settings.invoiceSettings;
+import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.util.dropdownManager;
 import project.hotelsystem.util.notificationManager;
 
@@ -147,17 +148,24 @@ public class staffRoomDetailsController {
     @FXML
     private Button settings;
 
+    @FXML
+    private Button go_dates;
+    @FXML
+    private Button clear_dates;
+
     private String selectedRoomNo;
     switchSceneController ssc = new switchSceneController();
     static databaseSettings dbs = databaseSettings.getInstance();
 
-    private static final String JDBC_URL = dbs.getLocal_url();
-    private static final String DB_USER = dbs.getLocal_user();
-    private static final String DB_PASSWORD = dbs.getLocal_password();
+    private final String JDBC_URL = dbs.getLocal_url();
+    private static String DB_USER = dbs.getLocal_user();
+    private static String DB_PASSWORD = dbs.getLocal_password();
 
 
     @FXML
     public void initialize() {
+
+        System.out.println( dbs.getLocal_url());
         orders_button.setDisable(true);
         AddingRooms(null, 0, null);
         updateRoomCounts();
@@ -175,6 +183,7 @@ public class staffRoomDetailsController {
             }
         });
 
+        deposit11.setVisible(false);
 
         ObservableList<room_type_details> ols = FXCollections.observableArrayList(roomTypeController.getAllRoomType());
 
@@ -262,7 +271,7 @@ public class staffRoomDetailsController {
             }
         });
 
-        List<String> paymentMethodsList = new ArrayList<>(Arrays.asList("Cash","Credit Card", "Debit Card", "Bank Transfer"));
+        List<String> paymentMethodsList = new ArrayList<>(Arrays.asList("Cash", "Credit Card", "Debit Card", "Bank Transfer"));
         ObservableList<String> paymentMethods = FXCollections.observableArrayList(paymentMethodsList);
         bk_payment_method.setItems(paymentMethods);
         ck_payment_method.setItems(paymentMethods);
@@ -270,18 +279,57 @@ public class staffRoomDetailsController {
         bk_payment_method.getSelectionModel().selectFirst();
         ck_payment_method.getSelectionModel().selectFirst();
 
+        go_dates.setOnAction(e->room_dates());
+
     }
+
+    public void room_dates() {
+
+        LocalDate ci = ToCheckWithCheckInDate.getValue();
+        LocalDate co = ToCheckWithCheckOutDate.getValue();
+
+        String query = "{call search_available_room_within_dates(?,?)}";
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+             CallableStatement cst = conn.prepareCall(query)) {
+
+            System.out.println(Date.valueOf(ci));
+            cst.setDate(1, Date.valueOf(ci));
+            cst.setDate(2, Date.valueOf(co));
+
+            ResultSet rs = cst.executeQuery();
+
+            while(rs.next()){
+                System.out.println(rs.getString(1));
+            }
+        } catch (SQLException e) {
+
+        }
+
+    }
+
+    room_price currRoom = new room_price();
 
     public void AddingRooms(String roomIdToSearch, int floorFilter, String rt) {
 
         RoomShowBody.getChildren().clear();
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
 
-            String query = "SELECT room.room_no, room.floor, room.room_status, room_type.description, room_price.price_per_night,room_price.price_per_hour " +
+//            String query = "SELECT room.room_no, room.floor, room.room_status, " +
+//                    "room_type.description, room_price.price_per_night,room_price.price_per_hour " +
+//                    "FROM room " +
+//                    "JOIN room_type ON room.room_type_id = room_type.room_type_id " +
+//                    "JOIN room_price ON room_type.room_type_id = room_price.room_type_id " +
+//                    "WHERE 1=1";
+
+            String query = "SELECT room.room_no, room.floor, " +
+                    "CASE WHEN brd.booking_status = 'Arrived' THEN 'Occupied' " +
+                    "ELSE room.room_status END AS effective_status, " +
+                    "room_type.description, room_price.price_per_night, room_price.price_per_hour " +
                     "FROM room " +
                     "JOIN room_type ON room.room_type_id = room_type.room_type_id " +
                     "JOIN room_price ON room_type.room_type_id = room_price.room_type_id " +
-                    "WHERE 1=1";
+                    "LEFT JOIN booking_room_detail brd ON room.room_no = brd.room_no AND brd.booking_status = 'Arrived' "
+                   ;
 
             if (roomIdToSearch != null && !roomIdToSearch.isEmpty()) {
                 query += " AND room.room_no = ?";
@@ -302,7 +350,7 @@ public class staffRoomDetailsController {
 
             if (rt != null) query += " AND room_type.description = ? ";
 
-            query += " ORDER BY room.room_no ASC; ";
+            query +=  " ORDER BY effective_status DESC, room.room_no ASC;";
 
             PreparedStatement stmt = conn.prepareStatement(query);
 
@@ -330,10 +378,12 @@ public class staffRoomDetailsController {
             int row = 0, col = 0;
 
             while (rs.next()) {
+
                 String roomId = rs.getString("room_no");
                 String roomType = rs.getString("description");
                 String floor = rs.getString("floor");
-                String status = rs.getString("room_status");
+                String status = rs.getString("effective_status");
+                //String status = rs.getString("room_status");
                 String price = rs.getString("price_per_night");
                 String price_per_hour = rs.getString("price_per_hour");
 
@@ -348,8 +398,9 @@ public class staffRoomDetailsController {
                         "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 1.0), 15, 0.0, 5, 5);";
 
                 // Color coding based on room status
+
                 switch (status) {
-                    case "Unavailable", "Under Maintenance":
+                    case "Unavailable", "Under Maintenance", "Occupied":
                         roomButton.setStyle(
                                 "-fx-background-color: #FF4C4C; " + // Bright red for unavailable
                                         "-fx-text-fill: white; " +
@@ -426,19 +477,18 @@ public class staffRoomDetailsController {
                         break;
                 }
 
-
                 roomButton.setOnAction(e -> {
                     roomID.setText(roomId);
                     this.roomType.setText(roomType);
                     floorText.setText(floor);
                     roomPrice.setText(price + " $");
+                    currRoom.setPricePerNight(Double.parseDouble(price));
                     this.roomPrice1.setText(price_per_hour + " $");
                     selectedRoomNo = roomId;
-                    if ("Unavailable".equals(status)) {
+                    if ("Occupied".equals(status)) {
                         fetchAndDisplayCustomerDetails(roomId);
                     }
                 });
-
 
                 roomPane.getChildren().add(roomButton);
                 col++;
@@ -466,7 +516,7 @@ public class staffRoomDetailsController {
 
         String query = "SELECT customer.customer_name, customer.phone_no, customer.email, customer.id_card, " +
                 "booking.booking_id, booking.check_in, booking.check_out, " +
-                "booking_charges.deposite, booking_charges.total_room_charges, booking_charges.total_booking_charges,booking_charges.remaining_amount " +
+                "booking_charges.deposit, booking_charges.total_room_charges, booking_charges.total_booking_charges,booking_charges.remaining_amount " +
                 "FROM customer " +
                 "JOIN booking ON customer.customer_id = booking.customer_id " +
                 "JOIN booking_room_detail ON booking.booking_id = booking_room_detail.booking_id " +
@@ -488,7 +538,7 @@ public class staffRoomDetailsController {
                 int bookingId = rs.getInt("booking_id");
                 Date checkInDate = rs.getDate("check_in");
                 Date checkOutDate = rs.getDate("check_out");
-                double deposit = rs.getDouble("deposite");
+                double deposit = rs.getDouble("deposit");
                 double totalAmount = rs.getDouble("total_booking_charges");
                 double remainingCharges = rs.getDouble("remaining_amount");
 
@@ -908,7 +958,11 @@ public class staffRoomDetailsController {
         VBox stayDurationBox = new VBox(stayDurationText, stayDurationField);
         stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
-        VBox bookingDetailsPane = new VBox(guestNameBox, phoneNumberBox, guestIdBox, emailBox, checkInDateBox, stayDurationBox);
+        int durationINT = Integer.parseInt(duration.getText());
+        Text deposit = new Text("deposit: $"+currRoom.getPricePerNight()*durationINT*0.3);
+
+
+        VBox bookingDetailsPane = new VBox(guestNameBox, phoneNumberBox, guestIdBox, emailBox, checkInDateBox, stayDurationBox, deposit);
 
         bookingDetailsPane.setStyle(
                 "-fx-spacing: 15; " +
@@ -991,7 +1045,7 @@ public class staffRoomDetailsController {
         modalRoot.setBottom(buttonBox);
         BorderPane.setAlignment(buttonBox, Pos.CENTER);
 
-        Scene modalScene = new Scene(modalRoot, 425, 645);
+        Scene modalScene = new Scene(modalRoot, 425, 665);
         modalStage.setScene(modalScene);
         modalScene.setFill(Color.TRANSPARENT);
         modalStage.setResizable(false);
@@ -1020,7 +1074,7 @@ public class staffRoomDetailsController {
                                 LocalDate checkInDate, int stayDurationNights,
                                 String email, String guestId) {
 
-        String checkInSql = "CALL add_checkIn(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String checkInSql = "{call add_checkIn(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 
 
         try (Connection con = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
@@ -1114,7 +1168,10 @@ public class staffRoomDetailsController {
         VBox stayDurationBox = new VBox(stayDurationText, stayDurationField);
         stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
-        VBox bookingDetailsPane = new VBox(roomBox, guestNameBox, phoneNumberBox, checkInDateBox, stayDurationBox);
+        int durationINT = Integer.parseInt(duration1.getText());
+        Text deposit = new Text("deposit: $"+currRoom.getPricePerNight()*durationINT*0.3);
+
+        VBox bookingDetailsPane = new VBox(roomBox, guestNameBox, phoneNumberBox, checkInDateBox, stayDurationBox, deposit);
 
         bookingDetailsPane.setStyle(
                 "-fx-spacing: 15; " +
@@ -1197,7 +1254,7 @@ public class staffRoomDetailsController {
         modalRoot.setBottom(buttonBox);
         BorderPane.setAlignment(buttonBox, Pos.CENTER);
 
-        Scene modalScene = new Scene(modalRoot, 425, 585);
+        Scene modalScene = new Scene(modalRoot, 425, 598);
         modalStage.setScene(modalScene);
         modalScene.setFill(Color.TRANSPARENT);
         modalStage.setResizable(false);

@@ -1,7 +1,11 @@
 package project.hotelsystem.controller;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -26,6 +30,7 @@ import project.hotelsystem.database.controller.serviceController;
 import project.hotelsystem.database.models.food;
 import project.hotelsystem.database.models.room;
 import project.hotelsystem.database.models.service;
+import project.hotelsystem.util.ImageLoader;
 import project.hotelsystem.util.dropdownManager;
 import project.hotelsystem.util.notificationManager;
 
@@ -50,6 +55,9 @@ public class staffServiceController {
     switchSceneController ssc = new switchSceneController();
     HashMap<Integer, service> serviceMap = new HashMap<Integer, service>();
     double tc = 0;
+
+    @FXML
+    private AnchorPane root;
     @FXML
     private Label FoodStock;
     @FXML
@@ -135,7 +143,7 @@ public class staffServiceController {
     private final Map<food, Integer> currentOrders = new HashMap<>();
     private double totalFoodCost = 0.0;
 
-    private final String[] currency = {"$","ks"};
+    private final String[] currency = {"$", "ks"};
 
     private static void styleDropdownButton(Button button) {
         button.setStyle("""
@@ -255,19 +263,50 @@ public class staffServiceController {
 
     @FXML
     void switchtobookings(ActionEvent event) throws IOException {
+
+        dump_pane();
+
+        if (asyncFoodLoader.getState() != Worker.State.SUCCEEDED) {
+            asyncFoodLoader.cancel();
+            asyncFoodLoader.reset();
+        }
+
+        Runtime runtime = Runtime.getRuntime();
+        System.out.println("Memory used (1): " + (runtime.totalMemory() - runtime.freeMemory()));
+
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "staff", "booking");
+
 
     }
 
     @FXML
     void switchtorooms(ActionEvent event) throws IOException {
+        dump_pane();
+        if (asyncFoodLoader.getState() != Worker.State.SUCCEEDED) {
+            asyncFoodLoader.cancel();
+            asyncFoodLoader.reset();
+        }
+
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "staff", "rooms");
 
     }
 
     @FXML
     void switchtosetting(ActionEvent event) throws IOException {
-        ssc.toSettings(event, (Stage) logout.getScene().getWindow());
+        dump_pane();
+
+        if (asyncFoodLoader.getState() != Worker.State.SUCCEEDED) {
+            asyncFoodLoader.cancel();
+            asyncFoodLoader.reset();
+        }
+        Platform.runLater(() -> {
+            try {
+                Thread.sleep(100);
+                ssc.toSettings(event, (Stage) logout.getScene().getWindow());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 
@@ -277,8 +316,9 @@ public class staffServiceController {
 
         ImageView imageView = new ImageView();
         try {
-            byte[] imgByte = s.getImage().getBytes(1, (int) s.getImage().length());
-            Image img = new Image(new ByteArrayInputStream(imgByte));
+            Image img = ImageLoader.loadImageFromBlob(s.getImage(), 200, 200);
+//            byte[] imgByte = s.getImage().getBytes(1, (int) s.getImage().length());
+//            Image img = new Image(new ByteArrayInputStream(imgByte));
             imageView.setImage(img);
         } catch (Exception e) {
             e.printStackTrace();
@@ -294,10 +334,10 @@ public class staffServiceController {
         Label priceLabel = new Label("Price: $" + s.getPrice());
 
 
-        idLabel.setStyle("-fx-text-fill:white");
-        nameLabel.setStyle("-fx-text-fill:white");
-        descriptionLabel.setStyle("-fx-text-fill:white");
-        priceLabel.setStyle("-fx-text-fill:white");
+        idLabel.setStyle("-fx-text-fill:black");
+        nameLabel.setStyle("-fx-text-fill:black");
+        descriptionLabel.setStyle("-fx-text-fill:black");
+        priceLabel.setStyle("-fx-text-fill:black");
         hbox.setStyle("-fx-background-color:black;" + "-fx-text-fill:white;");
 
 
@@ -318,7 +358,9 @@ public class staffServiceController {
 
         serviceRoot.setPrefWidth(tilepaneServices.getWidth());
 
-        serviceRoot.setStyle("-fx-hgap: 15px;" + "-fx-border-color: #121212;" + "-fx-border-radius: 1.25em;" + "-fx-border-width: 1px;");
+        serviceRoot.setStyle("-fx-hgap: 15px;"
+                + "-fx-background-radius: 1.25em;"
+                + "-fx-background-color: white;");
 
         tilepaneServices.widthProperty().addListener((ob, ov, nv) -> {
             serviceRoot.setPrefWidth(nv.doubleValue() - 15);
@@ -341,6 +383,9 @@ public class staffServiceController {
                 Blob img = rs.getBlob(5);
                 servicesList.add(new service(serviceName, price, des, img));
             }
+
+            con.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -419,7 +464,7 @@ public class staffServiceController {
         serviceLabel.setStyle("-fx-text-fill:white");
         serviceCharge.setStyle("-fx-text-fill:white");
 
-        serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
+        serviceOrderPane.setStyle("-fx-background-color: #EAEAEA;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
 
         sep.setPrefWidth(100);
         sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + "-fx-border-width: 0;");
@@ -444,7 +489,7 @@ public class staffServiceController {
         qnt.setStyle("-fx-font-size: 14px;");
         Label foodName = new Label(fn);
         foodName.setStyle("-fx-font-size: 20px;");
-        newPane.setStyle("-fx-background-color:  #2f847c;");
+        newPane.setStyle("-fx-background-color:  #EAEAEA;");
         newPane.getChildren().addAll(foodName, qnt);
         newPane.getChildren().get(0).setLayoutX(76.0);
         newPane.getChildren().get(1).setLayoutX(232.0);
@@ -493,7 +538,7 @@ public class staffServiceController {
         }
 
 
-        logout.setOnAction(e -> logoutController.logout(e));
+        logout.setOnAction(e -> logoutController.logout((Stage) logout.getScene().getWindow()));
 
         btnConfirm.setOnAction(e -> {
             room r = (room) txfRoomNo.getUserData();
@@ -510,7 +555,7 @@ public class staffServiceController {
             }
         });
 
-        btnConfirm1.setOnAction(e->{
+        btnConfirm1.setOnAction(e -> {
             orderedService.clear();
             orderListVbox.getChildren().clear();
             totalCost.setText("Total Cost: 0");
@@ -521,21 +566,18 @@ public class staffServiceController {
             showTotalCost.setText("0");
         });
 
-        List<food> allFood = foodController.getAllFood();
-        HashSet<String> allCats = new HashSet<>();
 
+        asyncFoodLoader.setOnSucceeded(event -> {
+            List<Pane> loadedPanes = asyncFoodLoader.getValue();
+            Platform.runLater(() -> {
+                foodView.getChildren().addAll(loadedPanes);
+                loadedPanes.clear();
+            });
+            asyncFoodLoader.cancel();
+            asyncFoodLoader.reset();
 
-        for (food f : allFood) {
+        });
 
-            Pane fp = createFoodPane(f);
-            foodView.getChildren().add(fp);
-            if (!allCats.contains(f.getCategory())) {
-                Pane fc = createCategoryPane(f);
-                catPane.getChildren().add(fc);
-                allCats.add(f.getCategory());
-            }
-
-        }
 
         cancelOrder.setOnAction(e -> {
             for (Node orderNode : orderListContainer.getChildren()) {
@@ -560,8 +602,13 @@ public class staffServiceController {
 
             room r = (room) roomNo.getUserData();
 
-            if (roomNo == null || r.getRoom_no() == null || r.getRoom_no().isEmpty()) {
+            if (roomNo.getUserData() == null || r == null||r.getRoom_no() == null || r.getRoom_no().isEmpty()) {
                 notificationManager.showNotification("Please choose a room", "faliure", (Stage) logout.getScene().getWindow());
+                return;
+            }
+
+            if(orderListContainer.getChildren().isEmpty()) {
+                notificationManager.showNotification("Please select an item", "faliure", (Stage) logout.getScene().getWindow());
                 return;
             }
 
@@ -580,6 +627,7 @@ public class staffServiceController {
                 ee.printStackTrace();
             }
 
+            updateStockUI();
             notificationManager.showNotification("Successfully ordered!", "success", (Stage) logout.getScene().getWindow());
             orderListContainer.getChildren().clear();
             totalFoodCost = 0.0;
@@ -588,10 +636,65 @@ public class staffServiceController {
             currentOrders.clear();
         });
 
+        asyncFoodLoader.start();
+
+    }
+
+    public void updateStockUI() {
+        Map<String, Integer> fns = foodController.getAllFoodStockAndName();
+        for (Node n : foodView.getChildren()) {
+            if (n instanceof Pane) {
+                Label nameLabel = (Label) n.lookup("#nameLabel");
+                Label quantityLabel = (Label) n.lookup("#stockLabel");
+                String name = nameLabel.getText();
+                quantityLabel.setText(fns.get(name)+"");
+                System.out.println(name);
+            }
+        }
     }
 
 
-    void clearOrderConfirmation(){
+    List<food> allFood = new ArrayList<>();
+
+    public final Service<List<Pane>> asyncFoodLoader = new Service<>() {
+        @Override
+        protected Task<List<Pane>> createTask() {
+            return new Task<>() {
+                @Override
+                protected List<Pane> call() {
+                    foodView.getChildren().removeAll();
+                    allFood = foodController.getAllFood();
+
+                    if (allFood == null || allFood.isEmpty()) return null;
+
+                    List<Pane> foodPanes = new ArrayList<>();
+                    HashSet<String> allCats = new HashSet<>();
+
+                    for (food f : allFood) {
+                        Pane fp = createFoodPane(f);
+                        foodPanes.add(fp);
+
+                        if (!allCats.contains(f.getCategory())) {
+                            Platform.runLater(() -> {
+                                Pane fc = createCategoryPane(f);
+                                catPane.getChildren().add(fc);
+                            });
+                            allCats.add(f.getCategory());
+                        }
+                    }
+                    return foodPanes;
+                }
+            };
+        }
+    };
+
+
+    public void async_pane_loader() {
+
+    }
+
+
+    void clearOrderConfirmation() {
 
     }
 
@@ -723,7 +826,7 @@ public class staffServiceController {
 
         Pane catePane = new Pane();
         catePane.setPrefSize(120, 166);
-        catePane.setStyle("-fx-background-color: #4CE4AE;");
+        catePane.setStyle("-fx-background-color: #FFFFFF;");
 
         try {
             Blob b = fm.getImage();
@@ -744,13 +847,18 @@ public class staffServiceController {
             CategoryName.setAlignment(Pos.CENTER);
             catePane.getChildren().get(1).setLayoutX(16);
             catePane.getChildren().get(1).setLayoutY(120);
-            catePane.setOnMouseClicked(event -> showFoodByCat(event, CategoryName, catePane));
+            catePane.setOnMouseClicked(event -> {
+                dump_main_food();
+                Platform.runLater(() -> {
+                    showFoodByCat(event, CategoryName, catePane);
+                });
+
+            });
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         return catePane;
     }
@@ -758,18 +866,24 @@ public class staffServiceController {
     private Pane createFoodPane(food fm) {
 
         Pane newPane = new Pane();
-        newPane.setStyle("-fx-background-color: #4CE4AE;");
         newPane.setPrefWidth(190);
         newPane.setPrefHeight(160);
+        newPane.setStyle("-fx-background-color: #FEFFFF;");
+        newPane.setUserData(fm.getName());
 
         try {
             Blob b = fm.getImage();
-            byte[] imgByte = b.getBytes(1, (int) b.length());
-            Image img = new Image(new ByteArrayInputStream(imgByte));
+            Image img = ImageLoader.loadImageFromBlob(b, 200, 200);
+//            byte[] imgByte = b.getBytes(1, (int) b.length());
+//            Image img = new Image(new ByteArrayInputStream(imgByte));
             ImageView iv = new ImageView(img);
             iv.setFitHeight(100);
             iv.setFitWidth(80);
             iv.setPreserveRatio(true);
+
+            if (fm.getStock() <= 0)
+                iv.setOpacity(0.5);
+
             newPane.getChildren().add(iv);
             newPane.getChildren().get(0).setLayoutX(8);
             newPane.getChildren().get(0).setLayoutY(15);
@@ -783,6 +897,7 @@ public class staffServiceController {
         newPane.getChildren().add(foodName);
         foodName.setPrefWidth(80);
         foodName.setPrefHeight(45);
+        foodName.setId("nameLabel");
         foodName.maxWidth(80);
         foodName.setWrapText(true);
         foodName.maxWidthProperty().bind(newPane.widthProperty());
@@ -806,21 +921,15 @@ public class staffServiceController {
         }));
 
         Button addBtn = new Button("Add");
-        addBtn.setOnAction(e -> {
-            try {
-                add_Order(e, text.getText(), fm);
-                text.setText("0");
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-        });
 
         addBtn.setUserData(fm);
         newPane.getChildren().add(addBtn);
         newPane.getChildren().get(2).setLayoutX(110);
         newPane.getChildren().get(2).setLayoutY(120);
         addBtn.setPrefSize(55, 35);
-        addBtn.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+        addBtn.setStyle("""
+                -fx-background-color: red; -fx-text-fill: white;
+                """);
 
         int cur_pt = 0;
         Label currency1 = new Label(currency[cur_pt]);
@@ -845,6 +954,7 @@ public class staffServiceController {
         Label stockLabel = new Label(fm.getStock() + "");
         stockLabel.setStyle("fx-font-size: 15px");
         newPane.getChildren().add(stockLabel);
+        stockLabel.setId("stockLabel");
         newPane.getChildren().get(6).setLayoutX(140);
         newPane.getChildren().get(6).setLayoutY(82);
 
@@ -854,11 +964,11 @@ public class staffServiceController {
         hbox.setLayoutY(120);
 
         Button incBtn = new Button(">");
-        incBtn.setStyle("-fx-background-radius: 10; -fx-background-color: white;");
+        incBtn.setStyle("-fx-background-radius: 10; -fx-background-color: #DAEADC;");
 
         Button decbtn = new Button("<");
         decbtn.setOnAction(e -> reduce_Amount(e));
-        decbtn.setStyle("-fx-background-radius: 10; -fx-background-color: white;");
+        decbtn.setStyle("-fx-background-radius: 10; -fx-background-color: #EADADC;");
 
         List<Object> datas = new ArrayList<>();
         datas.add(text);
@@ -869,19 +979,20 @@ public class staffServiceController {
         decbtn.setUserData(text);
         decbtn.setDisable(true);
 
-        if(fm.getStock()<= 0) {
+        if (fm.getStock() <= 0) {
             addBtn.setDisable(true);
             incBtn.setDisable(true);
             text.setDisable(true);
+            newPane.setStyle("-fx-background-color: #EDEDED;");
         }
 
-        text.textProperty().addListener((ob,ov,nv)->{
+        text.textProperty().addListener((ob, ov, nv) -> {
             int s = Integer.parseInt(nv);
 
-            if(text.getText().equals("0"))
+            if (text.getText().equals("0"))
                 decbtn.setDisable(true);
 
-            if(s>=fm.getStock()) {
+            if (s >= fm.getStock()) {
                 incBtn.setDisable(true);
                 text.setText(fm.getStock() + "");
                 return;
@@ -892,6 +1003,16 @@ public class staffServiceController {
 
         hbox.getChildren().addAll(decbtn, text, incBtn);
 
+        addBtn.setOnAction(e -> {
+            try {
+                add_Order(e, text.getText(), fm);
+                fm.setStock(fm.getStock() - Integer.parseInt(text.getText()));
+                System.out.println(fm.getStock());
+                text.setText("0");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
 
         return newPane;
     }
@@ -910,7 +1031,7 @@ public class staffServiceController {
 
         Pane newPane = new Pane();
         newPane.setPrefSize(461, 80);
-        newPane.setStyle("-fx-background-color:  #2f847c;");
+        newPane.setStyle("-fx-background-color:  #EAEAEA;");
 
         food fm = (food) fo;
 
@@ -952,6 +1073,7 @@ public class staffServiceController {
 
 
         remove.setOnAction(e -> {
+
             Label quantityLabel = (Label) newPane.lookup("#quantityLabel");
             if (quantityLabel != null) {
                 int currentQuantity = Integer.parseInt(quantityLabel.getText());
@@ -996,6 +1118,7 @@ public class staffServiceController {
 
         return newPane;
     }
+
     private void showFoodByCat(MouseEvent event, Label category, Pane clickedPane) {
         foodView.getChildren().clear();
         foodView.getChildren().removeAll();
@@ -1011,14 +1134,88 @@ public class staffServiceController {
         for (Node node : catPane.getChildren()) {
             if (node instanceof Pane) {
                 Pane pane = (Pane) node;
-                pane.setStyle("-fx-background-color:  #2f847c;");
+                pane.setStyle("-fx-background-color:  #e0e0e0;");
+                pane.setOpacity(0.75);
             }
         }
         // Change the color of the clicked pane
-        clickedPane.setStyle("-fx-border-color: blue; -fx-border-width: 2;"); // Change color to indicate selection
-
+        clickedPane.setStyle("-fx-border-color: #A3A1DA; -fx-border-width: 2;"); // Change color to indicate selection
+        clickedPane.setOpacity(1);
         // Update the selectedPane to the current one
         selectedPane = clickedPane;
+    }
+
+    private void dump_main_food() {
+
+        asyncFoodLoader.cancel();
+        asyncFoodLoader.reset();
+
+        Platform.runLater(() -> {
+
+            List<Node> nodesToRemoveFromFoodView = new ArrayList<>();
+
+            for (Node n : foodView.getChildren()) {
+                if (n instanceof Pane) {
+                    for (Node p : ((Pane) n).getChildren()) {
+                        if (p instanceof ImageView) {
+                            ((ImageView) p).setImage(null);
+                        }
+
+                    }
+                    nodesToRemoveFromFoodView.add(n);
+                }
+            }
+
+            foodView.getChildren().removeAll(nodesToRemoveFromFoodView);
+
+            nodesToRemoveFromFoodView.clear();
+            allFood.clear();
+
+            System.gc();
+        });
+
+    }
+
+
+    private void dump_pane() {
+
+        asyncFoodLoader.cancel();
+        asyncFoodLoader.reset();
+
+        Platform.runLater(() -> {
+
+            List<Node> nodesToRemoveFromFoodView = new ArrayList<>();
+            List<Node> nodesToRemoveFromCatPane = new ArrayList<>();
+
+            for (Node n : foodView.getChildren()) {
+                if (n instanceof Pane) {
+                    for (Node p : ((Pane) n).getChildren()) {
+                        if (p instanceof ImageView) {
+                            ((ImageView) p).setImage(null);
+                        }
+
+                    }
+                    nodesToRemoveFromFoodView.add(n);
+                }
+            }
+
+            for (Node n : catPane.getChildren()) {
+                if (n instanceof Pane) {
+                    ((Pane) n).getChildren().clear();
+                    nodesToRemoveFromCatPane.add(n);
+                }
+            }
+
+            foodView.getChildren().removeAll(nodesToRemoveFromFoodView);
+            catPane.getChildren().removeAll(nodesToRemoveFromCatPane);
+
+            nodesToRemoveFromCatPane.clear();
+            nodesToRemoveFromFoodView.clear();
+            allFood.clear();
+
+            System.gc();
+        });
+
     }
 
 }

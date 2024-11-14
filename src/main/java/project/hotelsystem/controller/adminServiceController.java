@@ -1,11 +1,11 @@
 package project.hotelsystem.controller;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,23 +19,22 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.database.controller.foodController;
-import project.hotelsystem.database.controller.roomController;
 import project.hotelsystem.database.controller.serviceController;
 import project.hotelsystem.database.models.food;
-import project.hotelsystem.database.models.room;
 import project.hotelsystem.database.models.service;
 import project.hotelsystem.settings.loaderSettings;
 import project.hotelsystem.settings.userSettings;
-import project.hotelsystem.util.dropdownManager;
+import project.hotelsystem.util.ImageCompressor;
+import project.hotelsystem.util.ImageLoader;
 import project.hotelsystem.util.notificationManager;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.sql.*;
 import java.util.*;
@@ -70,11 +69,6 @@ public class adminServiceController {
     @FXML
     private Button bookings;
 
-    @FXML
-    private Button btnConfirm;
-
-    @FXML
-    private Button btnConfirm1;
 
     @FXML
     private Button btnCreateService;
@@ -82,8 +76,6 @@ public class adminServiceController {
     @FXML
     private Button btnLeft;
 
-    @FXML
-    private Button btnOrderBatch;
 
     @FXML
     private Button btnRight;
@@ -155,11 +147,6 @@ public class adminServiceController {
     @FXML
     private ScrollPane menuScrollPane;
 
-    @FXML
-    private ScrollPane orderListScrollPane;
-
-    @FXML
-    private VBox orderListVbox;
 
     @FXML
     private TextField price;
@@ -192,16 +179,8 @@ public class adminServiceController {
     private TilePane tilepaneServices;
 
     @FXML
-    private Text totalCost;
+    private TabPane tab_root;
 
-    @FXML
-    private Button txfRoomNo;
-
-    @FXML
-    private TextField txfServiceName;
-
-    @FXML
-    private HBox roomVbox;
 
     userSettings uss = userSettings.getInstance();
     switchSceneController ssc = new switchSceneController();
@@ -210,6 +189,11 @@ public class adminServiceController {
 
     @FXML
     void initialize() {
+
+        Tab targetTab = tab_root.getTabs().get(1);
+        tab_root.getSelectionModel().select(targetTab);
+        tab_root.getSelectionModel().select(0);
+
         logout.setOnAction(logoutController::logout);
         generateService();
         loadPopularServicesFromDatabase();
@@ -220,17 +204,6 @@ public class adminServiceController {
             lblPrice.setText("");
         }
 
-        ObservableList<room> ols = FXCollections.observableArrayList(roomController.getAllRooms());
-
-        Popup userFilter = dropdownManager.createRoomDropdown(txfRoomNo, ols);
-
-        txfRoomNo.setOnAction(event -> {
-            if (!userFilter.isShowing()) {
-                Bounds bounds = txfRoomNo.localToScreen(txfRoomNo.getBoundsInLocal());
-                userFilter.show((Stage) txfServiceName.getScene().getWindow(),
-                        bounds.getMinX(), bounds.getMaxY());
-            }
-        });
 
         this.setupTableView();
         this.add.setOnAction((e) -> {
@@ -247,6 +220,18 @@ public class adminServiceController {
             this.addStockPane.setVisible(this.addStocktab.isSelected());
         });
         this.displayMenu();
+
+
+    }
+
+    @FXML
+    void get_row(MouseEvent event){
+        if (event.getClickCount() == 2) {
+            food selectedFood = stockTableView.getSelectionModel().getSelectedItem();
+            if (selectedFood != null) {
+                foodName3.setText(selectedFood.getName());
+            }
+        }
     }
 
     private void loadPopularServicesFromDatabase() {
@@ -320,11 +305,6 @@ public class adminServiceController {
         }
     }
 
-    @FXML
-    void handleAddButtonClick(ActionEvent event) {
-        createServiceOrderPane(Integer.parseInt(txfServiceName.getText()));
-        txfServiceName.clear();
-    }
 
     @FXML
     private void handleCreateServiceButtonClick() {
@@ -404,23 +384,35 @@ public class adminServiceController {
 
     @FXML
     void switchToDashboard(ActionEvent event) throws IOException {
+        dump_pane();
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "dashboard");
     }
 
     @FXML
     void switchtobookings(ActionEvent event) throws IOException {
-        ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "booking");
+        dump_pane();
+
+        Platform.runLater(() -> {
+            try {
+                Thread.sleep(120);
+                ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "booking");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 
     @FXML
     void switchtorooms(ActionEvent event) throws IOException {
+        dump_pane();
         ssc.swithcTo(event, (Stage) logout.getScene().getWindow(), "admin", "rooms");
 
     }
 
     @FXML
     void switchtosetting(ActionEvent event) throws IOException {
+        dump_pane();
         ssc.toSettings(event, (Stage) logout.getScene().getWindow());
 
     }
@@ -475,12 +467,12 @@ public class adminServiceController {
         Button delbtn = new Button("Delete");
         delbtn.setUserData(s);
         editbtn.setOnAction(e -> {
-            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
+            loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
             editService(e);
         });
 
         delbtn.setOnAction(e -> {
-            loaderSettings.applyDimmingEffect((Stage)logout.getScene().getWindow());
+            loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
             removeService(e);
         });
 
@@ -517,32 +509,22 @@ public class adminServiceController {
         tilepaneServices.getChildren().add(serviceRoot);
     }
 
+    public void updateStockUI() {
+        Map<String, Integer> fns = foodController.getAllFoodStockAndName();
+        for (Node n : foodView.getChildren()) {
+            if (n instanceof Pane) {
+                Label nameLabel = (Label) n.lookup("#nameLabel");
+                Label quantityLabel = (Label) n.lookup("#stockLabel");
+                String name = nameLabel.getText();
+                quantityLabel.setText(fns.get(name)+"");
+                System.out.println(name);
+            }
+        }
+    }
+
 
     double tc = 0;
 
-    private void createServiceOrderPane(int serviceId) {
-        service s = serviceMap.get(serviceId);
-        HBox serviceOrderPane = new HBox(50);
-        VBox Tosep = new VBox(10);
-        Label serviceLabel = new Label("Service id:" + serviceId);
-
-        Label serviceCharge = new Label("Charges: " + s.getPrice());
-
-        Separator sep = new Separator();
-
-        serviceLabel.setStyle("-fx-text-fill:white");
-        serviceCharge.setStyle("-fx-text-fill:white");
-
-        serviceOrderPane.setStyle("-fx-background-color: #141638;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
-
-        sep.setPrefWidth(100);
-        sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + "-fx-border-width: 0;");
-        serviceOrderPane.getChildren().addAll(serviceLabel, serviceCharge);
-        Tosep.getChildren().addAll(serviceOrderPane, sep);
-        orderListVbox.getChildren().add(Tosep);
-        tc += s.getPrice();
-        totalCost.setText("Total Cost: $" + tc);
-    }
 
     private void removeService(ActionEvent e) {
 
@@ -616,7 +598,7 @@ public class adminServiceController {
         modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
         cancelButton.setOnAction(act -> {
-            loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+            loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
             modalStage.close();
         });
         confirmButton.setOnAction(act -> {
@@ -653,7 +635,7 @@ public class adminServiceController {
                 notificationManager.showNotification(String.format("Successfully removed %d", sid), "success", (Stage) logout.getScene().getWindow());
                 st.close();
                 generateService();
-                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+                loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
                 loaderSettings.removeDimmingEffect(e);
                 loadingStage.hide();
                 System.out.println("Service removed successfully.");
@@ -758,7 +740,7 @@ public class adminServiceController {
         modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
         cancelButton.setOnAction(act -> {
-            loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+            loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
             modalStage.close();
         });
         confirmButton.setOnAction(act -> {
@@ -799,7 +781,7 @@ public class adminServiceController {
                 st.close();
                 generateService();
 
-                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+                loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
                 loaderSettings.removeDimmingEffect(e);
 
                 loadingStage.hide();
@@ -900,10 +882,13 @@ public class adminServiceController {
                             psmt.setDouble(2, price);
 
                             try {
+
                                 FileInputStream toSave = new FileInputStream(this.image);
-                                psmt.setBinaryStream(3, toSave, (int) this.image.length());
+                                InputStream compressedImage = ImageCompressor.compressImage(this.image, 0.35f);
+                                psmt.setBinaryStream(3, compressedImage, compressedImage.available());
                                 psmt.setString(4, category);
                                 psmt.executeUpdate();
+
                                 this.foodView.getChildren().clear();
                                 this.foodView.getChildren().removeAll(new Node[0]);
                                 List<food> Food = foodController.getFoodByCat(category);
@@ -986,7 +971,7 @@ public class adminServiceController {
             } catch (Throwable var37) {
                 SQLException e = (SQLException) var37;
                 e.printStackTrace();
-               // this.showAlert("Error", "Error saving image to database: " + e.getMessage());
+                // this.showAlert("Error", "Error saving image to database: " + e.getMessage());
             }
 
         }
@@ -1018,7 +1003,7 @@ public class adminServiceController {
         } catch (IOException var3) {
             IOException e = var3;
             e.printStackTrace();
-           // this.showAlert("Error", "Error reading image file: " + e.getMessage());
+            // this.showAlert("Error", "Error reading image file: " + e.getMessage());
         }
 
     }
@@ -1099,7 +1084,7 @@ public class adminServiceController {
             } catch (Throwable var27) {
                 SQLException e = (SQLException) var27;
                 e.printStackTrace();
-               //this.showAlert("Error", "Error saving image to database: " + e.getMessage());
+                //this.showAlert("Error", "Error saving image to database: " + e.getMessage());
             }
 
         }
@@ -1306,6 +1291,8 @@ public class adminServiceController {
 
                 throw var24;
             }
+
+            updateStockUI();
         } catch (Throwable var23) {
             SQLException e = (SQLException) var23;
             e.printStackTrace();
@@ -1365,13 +1352,12 @@ public class adminServiceController {
 
         try {
             Blob b = fm.getImage();
-            byte[] imgByte = b.getBytes(1L, (int) b.length());
-            Image img = new Image(new ByteArrayInputStream(imgByte));
+            Image img = ImageLoader.loadImageFromBlob(b, 200, 200);
             ImageView iv = new ImageView(img);
             iv.setFitHeight(100.0);
             iv.setFitWidth(70.0);
             iv.setPreserveRatio(true);
-            newPane.setStyle("-fx-background-color:  #4CE4AE;");
+            newPane.setStyle("-fx-background-color:  #FFFFFF;");
             newPane.setPrefWidth(193.0);
             newPane.getChildren().add(iv);
             ((Node) newPane.getChildren().get(0)).setLayoutX(8.0);
@@ -1381,6 +1367,8 @@ public class adminServiceController {
             Label stock = new Label("stock");
             Label price = new Label(Double.toString(fm.getPrice()));
             Label currentStock = new Label(Integer.toString(fm.getStock()));
+            foodNameLabel.setId("nameLabel");
+            currentStock.setId("stockLabel");
             foodNameLabel.setWrapText(true);
             foodNameLabel.setMaxWidth(80.0);
             newPane.getChildren().addAll(new Node[]{foodNameLabel, ks, stock, price, currentStock});
@@ -1495,16 +1483,14 @@ public class adminServiceController {
 
     private Pane createCatPane(food fcm) {
         Pane newCatPane = new Pane();
-
         try {
             Blob b = fcm.getImage();
-            byte[] imgByte = b.getBytes(1L, (int) b.length());
-            Image img = new Image(new ByteArrayInputStream(imgByte));
+            Image img = ImageLoader.loadImageFromBlob(b, 200, 200);
             ImageView iv = new ImageView(img);
             iv.setFitHeight(60.0);
             iv.setFitWidth(84.0);
             iv.setPreserveRatio(true);
-            newCatPane.setStyle("-fx-background-color:  #4CE4AE;");
+            newCatPane.setStyle("-fx-background-color:  #FFFFFF;");
             newCatPane.setPrefHeight(130.0);
             newCatPane.setPrefWidth(106.0);
             Label foodCategory = new Label(fcm.getCategory());
@@ -1550,12 +1536,36 @@ public class adminServiceController {
             Node node = (Node) var6.next();
             if (node instanceof Pane) {
                 pane = (Pane) node;
-                pane.setStyle("-fx-background-color:  #2f847c;");
+                pane.setStyle("-fx-background-color:  #e0e0e0;");
+                pane.setOpacity(0.75);
             }
         }
 
-        clickedPane.setStyle("-fx-border-color: red; -fx-border-width: 2;");
+        clickedPane.setStyle("-fx-border-color: #A9D4FF; -fx-border-width: 2;");
+        clickedPane.setOpacity(1);
         this.selectedPane = clickedPane;
+    }
+
+    private void dump_pane() {
+
+        for (Node n : foodView.getChildren()) {
+            if (n instanceof Pane) {
+                for (Node p : ((Pane) n).getChildren()) {
+                    if (p instanceof ImageView) {
+                        ((ImageView) p).setImage(null);
+                    }
+                }
+                ((Pane) n).getChildren().clear();
+            }
+        }
+
+        for (Node n : categoryView.getChildren()) {
+            if (n instanceof Pane) {
+                ((Pane) n).getChildren().clear();
+            }
+        }
+
+        System.gc();
     }
 
 

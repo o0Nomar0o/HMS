@@ -15,6 +15,7 @@ import java.util.List;
 
 public class bookingController {
 
+
     public static booking getBookingById(String bookingId) {
 
         String sql = "select * from booking where booking_id=?";

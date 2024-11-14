@@ -26,9 +26,10 @@ public class serviceController {
             psmt.setInt(1, id);
             ResultSet rs = psmt.executeQuery();
             if (rs.next()) {
+                con.close();
                 return rs.getDouble("service_price");
             }
-
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,6 +52,7 @@ public class serviceController {
                 if(des.matches("NIL")) continue;
                 list.add(new service(id, name, price, des, image));
             }
+            con.close();
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -127,6 +129,7 @@ public class serviceController {
             }
 
             pstmt.executeUpdate();
+            conn.close();
 
             return true;
 
@@ -144,6 +147,8 @@ public class serviceController {
             psmt.setInt(1, sid);
 
             psmt.executeUpdate();
+
+            connection.close();
             return true;
 
         } catch (SQLException e) {
@@ -168,6 +173,7 @@ public class serviceController {
 
             int rowsAffected = statement.executeUpdate();
 
+            connection.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,5 +198,7 @@ public class serviceController {
             return false;
         }
     }
+
+
 
 }

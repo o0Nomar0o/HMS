@@ -20,7 +20,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="853.0" prefWidth="1313.0" style="-fx-background-color: #F6F5F2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.staffServiceController">
+<AnchorPane id="root" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="853.0" prefWidth="1313.0" style="-fx-background-color: #F6F5F2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.staffServiceController">
     <children>
         <AnchorPane id="navbar" layoutX="21.0" layoutY="32.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em; -fx-background-color: white;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
             <children>
@@ -235,12 +235,12 @@
                                             <children>
                                                 <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER">
                                                     <content>
-                                                        <TilePane fx:id="catPane" prefHeight="200.0" prefWidth="200.0" />
+                                                        <TilePane fx:id="catPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #F2F2F2; -fx-hgap: 10px;" />
                                                     </content>
                                                 </ScrollPane>
                                                 <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="487.0" prefWidth="726.0" VBox.vgrow="ALWAYS">
                                                     <content>
-                                                        <TilePane fx:id="foodView" alignment="TOP_CENTER" prefHeight="485.0" prefWidth="600.0" style="-fx-hgap: 15px; -fx-background-color: silver; -fx-vgap: 20px; -fx-padding: 10px;" tileAlignment="TOP_CENTER" />
+                                                        <TilePane fx:id="foodView" alignment="TOP_CENTER" prefHeight="485.0" prefWidth="600.0" style="-fx-hgap: 15px; -fx-background-color: #F2F2F2;; -fx-vgap: 20px; -fx-padding: 10px;" tileAlignment="TOP_CENTER" />
                                                     </content>
                                                 </ScrollPane>
                                             </children>

@@ -5,12 +5,15 @@ import com.password4j.Password;
 import com.password4j.ScryptFunction;
 import project.hotelsystem.database.models.user;
 import project.hotelsystem.database.controller.userController;
+import project.hotelsystem.web.WebSocketCon;
 
 
 /**
  * @author Nomar
  */
 public class authenticationManager {
+
+    WebSocketCon wsc = WebSocketCon.getWebSocketClient();
 
     private static final ScryptFunction scrypt = ScryptFunction.getInstance(128, 12, 4, 64);
 
@@ -84,6 +87,15 @@ public class authenticationManager {
 
     public static String getPrivilege() {
         return privilege;
+    }
+
+    public static boolean resetPassword(String email, String password){
+        if(!userController.user_exist_email(email)) return false;
+
+        user newUser = userController.getUserByEmail(email);
+        String priv = newUser.getPrivilege();
+        Hash hash = Password.hash(password).addSalt(priv).with(scrypt);
+        return userController.updatePassword_email(email,hash.getResult());
     }
 
     public static void main(String[] args) {

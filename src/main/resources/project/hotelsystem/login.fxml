@@ -200,5 +200,13 @@
             </Button>
          </children>
       </VBox>
+      <Button fx:id="forgot_pw" layoutX="384.0" layoutY="368.0" mnemonicParsing="false" onAction="#reset_acc" style="-fx-background-color: transparent;" text="Forgot Password?" textFill="#03c4ff" underline="true">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <font>
+            <Font name="Helvetica Oblique" size="13.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

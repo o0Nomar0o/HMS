@@ -19,14 +19,13 @@ import java.sql.ResultSet;
 public class invoiceGeneratorController {
 
     public static InvoiceData getData(String bkid) {
-        System.out.println("in controller");
         String sql = "SELECT " +
                 "g.customer_name, g.phone_no, g.id_card, g.email, " +
-                "b.booking_date, b.check_in, b.check_out, " +
+                "b.booking_date, b.check_in, b.check_out, b.booking_id, " +
                 "r.room_no, rt.description AS room_type_desc, " +
                 "os.order_service_id, os.order_time, s.service_name, s.service_price, os.service_charges, " +
                 "orf.order_food_id, orf.food_quantity, f.food_name, f.food_price, orf.food_charges, " +
-                "bc.total_room_charges, bc.deposite, bc.total_order_charges, bc.total_booking_charges, bc.remaining_amount, " +
+                "bc.total_room_charges, bc.deposit, bc.total_order_charges, bc.total_booking_charges, bc.remaining_amount, " +
                 "rp.price_per_night, rp.price_per_hour " +
                 "FROM booking b " +
                 "INNER JOIN customer g ON b.customer_id = g.customer_id " +
@@ -64,6 +63,7 @@ public class invoiceGeneratorController {
                     invoiceData.setRoomType(rs.getString("room_type_desc"));
                     invoiceData.setTotal_room_cost(rs.getDouble("total_room_charges"));
                     invoiceData.setRoom_unit_cost(rs.getDouble("price_per_night"));
+                    invoiceData.setBooking_id(rs.getString("booking_id"));
                 }
                 if (rs.getString("service_name") != null) {
                     order_service os = new order_service(rs.getInt("order_service_id"),
@@ -82,6 +82,7 @@ public class invoiceGeneratorController {
             }
             System.out.println("quitting controller");
             return invoiceData;
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

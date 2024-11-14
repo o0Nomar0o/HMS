@@ -95,6 +95,79 @@ public class userController {
 		}
 		return false;
 	}
+
+	public static boolean user_exist_email(String email) {
+
+		String sql = "SELECT EXISTS(SELECT 1 FROM `user` WHERE binary email = ? AND status != 'NIL')";
+
+		try (Connection con = DBConnection.getConnection();
+			 PreparedStatement psmt = con.prepareStatement(sql)){
+
+			psmt.setString(1, email);
+			ResultSet rs = psmt.executeQuery();
+			boolean exists = false;
+
+			while(rs.next()) {
+				return rs.getBoolean(1);
+			}
+
+			rs.close();
+
+		}catch(SQLException e) {
+			e.printStackTrace();
+
+		}
+		return false;
+	}
+
+	public static user getUserByEmail(String email) {
+		String sql = "select user_id, user_name, privilege, password, status from user where binary email=?";
+		try (Connection con = DBConnection.getConnection();
+			 PreparedStatement psmt = con.prepareStatement(sql)){
+
+			psmt.setString(1, email);
+			ResultSet rs = psmt.executeQuery();
+
+			while(rs.next()) {
+				String uid = rs.getString(1);
+				String username = rs.getString(2);
+				String privilege = rs.getString(3);
+				String password = rs.getString(4);
+				String status = rs.getString(5);
+
+				user u = new user(uid,username, privilege, password, status);
+
+				if(u.getStatus().equals("NIL")) {
+					throw new SQLException("User no longer exist");
+				}
+
+				return u;
+			}
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static boolean updatePassword_email(String email , String pw ) {
+		String sql = "update user set password=? where email=?";
+		try (Connection con = DBConnection.getConnection();) {
+
+			PreparedStatement psmt = con.prepareStatement(sql);
+
+			psmt.setString(1, pw);
+			psmt.setString(2, email);
+			psmt.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public static user getUserById(String id) {
 		String sql = "select user_id, user_name, privilege, password, status from user where binary user_id=?";
 		try (Connection con = DBConnection.getConnection();

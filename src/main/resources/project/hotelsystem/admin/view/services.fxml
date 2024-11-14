@@ -21,7 +21,6 @@
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <AnchorPane id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="853.0" prefWidth="1202.0" style="-fx-background-color: #F6F5F2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.adminServiceController">
     <children>
@@ -81,12 +80,12 @@
                 </Button>
             </children>
         </AnchorPane>
-        <TabPane id="main-tab" layoutX="216.0" layoutY="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="216.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="20.0">
+        <TabPane id="main-tab" fx:id="tab_root" layoutX="216.0" layoutY="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="216.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="20.0">
             <tabs>
                 <Tab id="servicestab" closable="false" text="Services">
                     <AnchorPane id="overview" layoutX="14.0" layoutY="8.0" style="-fx-background-color: white; -fx-background-radius: 1.25em;">
                         <children>
-                     <VBox AnchorPane.bottomAnchor="18.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="361.0" AnchorPane.topAnchor="0.0">
+                     <VBox prefHeight="763.0" prefWidth="965.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0">
                         <children>
                            <AnchorPane>
                               <children>
@@ -131,84 +130,16 @@
                                         <ImageView fx:id="imgView" fitHeight="238.0" fitWidth="349.0" layoutX="238.0" layoutY="38.0" pickOnBounds="true" />
                               </children>
                            </AnchorPane>
-                                  <HBox prefHeight="30.0" prefWidth="206.0" spacing="5.0">
+                                  <HBox alignment="TOP_RIGHT" prefHeight="30.0" prefWidth="206.0" spacing="5.0">
                                       <children>
-                                          <Button fx:id="btnCreateService" mnemonicParsing="false" onAction="#handleCreateServiceButtonClick" style="-fx-base: #05f846; -fx-text-fill: black;" text="Create" />
+                                          <Button fx:id="btnCreateService" alignment="CENTER" mnemonicParsing="false" onAction="#handleCreateServiceButtonClick" style="-fx-base: #05f846; -fx-text-fill: black;" text="Create" />
                                       </children>
                                   </HBox>
                                   <ScrollPane fx:id="scrollPaneServices" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="331.0" prefWidth="602.0" style="-fx-background-color: transparent; -fx-background-radius: 1.5em;" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                       <content>
-                                          <TilePane fx:id="tilepaneServices" hgap="20.0" prefColumns="1" prefRows="0" style="-fx-background-color: #EDEDED; -fx-padding: 5px; -fx-background-radius: 1.5em;" vgap="20.0" />
+                                          <TilePane fx:id="tilepaneServices" hgap="20.0" prefColumns="1" prefRows="0" style="-fx-background-color: #EDEDED; -fx-padding: 5px; -fx-background-radius: 1.5em; -fx-vgap: 10px;" vgap="20.0" />
                                       </content>
                                   </ScrollPane>
-                        </children>
-                     </VBox>
-                     <VBox alignment="CENTER" layoutX="626.0" AnchorPane.bottomAnchor="3.5" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
-                        <children>
-                           <HBox fx:id="roomVbox" alignment="CENTER_LEFT" prefWidth="302.0" VBox.vgrow="NEVER">
-                              <children>
-                                        <Label prefHeight="40.0" prefWidth="81.0" text="Order list">
-                                            <font>
-                                                <Font name="System Bold" size="20.0" />
-                                            </font>
-                                            <textFill>
-                                                <LinearGradient endY="0.3791469194312796" startY="1.0">
-                                                    <stops>
-                                                        <Stop>
-                                                            <color>
-                                                                <Color green="1.0" blue="0.6476190686225891" />
-                                                            </color>
-                                                        </Stop>
-                                                        <Stop offset="1.0">
-                                                            <color>
-                                                                <Color red="1.0" green="0.6805555820465088" blue="0.9361110925674438" />
-                                                            </color>
-                                                        </Stop>
-                                                    </stops>
-                                                </LinearGradient>
-                                            </textFill>
-                                        </Label>
-                                 <Button fx:id="txfRoomNo" mnemonicParsing="false" text="Choose Room No▽" />
-                              </children>
-                           </HBox>
-                           <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="317.0" VBox.vgrow="NEVER">
-                              <children>
-                                          <TextField fx:id="txfServiceName" prefHeight="35.0" prefWidth="192.0" promptText="Service Id" />
-                                        <Button fx:id="btnOrderBatch" mnemonicParsing="false" onAction="#handleAddButtonClick" prefHeight="8.0" prefWidth="25.0" text="+">
-                                            <font>
-                                                <Font size="18.0" />
-                                            </font>
-                                        </Button>
-                              </children>
-                           </HBox>
-                           <AnchorPane prefHeight="519.0" prefWidth="359.0" VBox.vgrow="ALWAYS">
-                              <children>
-                                 <VBox layoutX="208.0" layoutY="546.0" prefHeight="67.0" prefWidth="356.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="3.0">
-                                    <children>
-                                       <Text fx:id="totalCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Cost: 0">
-                                          <font>
-                                             <Font size="18.0" />
-                                          </font>
-                                       </Text>
-                                       <HBox alignment="BOTTOM_RIGHT" prefHeight="45.0" prefWidth="350.0" style="-fx-spacing: 25px;">
-                                          <children>
-                                             <Button fx:id="btnConfirm1" mnemonicParsing="false" onAction="#initialzingOrderList" prefHeight="34.0" prefWidth="61.0" style="-fx-base: #FE1E1A;" text="Clear" />
-                                                    <Button fx:id="btnConfirm" mnemonicParsing="false" onAction="#initialzingOrderList" prefHeight="34.0" prefWidth="61.0" style="-fx-base: #05f846;" text="Confirm" />
-                                          </children>
-                                       </HBox>
-                                    </children>
-                                 </VBox>
-                                        <ScrollPane fx:id="orderListScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="16.0" layoutY="67.0" prefHeight="442.0" prefWidth="352.0" style="-fx-background-color: transparent; -fx-background-radius: 1.5em;" AnchorPane.bottomAnchor="109.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="6.0">
-                                            <content>
-                                                <VBox fx:id="orderListVbox" prefHeight="458.0" prefWidth="340.0" style="-fx-background-color: #F6F5F2; -fx-background-radius: 1.5em; -fx-padding: 5px;">
-                                                    <padding>
-                                                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-                                                    </padding>
-                                                </VBox>
-                                            </content>
-                                        </ScrollPane>
-                              </children>
-                           </AnchorPane>
                         </children>
                      </VBox>
                         </children>
@@ -229,7 +160,7 @@
                                        <content>
                                           <AnchorPane fx:id="editfoodpane" minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="489.0">
                                              <children>
-                                                <Pane fx:id="imagepane" layoutX="47.0" layoutY="43.0" prefHeight="197.0" prefWidth="193.0" style="-fx-background-color: white;">
+                                                <Pane fx:id="imagepane" layoutX="47.0" layoutY="43.0" prefHeight="197.0" prefWidth="193.0" style="-fx-background-color: #F2F2F2; -fx-border-width: 0.5px; -fx-border-color: black;">
                                                    <children>
                                                       <ImageView fx:id="imageView" fitHeight="197.0" fitWidth="193.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
                                                    </children>
@@ -306,7 +237,7 @@
                                        <content>
                                           <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                              <children>
-                                                <TableView fx:id="stockTableView" layoutX="1.0" layoutY="-5.0" prefHeight="487.0" prefWidth="515.0">
+                                                <TableView fx:id="stockTableView" layoutX="1.0" layoutY="-5.0" onMouseClicked="#get_row" prefHeight="487.0" prefWidth="515.0">
                                                    <columns>
                                                       <TableColumn fx:id="foodNameColumn" prefWidth="237.0" text="Food Name" />
                                                       <TableColumn fx:id="stockColumn" text="Stock" />
@@ -324,7 +255,7 @@
                                        <content>
                                           <AnchorPane fx:id="editfoodpane1" minHeight="0.0" minWidth="0.0" prefHeight="475.0" prefWidth="515.0">
                                              <children>
-                                                <Pane fx:id="imagepane1" layoutX="47.0" layoutY="43.0" prefHeight="197.0" prefWidth="193.0" style="-fx-background-color: white;">
+                                                <Pane fx:id="imagepane1" layoutX="47.0" layoutY="43.0" prefHeight="197.0" prefWidth="193.0" style="-fx-background-color: #F2F2F2; -fx-border-color: black; -fx-border-width: 0.5px;">
                                                    <children>
                                                       <ImageView fx:id="CategoryimageView" fitHeight="197.0" fitWidth="193.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
                                                    </children>
@@ -352,14 +283,14 @@
                                     </Tab>
                                  </tabs>
                               </TabPane>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutY="99.0" minWidth="-Infinity" pannable="true" prefHeight="154.0" style="-fx-background-color: gray;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="551.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="482.0" AnchorPane.topAnchor="99.0">
+                              <ScrollPane fitToHeight="true" fitToWidth="true" layoutY="99.0" minWidth="-Infinity" pannable="true" prefHeight="154.0" style="-fx-background-color: #F2F2F2;" vbarPolicy="NEVER" AnchorPane.bottomAnchor="551.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="482.0" AnchorPane.topAnchor="99.0">
                                  <content>
-                                    <TilePane fx:id="categoryView" hgap="20.0" prefHeight="93.0" prefWidth="2400.0" style="-fx-background-color: white;" vgap="20.0" />
+                                    <TilePane fx:id="categoryView" hgap="20.0" prefHeight="93.0" prefWidth="2400.0" style="-fx-background-color: #F2F2F2;" vgap="20.0" />
                                  </content>
                               </ScrollPane>
-                              <ScrollPane fx:id="menuScrollPane" fitToHeight="true" fitToWidth="true" layoutY="255.0" maxWidth="-Infinity" prefHeight="549.0" prefWidth="725.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="482.0" AnchorPane.topAnchor="255.0">
+                              <ScrollPane fx:id="menuScrollPane" fitToHeight="true" fitToWidth="true" layoutY="255.0" maxWidth="-Infinity" prefHeight="549.0" prefWidth="725.0" style="-fx-background-color: #F2F2F2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="482.0" AnchorPane.topAnchor="255.0">
                                  <content>
-                                    <TilePane fx:id="foodView" alignment="TOP_CENTER" hgap="10.0" prefHeight="547.0" prefWidth="735.0" style="-fx-background-color: silver; -fx-padding: 2.5px;" tileAlignment="TOP_CENTER" vgap="10.0" />
+                                    <TilePane fx:id="foodView" alignment="TOP_CENTER" hgap="10.0" prefHeight="547.0" prefWidth="735.0" style="-fx-background-color: #F2F2F2; -fx-padding: 2.5px;" tileAlignment="TOP_CENTER" vgap="10.0" />
                                  </content>
                               </ScrollPane>
                               <Label layoutX="14.0" layoutY="30.0" text="Menu Category">

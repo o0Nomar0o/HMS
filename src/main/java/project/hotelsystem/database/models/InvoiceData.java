@@ -6,6 +6,7 @@ import java.util.List;
 
 public class InvoiceData {
     private String guestName;
+    private String booking_id;
     private String phoneNo;
     private String email;
     private LocalDateTime bookingDate;
@@ -27,6 +28,14 @@ public class InvoiceData {
 
     public String getGuestName() {
         return guestName;
+    }
+
+    public String getBooking_id() {
+        return booking_id;
+    }
+
+    public void setBooking_id(String booking_id) {
+        this.booking_id = booking_id;
     }
 
     public void setGuestName(String guestName) {

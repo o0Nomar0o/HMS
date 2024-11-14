@@ -1,31 +1,11 @@
 
-admin booking history -> services/food history todo
-
 search available rooms, from ~ to ~ todo
 
 payment method -> during check-in(booking) / check-out todo
 
-service images {image type}
-
-fix dashboard chart labels todo
-
-revamp service creation UI todo
-
 admin delete admin acc ?
 
-floor change room type bug
+total todo {duration * roomprice }
 
-refresh after database update todo
-{food cat, service insert, mostly services UI}
+booking room availability fix todo {fix booked after arrived check out}
 
-forget password todo
-
-image type bug todo
-
-food service stock dynamic todo
-
-return if order list == null; fix notification on no order todo
-
-invoice qnty for service and food orders todo
-
-deposit todo {duration * roomprice * 0.3}

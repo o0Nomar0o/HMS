@@ -136,7 +136,7 @@ public class settingsController implements Initializable {
 
         loadWindowsSettings();
 
-        pathtxt.setText("Invoice Path: "+ts.getInvoice_path());
+        pathtxt.setText("Invoice Path: " + ts.getInvoice_path());
 
         switch (theme) {
             case "light":
@@ -226,8 +226,6 @@ public class settingsController implements Initializable {
 
 
         }
-
-
 
 
         pfc.profileMod();
@@ -474,7 +472,7 @@ public class settingsController implements Initializable {
                             " -fx-padding: 10px 20px;"
             ));
             cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
-                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;"+
+                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;" +
                             "-fx-font-size: 14px;" +
                             "-fx-font-family: Arial;" +
                             " -fx-padding: 10px 20px;"
@@ -631,7 +629,7 @@ public class settingsController implements Initializable {
             VBox phBox = new VBox(phone_no, phno_field);
             phBox.setStyle("-fx-spacing: 8;");
 
-            HBox credBox = new HBox(15, emailBox, phBox);  
+            HBox credBox = new HBox(15, emailBox, phBox);
             credBox.setStyle("-fx-spacing: 15; -fx-padding: 10px;");
 
             VBox credentialsPane = new VBox(userFieldBox, credBox, currentFieldBox, privBox);
@@ -676,7 +674,7 @@ public class settingsController implements Initializable {
                             " -fx-padding: 10px 20px;"
             ));
             cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
-                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;"+
+                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;" +
                             "-fx-font-size: 14px;" +
                             "-fx-font-family: Arial;" +
                             " -fx-padding: 10px 20px;"
@@ -728,7 +726,7 @@ public class settingsController implements Initializable {
                 modalStage.close();
             });
             confirmButton.setOnAction(e -> {
-                editUserFromDB(selectedUser.getUid(),username_field.getText(),newPw.getText(),
+                editUserFromDB(selectedUser.getUid(), username_field.getText(), newPw.getText(),
                         userPriv.getSelectionModel().getSelectedItem(), email_field.getText(),
                         phno_field.getText(), e, modalStage
                 );
@@ -820,7 +818,7 @@ public class settingsController implements Initializable {
                             " -fx-padding: 10px 20px;"
             ));
             cancelButton.setOnMouseExited(e -> cancelButton.setStyle(
-                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;"+
+                    "-fx-background-color: #ff4d4d; -fx-text-fill: white; -fx-background-radius: 10;" +
                             "-fx-font-size: 14px;" +
                             "-fx-font-family: Arial;" +
                             " -fx-padding: 10px 20px;"
@@ -847,7 +845,7 @@ public class settingsController implements Initializable {
                             "  -fx-padding: 10px 20px;"
             ));
 
-            HBox buttonBox = new HBox(15,  cancelButton, confirmButton);
+            HBox buttonBox = new HBox(15, cancelButton, confirmButton);
             buttonBox.setAlignment(Pos.CENTER);
             buttonBox.setStyle("-fx-padding: 15px;");
 
@@ -884,6 +882,10 @@ public class settingsController implements Initializable {
                 protected Boolean call() throws Exception {
                     try {
 
+                        if (userController.user_exist_email(email)) {
+                            notificationManager.showNotification("Email has been used", "fail", (Stage) cancel.getScene().getWindow());
+                            throw new Exception("Duplicate Email");
+                        }
                         boolean success = authenticationManager.addNewUser(userID, name, pw, priv, email, ph);
 
                         if (!success) {
@@ -930,7 +932,7 @@ public class settingsController implements Initializable {
         }
 
         private void editUserFromDB(String userID, String name, String pw, String priv,
-                                 String email, String ph, ActionEvent e, Stage st) {
+                                    String email, String ph, ActionEvent e, Stage st) {
 
             loaderSettings.applyDimmingEffect(e);
 
@@ -939,7 +941,7 @@ public class settingsController implements Initializable {
                 protected Boolean call() throws Exception {
                     try {
 
-                        boolean success = authenticationManager.updatePasswordAndUser(userID,pw,priv,name,email,ph);
+                        boolean success = authenticationManager.updatePasswordAndUser(userID, pw, priv, name, email, ph);
 
                         if (!success) {
                             throw new Exception("Failed to edit user from the database. ER[101]");
@@ -1185,7 +1187,7 @@ public class settingsController implements Initializable {
 
 
             cancelButton.setOnAction(e -> {
-                loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+                loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
                 modalStage.close();
             });
 
@@ -1243,7 +1245,7 @@ public class settingsController implements Initializable {
             loadSceneTask.setOnSucceeded(ev -> {
                 try {
 
-                    loaderSettings.removeDimmingEffect((Stage)logout.getScene().getWindow());
+                    loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
                     st.close();
 
                 } catch (Exception ex) {

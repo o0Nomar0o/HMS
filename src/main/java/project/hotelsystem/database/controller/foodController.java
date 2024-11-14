@@ -5,7 +5,9 @@ import project.hotelsystem.database.models.food;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -27,8 +29,11 @@ public class foodController {
             psmt.setInt(1, id);
             ResultSet rs = psmt.executeQuery();
             if(rs.next()){
+                con.close();
                 return rs.getDouble("food_price");
             }
+
+
 
         }catch(SQLException e){
             e.printStackTrace();
@@ -113,6 +118,30 @@ public class foodController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Map<String, Integer> getAllFoodStockAndName(){
+        Map<String, Integer>allFood = new HashMap<>();
+        String sql = "SELECT food_name, current_stock from food";
+
+        try(Connection con = DBConnection.getConnection();
+        PreparedStatement psmt = con.prepareStatement(sql)){
+
+            ResultSet rs = psmt.executeQuery();
+            while(rs.next()){
+                String name = rs.getString("food_name");
+                int stock = rs.getInt("current_stock");
+                allFood.put(name, stock);
+            }
+
+            con.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return allFood;
+
     }
 
     public static List<food> getFoodByCat(String catName) {
@@ -359,6 +388,8 @@ public class foodController {
                 food newFood = new food(name,price,img,stock,category);
                 allFood.add(newFood);
             }
+
+            con.close();
             return allFood;
 
         }catch(SQLException e) {
