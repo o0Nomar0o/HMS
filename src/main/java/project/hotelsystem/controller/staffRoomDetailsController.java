@@ -1,5 +1,7 @@
 package project.hotelsystem.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,9 +18,12 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
+import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.database.controller.roomController;
 import project.hotelsystem.database.controller.roomTypeController;
-import project.hotelsystem.database.models.*;
+import project.hotelsystem.database.models.room;
+import project.hotelsystem.database.models.room_price;
 import project.hotelsystem.database.models.room_type_details;
 import project.hotelsystem.settings.databaseSettings;
 import project.hotelsystem.settings.invoiceSettings;
@@ -165,7 +170,7 @@ public class staffRoomDetailsController {
     @FXML
     public void initialize() {
 
-        System.out.println( dbs.getLocal_url());
+        System.out.println(dbs.getLocal_url());
         orders_button.setDisable(true);
         AddingRooms(null, 0, null);
         updateRoomCounts();
@@ -279,29 +284,206 @@ public class staffRoomDetailsController {
         bk_payment_method.getSelectionModel().selectFirst();
         ck_payment_method.getSelectionModel().selectFirst();
 
-        go_dates.setOnAction(e->room_dates());
+        ToCheckWithCheckInDate.setDayCellFactory(new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null && item.equals(LocalDate.now())) {
+                            setStyle("-fx-background-color: #FF6347; -fx-font-weight: bold;");
+                        }
+                    }
+                };
+            }
+        });
+
+        ToCheckWithCheckInDate.valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
+                if (newValue != null) {
+                    ToCheckWithCheckOutDate.setDisable(false);
+                    ToCheckWithCheckOutDate.setDayCellFactory(new Callback<DatePicker, DateCell>() {
+                        @Override
+                        public DateCell call(DatePicker datePicker) {
+                            return new DateCell() {
+                                @Override
+                                public void updateItem(LocalDate item, boolean empty) {
+                                    super.updateItem(item, empty);
+                                    if (item != null && item.isBefore(newValue)) {
+                                        setStyle("-fx-background-color: #f0f0f0; -fx-text-fill: #d3d3d3;");
+                                        setDisable(true);
+
+                                    }
+                                }
+                            };
+                        }
+                    });
+                    return;
+                }
+                ToCheckWithCheckOutDate.setDisable(true);
+            }
+        });
+
+        ToCheckWithCheckOutDate.setDisable(true);
+
+
+        go_dates.setOnAction(e -> room_dates());
+        clear_dates.setOnAction(e->{
+            ToCheckWithCheckOutDate.setValue(null);
+            ToCheckWithCheckInDate.setValue(null);
+            AddingRooms(null, 0, null);
+        });
 
     }
 
     public void room_dates() {
 
+        if (ToCheckWithCheckInDate.getValue() == null || ToCheckWithCheckOutDate.getValue() == null) return;
+
+        RoomShowBody.getChildren().clear();
+
         LocalDate ci = ToCheckWithCheckInDate.getValue();
         LocalDate co = ToCheckWithCheckOutDate.getValue();
+        System.out.println("CI: " + ci);
+        System.out.println("CO: " + co);
 
-        String query = "{call search_available_room_within_dates(?,?)}";
-        try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
+        String query = "{call search_available_rooms_within_dates(?,?)}";
+
+        try (Connection conn = DBConnection.getConnection();
              CallableStatement cst = conn.prepareCall(query)) {
 
-            System.out.println(Date.valueOf(ci));
             cst.setDate(1, Date.valueOf(ci));
             cst.setDate(2, Date.valueOf(co));
 
             ResultSet rs = cst.executeQuery();
 
-            while(rs.next()){
-                System.out.println(rs.getString(1));
+            GridPane roomGridPane = new GridPane();
+            roomGridPane.setHgap(20);
+            roomGridPane.setVgap(20);
+
+            TilePane roomPane = new TilePane();
+            roomPane.setHgap(20);
+            roomPane.setVgap(20);
+            String commonStyles = "-fx-background-radius: 20;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.0, 5, 5);";
+            int row = 0, col = 0;
+
+            while (rs.next()) {
+                String roomId = rs.getString(1);
+                System.out.println(roomId);
+                String roomType = rs.getString(2);
+                String floor = rs.getString(3);
+                String status = rs.getString(4);
+                Double price = rs.getDouble(6);
+                Double price_per_hour = rs.getDouble(7);
+                Button roomButton = new Button("Room " + roomId);
+                roomButton.setPrefSize(100, 50);
+
+                switch (status) {
+                    case "Unavailable", "Under Maintenance", "Occupied":
+                        roomButton.setStyle(
+                                "-fx-background-color: #FF4C4C; " + "-fx-text-fill: white; " +
+                                        "-fx-border-color: #B22222; " + "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;");
+                        roomButton.setOnMouseEntered(e -> roomButton.setStyle(
+
+                                "-fx-background-color: #FF0000; " + "-fx-text-fill: white; " +
+                                        "-fx-border-color: #B22222; " +
+                                        "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;"));
+                        roomButton.setOnMouseExited(e -> roomButton.setStyle(
+
+                                "-fx-background-color: #FF4C4C; " +
+                                        "-fx-text-fill: white; " +
+                                        "-fx-border-color: #B22222; " +
+                                        "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;"));
+                        break;
+                    case "Available":
+                        roomButton.setStyle(
+                                "-fx-background-color: #3CB371; " + "-fx-text-fill: white; " +
+                                        "-fx-border-color: #2E8B57; " + "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;");
+                        roomButton.setOnMouseEntered(e -> roomButton.setStyle(
+
+                                "-fx-background-color: #2E8B57; " + "-fx-text-fill: white; " +
+                                        "-fx-border-color: #2E8B57; " +
+                                        "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;"));
+                        roomButton.setOnMouseExited(e -> roomButton.setStyle(
+
+                                "-fx-background-color: #3CB371; " +
+                                        "-fx-text-fill: white; " +
+                                        "-fx-border-color: #2E8B57; " +
+                                        "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;"));
+                        break;
+                    case "Booked":
+                        roomButton.setStyle(commonStyles +
+                                "-fx-background-color: #FFD700; " +
+                                "-fx-text-fill: black; " +
+                                "-fx-border-color: #B8860B; " +
+                                "-fx-border-radius: 10; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-padding: 10;");
+                        roomButton.setOnMouseEntered(e -> roomButton.setStyle(
+
+                                "-fx-background-color: #FFC300; " +
+                                        "-fx-text-fill: black; " +
+                                        "-fx-border-color: #B8860B; " +
+                                        "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;"));
+                        roomButton.setOnMouseExited(e -> roomButton.setStyle(
+
+                                "-fx-background-color: #FFD700; " +
+                                        "-fx-text-fill: black; " +
+                                        "-fx-border-color: #B8860B; " +
+                                        "-fx-border-radius: 10; " +
+                                        "-fx-background-radius: 10; " +
+                                        "-fx-padding: 10;"));
+                        break;
+                }
+
+                roomButton.setOnAction(e -> {
+                    roomID.setText(roomId);
+                    this.roomType.setText(roomType);
+                    floorText.setText(floor);
+                    roomPrice.setText(price + " $");
+                    currRoom.setPricePerNight(price);
+                    this.roomPrice1.setText(price_per_hour + " $");
+                    selectedRoomNo = roomId;
+                    if ("Occupied".equals(status)) {
+                        fetchAndDisplayCustomerDetails(roomId);
+                    }
+                });
+
+                roomPane.getChildren().add(roomButton);
+                col++;
+                if (col == 7) {
+                    col = 0;
+                    row++;
+                }
             }
-        } catch (SQLException e) {
+
+            roomGridPane.setGridLinesVisible(true);
+
+            RoomShowBody.getChildren().add(roomPane);
+            RoomShowBody.getChildren().add(new Text("HEllo"));
+            AnchorPane.setTopAnchor(roomPane, 20.0);
+            AnchorPane.setLeftAnchor(roomPane, 20.0);
+            AnchorPane.setRightAnchor(roomPane, 20.0);
+
+        } catch (
+                SQLException e) {
 
         }
 
@@ -314,12 +496,6 @@ public class staffRoomDetailsController {
         RoomShowBody.getChildren().clear();
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
 
-//            String query = "SELECT room.room_no, room.floor, room.room_status, " +
-//                    "room_type.description, room_price.price_per_night,room_price.price_per_hour " +
-//                    "FROM room " +
-//                    "JOIN room_type ON room.room_type_id = room_type.room_type_id " +
-//                    "JOIN room_price ON room_type.room_type_id = room_price.room_type_id " +
-//                    "WHERE 1=1";
 
             String query = "SELECT room.room_no, room.floor, " +
                     "CASE WHEN brd.booking_status = 'Arrived' THEN 'Occupied' " +
@@ -328,8 +504,7 @@ public class staffRoomDetailsController {
                     "FROM room " +
                     "JOIN room_type ON room.room_type_id = room_type.room_type_id " +
                     "JOIN room_price ON room_type.room_type_id = room_price.room_type_id " +
-                    "LEFT JOIN booking_room_detail brd ON room.room_no = brd.room_no AND brd.booking_status = 'Arrived' "
-                   ;
+                    "LEFT JOIN booking_room_detail brd ON room.room_no = brd.room_no AND brd.booking_status = 'Arrived' ";
 
             if (roomIdToSearch != null && !roomIdToSearch.isEmpty()) {
                 query += " AND room.room_no = ?";
@@ -344,17 +519,13 @@ public class staffRoomDetailsController {
 
             String floor_f = "All";
 
-//            if (!floor_f.matches("All")) {
-//                query += " AND room_type.description = ? ";
-//            }
 
             if (rt != null) query += " AND room_type.description = ? ";
 
-            query +=  " ORDER BY effective_status DESC, room.room_no ASC;";
+            query += " ORDER BY effective_status DESC, room.room_no ASC;";
 
             PreparedStatement stmt = conn.prepareStatement(query);
 
-//            if (!floor_f.matches("All")) stmt.setString(2, floor_f);
 
             if (rt != null) stmt.setString(qIndex, rt);
 
@@ -383,7 +554,6 @@ public class staffRoomDetailsController {
                 String roomType = rs.getString("description");
                 String floor = rs.getString("floor");
                 String status = rs.getString("effective_status");
-                //String status = rs.getString("room_status");
                 String price = rs.getString("price_per_night");
                 String price_per_hour = rs.getString("price_per_hour");
 
@@ -397,21 +567,17 @@ public class staffRoomDetailsController {
                 String focusedStyles = "-fx-background-color: #7b7d7d;" +
                         "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 1.0), 15, 0.0, 5, 5);";
 
-                // Color coding based on room status
 
                 switch (status) {
                     case "Unavailable", "Under Maintenance", "Occupied":
                         roomButton.setStyle(
-                                "-fx-background-color: #FF4C4C; " + // Bright red for unavailable
-                                        "-fx-text-fill: white; " +
-                                        "-fx-border-color: #B22222; " + // Darker red border
-                                        "-fx-border-radius: 10; " +
+                                "-fx-background-color: #FF4C4C; " + "-fx-text-fill: white; " +
+                                        "-fx-border-color: #B22222; " + "-fx-border-radius: 10; " +
                                         "-fx-background-radius: 10; " +
                                         "-fx-padding: 10;");
                         roomButton.setOnMouseEntered(e -> roomButton.setStyle(
 
-                                "-fx-background-color: #FF0000; " + // Darker red on hover
-                                        "-fx-text-fill: white; " +
+                                "-fx-background-color: #FF0000; " + "-fx-text-fill: white; " +
                                         "-fx-border-color: #B22222; " +
                                         "-fx-border-radius: 10; " +
                                         "-fx-background-radius: 10; " +
@@ -427,16 +593,13 @@ public class staffRoomDetailsController {
                         break;
                     case "Available":
                         roomButton.setStyle(
-                                "-fx-background-color: #3CB371; " + // Medium sea green for available
-                                        "-fx-text-fill: white; " +
-                                        "-fx-border-color: #2E8B57; " + // Darker green border
-                                        "-fx-border-radius: 10; " +
+                                "-fx-background-color: #3CB371; " + "-fx-text-fill: white; " +
+                                        "-fx-border-color: #2E8B57; " + "-fx-border-radius: 10; " +
                                         "-fx-background-radius: 10; " +
                                         "-fx-padding: 10;");
                         roomButton.setOnMouseEntered(e -> roomButton.setStyle(
 
-                                "-fx-background-color: #2E8B57; " + // Darker green on hover
-                                        "-fx-text-fill: white; " +
+                                "-fx-background-color: #2E8B57; " + "-fx-text-fill: white; " +
                                         "-fx-border-color: #2E8B57; " +
                                         "-fx-border-radius: 10; " +
                                         "-fx-background-radius: 10; " +
@@ -542,7 +705,6 @@ public class staffRoomDetailsController {
                 double totalAmount = rs.getDouble("total_booking_charges");
                 double remainingCharges = rs.getDouble("remaining_amount");
 
-                // Create a new pane to display these details
                 AnchorPane customerDetailsPane = new AnchorPane();
                 customerDetailsPane.setPrefSize(400, 450);
                 customerDetailsPane.setStyle("-fx-background-color: #f9f9f9;" +
@@ -553,7 +715,6 @@ public class staffRoomDetailsController {
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);" +
                         "-fx-padding: 20;");
 
-                // Add Labels and Text for each data
                 Text fullNameLabel = new Text("Customer Name: " + customerName);
                 fullNameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: #333;");
 
@@ -581,7 +742,6 @@ public class staffRoomDetailsController {
                 Text remainingChargesLabel = new Text("Remaining Charges: $" + remainingCharges);
                 remainingChargesLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
 
-                // Create buttons for Cancel and Check Out
                 Button cancelButton = new Button("Cancel");
                 cancelButton.setStyle("-fx-background-color: #ff4d4d;" +
                         "-fx-text-fill: white;" +
@@ -596,7 +756,6 @@ public class staffRoomDetailsController {
                         "-fx-border-radius: 5;" +
                         "-fx-background-radius: 5;");
 
-                // Button hover effects
                 cancelButton.setOnMouseEntered(e -> cancelButton.setStyle("-fx-background-color: #ff1a1a;" +
                         "-fx-text-fill: white;" +
                         "-fx-font-size: 14px;"));
@@ -644,18 +803,15 @@ public class staffRoomDetailsController {
                 AnchorPane.setBottomAnchor(checkOutButton, 10.0);
                 AnchorPane.setRightAnchor(checkOutButton, 10.0);
 
-                // Add all elements to the pane
                 customerDetailsPane.getChildren().addAll(fullNameLabel, phoneLabel, idCardLabel, emailLabel,
                         checkInLabel, checkOutLabel, depositLabel, totalAmountLabel, remainingChargesLabel,
                         cancelButton, checkOutButton);
 
-                // Add an overlay pane for darkened background
                 AnchorPane overlayPane = new AnchorPane();
                 overlayPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
                 overlayPane.setPrefSize(body.getWidth(), body.getHeight());
                 body.getChildren().add(overlayPane);
 
-                // Center the customerDetailsPane
                 double paneWidth = customerDetailsPane.getPrefWidth();
                 double paneHeight = customerDetailsPane.getPrefHeight();
                 double bodyWidth = body.getWidth();
@@ -669,7 +825,6 @@ public class staffRoomDetailsController {
 
                 body.getChildren().add(customerDetailsPane);
 
-                // Button actions
                 cancelButton.setOnAction(e -> {
                     body.getChildren().removeAll(overlayPane, customerDetailsPane);
                 });
@@ -680,7 +835,6 @@ public class staffRoomDetailsController {
 
                     try (Connection connForUpdate = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
 
-                        // First, update the booking status to 'leaved'
                         String updateBookingStatusQuery = "UPDATE booking_room_detail SET booking_status = 'leaved' " +
                                 "WHERE booking_id = ? AND room_no = ?";
 
@@ -698,8 +852,8 @@ public class staffRoomDetailsController {
 
                         try (PreparedStatement updateCheckOutDateStmt = connForUpdate.prepareStatement(updateCheckOutDateQuery)) {
                             updateCheckOutDateStmt.setTimestamp(1, java.sql.Timestamp.valueOf(currentDate));
-                            updateCheckOutDateStmt.setInt(2, bookingId);   // Use the booking ID
-                            updateCheckOutDateStmt.executeUpdate();        // Execute the third update
+                            updateCheckOutDateStmt.setInt(2, bookingId);
+                            updateCheckOutDateStmt.executeUpdate();
                         }
                         body.getChildren().removeAll(overlayPane, customerDetailsPane);
                         AddingRooms(null, 0, null);
@@ -725,7 +879,6 @@ public class staffRoomDetailsController {
         AddingRooms(enteredRoomId, 0, null);
     }
 
-    // Method to fetch room counts from the database
     private void updateRoomCounts() {
         getRoomCount("Available", NumberOfAR);
         getRoomCount("Booked", NumberOfBR);
@@ -748,7 +901,7 @@ public class staffRoomDetailsController {
 
     @FXML
     void RoomTypeAction(ActionEvent event) {
-        AddingRooms("", 0, null);  // Call the AddingRooms method to update the room list based on the selected filters
+        AddingRooms("", 0, null);
     }
 
 
@@ -959,7 +1112,7 @@ public class staffRoomDetailsController {
         stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
         int durationINT = Integer.parseInt(duration.getText());
-        Text deposit = new Text("deposit: $"+currRoom.getPricePerNight()*durationINT*0.3);
+        Text deposit = new Text("deposit: $" + currRoom.getPricePerNight() * durationINT * 0.3);
 
 
         VBox bookingDetailsPane = new VBox(guestNameBox, phoneNumberBox, guestIdBox, emailBox, checkInDateBox, stayDurationBox, deposit);
@@ -1169,7 +1322,7 @@ public class staffRoomDetailsController {
         stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
         int durationINT = Integer.parseInt(duration1.getText());
-        Text deposit = new Text("deposit: $"+currRoom.getPricePerNight()*durationINT*0.3);
+        Text deposit = new Text("deposit: $" + currRoom.getPricePerNight() * durationINT * 0.3);
 
         VBox bookingDetailsPane = new VBox(roomBox, guestNameBox, phoneNumberBox, checkInDateBox, stayDurationBox, deposit);
 

@@ -225,7 +225,7 @@ public class adminServiceController {
     }
 
     @FXML
-    void get_row(MouseEvent event){
+    void get_row(MouseEvent event) {
         if (event.getClickCount() == 2) {
             food selectedFood = stockTableView.getSelectionModel().getSelectedItem();
             if (selectedFood != null) {
@@ -309,53 +309,95 @@ public class adminServiceController {
     @FXML
     private void handleCreateServiceButtonClick() {
 
+
         Stage popupStage = new Stage();
         popupStage.setTitle("Create Service");
         popupStage.initModality(Modality.APPLICATION_MODAL);
 
-        VBox vbox = new VBox(10);
+        Stage owner = (Stage) logout.getScene().getWindow();
 
-        TextField serviceIdField = new TextField();
-        serviceIdField.setPromptText("Service ID");
+        loaderSettings.applyDimmingEffect(owner);
+
+        popupStage.initOwner(owner);
+        popupStage.initStyle(StageStyle.UNDECORATED);
+
+        VBox vbox = new VBox(15);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-background-color: white; -fx-background-radius: 10px; -fx-padding: 20px;");
 
         TextField serviceNameField = new TextField();
         serviceNameField.setPromptText("Service Name");
+        serviceNameField.setStyle("-fx-pref-width: 300px; -fx-font-size: 14px;");
 
         TextField descriptionField = new TextField();
         descriptionField.setPromptText("Description");
+        descriptionField.setStyle("-fx-pref-width: 300px; -fx-font-size: 14px;");
 
         TextField priceField = new TextField();
         priceField.setPromptText("Service Price");
+        priceField.setStyle("-fx-pref-width: 300px; -fx-font-size: 14px;");
 
         Button btnSelectImage = new Button("Select Image");
         Label selectedFileLabel = new Label();
         final File[] selectedFile = new File[1];
 
+        btnSelectImage.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-padding: 10px 20px;");
         btnSelectImage.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
             File file = fileChooser.showOpenDialog(popupStage);
+
             if (file != null) {
                 selectedFileLabel.setText(file.getName());
                 selectedFile[0] = file;
+
+                try {
+                    InputStream compressedImageStream = ImageCompressor.compressImage(file, 0.7f);
+                    byte[] imageBytes = compressedImageStream.readAllBytes();
+
+                    System.out.println("Compressed image size: " + imageBytes.length + " bytes");
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
-        vbox.setStyle("-fx-background-color:black");
 
+
+        Button btnClose = new Button("Close");
+        btnClose.setStyle("-fx-background-color: #ed1e3f; -fx-text-fill: white; -fx-padding: 10px 20px;");
+        btnClose.setOnAction(e -> {
+                    loaderSettings.removeDimmingEffect(owner);
+                    popupStage.close();
+                }
+        );
 
         Button btnSave = new Button("Save");
+        btnSave.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 10px 20px;");
         btnSave.setOnAction(e -> {
             String serviceName = serviceNameField.getText();
             String description = descriptionField.getText();
             double price = Double.parseDouble(priceField.getText());
 
             serviceController.saveService(serviceName, description, price, selectedFile[0]);
+            loaderSettings.removeDimmingEffect(owner);
+            notificationManager.showNotification("Successfully added a new service", "success", owner);
             popupStage.close();
         });
 
-        vbox.getChildren().addAll(serviceIdField, serviceNameField, descriptionField, priceField, btnSelectImage, selectedFileLabel, btnSave);
-        Scene scene = new Scene(vbox, 300, 275);
+        HBox btns = new HBox(btnClose, btnSave);
+        btns.setStyle("-fx-padding: 15px; -fx-spacing: 20px;");
+        vbox.getChildren().addAll(serviceNameField, descriptionField, priceField, btnSelectImage, selectedFileLabel, btns);
+
+        Scene scene = new Scene(vbox, 400, 350);
+
+        double xPosition = owner.getX() + owner.getWidth() / 2d - scene.getWidth() / 2d;
+        double yPosition = owner.getY() + owner.getHeight() / 2d - scene.getHeight() / 2d;
+        popupStage.setX(xPosition);
+        popupStage.setY(yPosition);
+
         popupStage.setScene(scene);
+        popupStage.setResizable(false);
         popupStage.showAndWait();
     }
 
@@ -516,7 +558,7 @@ public class adminServiceController {
                 Label nameLabel = (Label) n.lookup("#nameLabel");
                 Label quantityLabel = (Label) n.lookup("#stockLabel");
                 String name = nameLabel.getText();
-                quantityLabel.setText(fns.get(name)+"");
+                quantityLabel.setText(fns.get(name) + "");
                 System.out.println(name);
             }
         }
@@ -837,7 +879,6 @@ public class adminServiceController {
         } catch (IOException var3) {
             IOException e = var3;
             e.printStackTrace();
-            //this.showAlert("Error", "Error reading image file: " + e.getMessage());
         }
 
     }
@@ -857,7 +898,6 @@ public class adminServiceController {
         } catch (Exception var8) {
             Exception err = var8;
             err.printStackTrace();
-            //this.showAlert("Error", "Error saving image: " + err.getMessage());
         }
 
     }
@@ -971,7 +1011,6 @@ public class adminServiceController {
             } catch (Throwable var37) {
                 SQLException e = (SQLException) var37;
                 e.printStackTrace();
-                // this.showAlert("Error", "Error saving image to database: " + e.getMessage());
             }
 
         }
@@ -1003,7 +1042,6 @@ public class adminServiceController {
         } catch (IOException var3) {
             IOException e = var3;
             e.printStackTrace();
-            // this.showAlert("Error", "Error reading image file: " + e.getMessage());
         }
 
     }
@@ -1016,7 +1054,6 @@ public class adminServiceController {
         } catch (Exception var2) {
             Exception err = var2;
             err.printStackTrace();
-            //this.showAlert("Error", "Error saving image: " + err.getMessage());
         }
 
     }
@@ -1084,7 +1121,6 @@ public class adminServiceController {
             } catch (Throwable var27) {
                 SQLException e = (SQLException) var27;
                 e.printStackTrace();
-                //this.showAlert("Error", "Error saving image to database: " + e.getMessage());
             }
 
         }

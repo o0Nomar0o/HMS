@@ -464,7 +464,7 @@ public class staffServiceController {
         serviceLabel.setStyle("-fx-text-fill:white");
         serviceCharge.setStyle("-fx-text-fill:white");
 
-        serviceOrderPane.setStyle("-fx-background-color: #EAEAEA;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
+        serviceOrderPane.setStyle("-fx-background-color: #c2d2c1;" + "-fx-padding: 5px 0px 5px 10px;" + "-fx-background-radius:8px");
 
         sep.setPrefWidth(100);
         sep.setStyle("-fx-background-grey: white;" + "-fx-border-color:grey;" + "-fx-border-width: 0;");
