@@ -163,9 +163,13 @@ public class staffRoomDetailsController {
     static databaseSettings dbs = databaseSettings.getInstance();
 
     private final String JDBC_URL = dbs.getLocal_url();
-    private static String DB_USER = dbs.getLocal_user();
-    private static String DB_PASSWORD = dbs.getLocal_password();
+    private final String DB_USER = dbs.getLocal_user();
+    private final String DB_PASSWORD = dbs.getLocal_password();
 
+    final List<String> paymentMethodsList = new ArrayList<>(Arrays.asList("Cash", "Credit Card",
+            "Debit Card", "Bank Transfer"));
+
+    ObservableList<String> paymentMethods = FXCollections.observableArrayList(paymentMethodsList);
 
     @FXML
     public void initialize() {
@@ -276,8 +280,6 @@ public class staffRoomDetailsController {
             }
         });
 
-        List<String> paymentMethodsList = new ArrayList<>(Arrays.asList("Cash", "Credit Card", "Debit Card", "Bank Transfer"));
-        ObservableList<String> paymentMethods = FXCollections.observableArrayList(paymentMethodsList);
         bk_payment_method.setItems(paymentMethods);
         ck_payment_method.setItems(paymentMethods);
 
@@ -330,7 +332,7 @@ public class staffRoomDetailsController {
 
 
         go_dates.setOnAction(e -> room_dates());
-        clear_dates.setOnAction(e->{
+        clear_dates.setOnAction(e -> {
             ToCheckWithCheckOutDate.setValue(null);
             ToCheckWithCheckInDate.setValue(null);
             AddingRooms(null, 0, null);
@@ -497,6 +499,7 @@ public class staffRoomDetailsController {
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
 
 
+            int qIndex = 1;
             String query = "SELECT room.room_no, room.floor, " +
                     "CASE WHEN brd.booking_status = 'Arrived' THEN 'Occupied' " +
                     "ELSE room.room_status END AS effective_status, " +
@@ -504,23 +507,21 @@ public class staffRoomDetailsController {
                     "FROM room " +
                     "JOIN room_type ON room.room_type_id = room_type.room_type_id " +
                     "JOIN room_price ON room_type.room_type_id = room_price.room_type_id " +
-                    "LEFT JOIN booking_room_detail brd ON room.room_no = brd.room_no AND brd.booking_status = 'Arrived' ";
+                    "LEFT JOIN booking_room_detail brd ON room.room_no = brd.room_no AND brd.booking_status = 'Arrived' " +
+                    "WHERE 1=1";
 
             if (roomIdToSearch != null && !roomIdToSearch.isEmpty()) {
                 query += " AND room.room_no = ?";
             }
-
-            int qIndex = 1;
 
             if (floorFilter != 0) {
                 query += " AND room.floor = ?";
                 qIndex++;
             }
 
-            String floor_f = "All";
-
-
-            if (rt != null) query += " AND room_type.description = ? ";
+            if (rt != null && !rt.isEmpty()) {
+                query += " AND room_type.description = ?";
+            }
 
             query += " ORDER BY effective_status DESC, room.room_no ASC;";
 
@@ -742,6 +743,13 @@ public class staffRoomDetailsController {
                 Text remainingChargesLabel = new Text("Remaining Charges: $" + remainingCharges);
                 remainingChargesLabel.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
 
+
+                Text paymentMethod = new Text("Payment Method");
+                paymentMethod.setStyle("-fx-font-size: 14px; -fx-fill: #555;");
+                ComboBox<String> co_pm = new ComboBox<>();
+                co_pm.getItems().addAll(paymentMethods);
+                co_pm.getSelectionModel().selectFirst();
+
                 Button cancelButton = new Button("Cancel");
                 cancelButton.setStyle("-fx-background-color: #ff4d4d;" +
                         "-fx-text-fill: white;" +
@@ -797,6 +805,12 @@ public class staffRoomDetailsController {
                 AnchorPane.setTopAnchor(remainingChargesLabel, 250.0);
                 AnchorPane.setLeftAnchor(remainingChargesLabel, 10.0);
 
+                AnchorPane.setTopAnchor(paymentMethod, 280.0);
+                AnchorPane.setLeftAnchor(paymentMethod, 10.0);
+
+                AnchorPane.setTopAnchor(co_pm, 310.0);
+                AnchorPane.setLeftAnchor(co_pm, 10.0);
+
                 AnchorPane.setBottomAnchor(cancelButton, 10.0);
                 AnchorPane.setRightAnchor(cancelButton, 120.0);
 
@@ -805,7 +819,7 @@ public class staffRoomDetailsController {
 
                 customerDetailsPane.getChildren().addAll(fullNameLabel, phoneLabel, idCardLabel, emailLabel,
                         checkInLabel, checkOutLabel, depositLabel, totalAmountLabel, remainingChargesLabel,
-                        cancelButton, checkOutButton);
+                        cancelButton, checkOutButton, paymentMethod, co_pm);
 
                 AnchorPane overlayPane = new AnchorPane();
                 overlayPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
@@ -843,11 +857,48 @@ public class staffRoomDetailsController {
                             updateBookingStatusStmt.setString(2, roomId);
                             updateBookingStatusStmt.executeUpdate();
                         }
-                        String updateRoomStatusQuery = "UPDATE room SET room_status='Available' WHERE room_no = ?";
-                        try (PreparedStatement updateRoomStatusStmt = connForUpdate.prepareStatement(updateRoomStatusQuery)) {
-                            updateRoomStatusStmt.setString(1, roomId);
-                            updateRoomStatusStmt.executeUpdate();
+
+                        // query v2
+                        String checkBookingStatusQuery =
+                                "SELECT COUNT(*) FROM booking_room_detail " +
+                                        "WHERE room_no = ? AND booking_status = 'Booked'";
+
+                        PreparedStatement checkStmt = connForUpdate.prepareStatement(checkBookingStatusQuery);
+                        checkStmt.setString(1, roomId);
+                        ResultSet resultSet = checkStmt.executeQuery();
+
+                        String roomStatus;
+                        if (resultSet.next() && resultSet.getInt(1) > 0) {
+                            roomStatus = "Booked";
+                        } else {
+                            roomStatus = "Available";
                         }
+
+                        String updateRoomStatusQuery = "UPDATE room SET room_status = ? WHERE room_no = ?";
+                        PreparedStatement updateStmt = connForUpdate.prepareStatement(updateRoomStatusQuery);
+                        updateStmt.setString(1, roomStatus);
+                        updateStmt.setString(2, roomId);
+                        updateStmt.executeUpdate();
+
+                        resultSet.close();
+                        checkStmt.close();
+                        updateStmt.close();
+
+                        //query v1
+//                        String updateRoomStatusQuery =
+//                                "UPDATE room " +
+//                                        "SET room_status = 'Available' " +
+//                                        "WHERE room_no = ? " +
+//                                        "AND NOT EXISTS ( " +
+//                                        "SELECT 1 FROM booking_room_detail " +
+//                                        "WHERE booking_room_detail.room_no = room.room_no " +
+//                                        "AND booking_status = 'Arrived' " +
+//                                        ")";
+//                        try (PreparedStatement updateRoomStatusStmt = connForUpdate.prepareStatement(updateRoomStatusQuery)) {
+//                            updateRoomStatusStmt.setString(1, roomId);
+//                            updateRoomStatusStmt.executeUpdate();
+//                        }
+
                         String updateCheckOutDateQuery = "UPDATE booking SET check_out = ? WHERE booking_id = ?";
 
                         try (PreparedStatement updateCheckOutDateStmt = connForUpdate.prepareStatement(updateCheckOutDateQuery)) {
@@ -855,6 +906,17 @@ public class staffRoomDetailsController {
                             updateCheckOutDateStmt.setInt(2, bookingId);
                             updateCheckOutDateStmt.executeUpdate();
                         }
+
+                        String out_payment = "INSERT INTO payment(booking_id, amount, payment_date, payment_method) VALUES (?,?,?,?)";
+                        try (PreparedStatement insertOut_Payment = connForUpdate.prepareStatement(out_payment)) {
+                            insertOut_Payment.setInt(1,bookingId);
+                            insertOut_Payment.setDouble(2,remainingCharges);
+                            insertOut_Payment.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+                            insertOut_Payment.setString(4, co_pm.getSelectionModel().getSelectedItem());
+
+                            insertOut_Payment.execute();
+                        }
+
                         body.getChildren().removeAll(overlayPane, customerDetailsPane);
                         AddingRooms(null, 0, null);
 
@@ -1111,11 +1173,29 @@ public class staffRoomDetailsController {
         VBox stayDurationBox = new VBox(stayDurationText, stayDurationField);
         stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
+        Text deposit_txt = new Text("Deposit");
+        deposit_txt.setFont(new Font("Arial", 16));
+        deposit_txt.setFill(Color.DARKSLATEGRAY);
         int durationINT = Integer.parseInt(duration.getText());
-        Text deposit = new Text("deposit: $" + currRoom.getPricePerNight() * durationINT * 0.3);
+        Text deposit_field = new Text("" + currRoom.getPricePerNight() * durationINT * 0.3);
+        deposit_field.setFont(new Font("Arial", 16));
+        deposit_field.setFill(Color.DIMGRAY);
+
+        VBox depositBox = new VBox(deposit_txt, deposit_field);
+        depositBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text total_txt = new Text("Total");
+        total_txt.setFont(new Font("Arial", 16));
+        total_txt.setFill(Color.DARKSLATEGRAY);
+        Text total_field = new Text("" + currRoom.getPricePerNight() * durationINT);
+        total_field.setFont(new Font("Arial", 16));
+        total_field.setFill(Color.DIMGRAY);
+
+        VBox totalBox = new VBox(total_txt, total_field);
+        totalBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
 
-        VBox bookingDetailsPane = new VBox(guestNameBox, phoneNumberBox, guestIdBox, emailBox, checkInDateBox, stayDurationBox, deposit);
+        VBox bookingDetailsPane = new VBox(guestNameBox, phoneNumberBox, guestIdBox, emailBox, checkInDateBox, totalBox, depositBox);
 
         bookingDetailsPane.setStyle(
                 "-fx-spacing: 15; " +
@@ -1198,7 +1278,7 @@ public class staffRoomDetailsController {
         modalRoot.setBottom(buttonBox);
         BorderPane.setAlignment(buttonBox, Pos.CENTER);
 
-        Scene modalScene = new Scene(modalRoot, 425, 665);
+        Scene modalScene = new Scene(modalRoot, 425, 735);
         modalStage.setScene(modalScene);
         modalScene.setFill(Color.TRANSPARENT);
         modalStage.setResizable(false);
@@ -1321,10 +1401,30 @@ public class staffRoomDetailsController {
         VBox stayDurationBox = new VBox(stayDurationText, stayDurationField);
         stayDurationBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
 
-        int durationINT = Integer.parseInt(duration1.getText());
-        Text deposit = new Text("deposit: $" + currRoom.getPricePerNight() * durationINT * 0.3);
+        Text deposit_txt = new Text("Deposit");
+        deposit_txt.setFont(new Font("Arial", 16));
+        deposit_txt.setFill(Color.DARKSLATEGRAY);
 
-        VBox bookingDetailsPane = new VBox(roomBox, guestNameBox, phoneNumberBox, checkInDateBox, stayDurationBox, deposit);
+        int durationINT = Integer.parseInt(duration1.getText());
+        Text deposit_field = new Text("" + (currRoom.getPricePerNight() * durationINT) * 0.3);
+        deposit_field.setFont(new Font("Arial", 16));
+        deposit_field.setFill(Color.DIMGRAY);
+
+        VBox depositBox = new VBox(deposit_txt, deposit_field);
+        depositBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        Text total_txt = new Text("Total");
+        total_txt.setFont(new Font("Arial", 16));
+        total_txt.setFill(Color.DARKSLATEGRAY);
+
+        Text total_field = new Text("" + currRoom.getPricePerNight() * durationINT);
+        total_field.setFont(new Font("Arial", 16));
+        total_field.setFill(Color.DIMGRAY);
+
+        VBox totalBox = new VBox(total_txt, total_field);
+        totalBox.setStyle("-fx-spacing: 8; -fx-padding: 10px;");
+
+        VBox bookingDetailsPane = new VBox(roomBox, guestNameBox, phoneNumberBox, checkInDateBox, stayDurationBox, totalBox, depositBox);
 
         bookingDetailsPane.setStyle(
                 "-fx-spacing: 15; " +
@@ -1407,7 +1507,7 @@ public class staffRoomDetailsController {
         modalRoot.setBottom(buttonBox);
         BorderPane.setAlignment(buttonBox, Pos.CENTER);
 
-        Scene modalScene = new Scene(modalRoot, 425, 598);
+        Scene modalScene = new Scene(modalRoot, 425, 715);
         modalStage.setScene(modalScene);
         modalScene.setFill(Color.TRANSPARENT);
         modalStage.setResizable(false);

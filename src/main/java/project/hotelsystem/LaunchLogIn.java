@@ -31,12 +31,11 @@ public class LaunchLogIn extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
 
-//            path = getClass().getResource("/login.css");
             path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
 
             root.getStylesheets().add(path.toExternalForm());
 
-            path = new File("src/main/resources/project/hotelsystem/images/hotel_7499247.png").toURI().toURL();
+            path = new File("src/main/resources/project/hotelsystem/images/1024x1024.icn").toURI().toURL();
             Image icn = new Image(path.toExternalForm());
             stage.getIcons().add(icn);
 
