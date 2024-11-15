@@ -1,6 +1,5 @@
 package project.hotelsystem.controller;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -10,7 +9,6 @@ import javafx.stage.Stage;
 import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.settings.userSettings;
 
-import java.io.File;
 import java.net.URL;
 
 /**
@@ -26,11 +24,11 @@ public class logoutController {
         try {
 
 
-            URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
+            URL path = logoutController.class.getResource("/project/hotelsystem/login.fxml");;
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
+            path = logoutController.class.getResource("/project/hotelsystem/css/login.css");;
             stage.setTitle("Breeze Hub");
             stage.setFullScreen(false);
             stage.setWidth(650.0);
@@ -79,11 +77,11 @@ public class logoutController {
             currentScene.setRoot(new Pane());
             st.close();
 
-            URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
+            URL path = logoutController.class.getResource("/project/hotelsystem/login.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
-            path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
+            path = logoutController.class.getResource("/project/hotelsystem/css/login.css");
             stage.setTitle("Breeze Hub");
             stage.setFullScreen(false);
             stage.setWidth(650.0);

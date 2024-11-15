@@ -383,6 +383,8 @@ public class adminServiceController {
             loaderSettings.removeDimmingEffect(owner);
             notificationManager.showNotification("Successfully added a new service", "success", owner);
             popupStage.close();
+            dump_service_pane();
+            generateService();
         });
 
         HBox btns = new HBox(btnClose, btnSave);
@@ -1603,6 +1605,22 @@ public class adminServiceController {
         }
 
         System.gc();
+    }
+
+    private void dump_service_pane() {
+
+        for (Node n : tilepaneServices.getChildren()) {
+            if (n instanceof GridPane) {
+                for (Node p : ((GridPane) n).getChildren()) {
+                    if (p instanceof ImageView) ((ImageView) p).setImage(null);
+                }
+            }
+        }
+
+
+        System.gc();
+
+
     }
 
 

@@ -9,7 +9,6 @@ import project.hotelsystem.database.controller.userController;
 import project.hotelsystem.settings.userSettings;
 import project.hotelsystem.web.WebSocketCon;
 
-import java.io.File;
 import java.net.URL;
 
 public class LaunchLogIn extends Application {
@@ -26,18 +25,17 @@ public class LaunchLogIn extends Application {
         try {
 
 
-           URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
 
+            URL path = getClass().getResource("/project/hotelsystem/login.fxml");
+            System.out.println(path.toString());
             FXMLLoader fxmlLoader = new FXMLLoader(path);
             Scene root = new Scene(fxmlLoader.load());
 
-            path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
+            path = getClass().getResource("/project/hotelsystem/css/login.css");
+            System.out.println(path.toString());
 
             root.getStylesheets().add(path.toExternalForm());
 
-            path = new File("src/main/resources/project/hotelsystem/images/1024x1024.icn").toURI().toURL();
-            Image icn = new Image(path.toExternalForm());
-            stage.getIcons().add(icn);
 
             stage.setTitle("Breeze Hub");
             stage.setScene(root);

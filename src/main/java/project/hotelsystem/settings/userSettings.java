@@ -115,18 +115,18 @@ public class userSettings {
 
             loadWindowsSettings();
 
-            String cssPath = "src/main/resources/project/hotelsystem/css/" + baseFilename;
+            String cssPath =  baseFilename;
             if (theme.equals("dark")) {
                 cssPath += "dark.css";
             } else {
                 cssPath += ".css";
             }
 
-            URL appTheme = new File(cssPath).toURI().toURL();
+            URL appTheme = getClass().getResource("/project/hotelsystem/css/"+cssPath);
 
             root.getStylesheets().add(appTheme.toExternalForm());
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

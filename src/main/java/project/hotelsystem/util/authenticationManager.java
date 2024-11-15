@@ -98,7 +98,4 @@ public class authenticationManager {
         return userController.updatePassword_email(email,hash.getResult());
     }
 
-    public static void main(String[] args) {
-        addNewUser("help","Help","hotel", "admin","","");
-    }
 }

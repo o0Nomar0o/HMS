@@ -79,7 +79,7 @@
                 </Button>
             </children>
         </AnchorPane>
-        <TabPane id="main-tab" layoutX="216.0" layoutY="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="216.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="20.0">
+        <TabPane id="main-tab" fx:id="tab_root" layoutX="216.0" layoutY="20.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="216.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="20.0">
             <tabs>
                 <Tab id="servicestab" closable="false" text="Services">
                     <AnchorPane layoutX="14.0" layoutY="8.0" prefWidth="956.0" style="-fx-background-color: white; -fx-background-radius: 1.25em;">

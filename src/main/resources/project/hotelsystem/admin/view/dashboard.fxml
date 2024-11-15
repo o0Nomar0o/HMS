@@ -119,7 +119,7 @@
                                     <CategoryAxis label="Years" side="BOTTOM" />
                                  </xAxis>
                                  <yAxis>
-                                    <NumberAxis label="Months" side="LEFT" />
+                                    <NumberAxis label="Revenue" side="LEFT" />
                                  </yAxis>
                               </StackedAreaChart>
                            </children>

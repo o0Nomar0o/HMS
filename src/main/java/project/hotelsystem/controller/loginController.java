@@ -29,7 +29,6 @@ import project.hotelsystem.util.authenticationManager;
 import project.hotelsystem.util.notificationManager;
 import project.hotelsystem.web.WebSocketCon;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -196,12 +195,12 @@ public class loginController {
 
                 switch (authenticationManager.getPrivilege()) {
                     case "admin":
-                        URL path = new File("src/main/resources/project/hotelsystem/admin/view/dashboard.fxml").toURI().toURL();
+                        URL path = getClass().getResource("/project/hotelsystem/admin/view/dashboard.fxml");
                         viewName = "dashboard";
                         return FXMLLoader.load(path);
 
                     case "staff":
-                        URL pathpath = new File("src/main/resources/project/hotelsystem/staff/view/rooms.fxml").toURI().toURL();
+                        URL pathpath = getClass().getResource("/project/hotelsystem/staff/view/rooms.fxml");
                         viewName = "booking";
                         return FXMLLoader.load(pathpath);
 
@@ -282,13 +281,13 @@ public class loginController {
     void tosettings(ActionEvent event) {
         try {
 
-            URL path = new File("src/main/resources/project/hotelsystem/dbsetup.fxml").toURI().toURL();
+            URL path = getClass().getResource("/project/hotelsystem/dbsetup.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(path);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Parent root = fxmlLoader.load();
 
-            path = new File("src/main/resources/project/hotelsystem/css/dbsetup.css").toURI().toURL();
+            path = getClass().getResource("/project/hotelsystem/css/dbsetup.css");
             root.getStylesheets().add(path.toExternalForm());
 
             stage.getScene().setRoot(root);
@@ -521,7 +520,7 @@ public class loginController {
                     if (!success) {
                         throw new Exception("Failed to add new user to the database.");
                     }
-
+                    create_account.setDisable(true);
                     return success;
                 } catch (Exception ex) {
 

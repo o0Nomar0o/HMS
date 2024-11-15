@@ -18,7 +18,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import project.hotelsystem.database.controller.bookingController;
 import project.hotelsystem.database.models.booking;
-import project.hotelsystem.settings.userSettings;
+import project.hotelsystem.settings.*;
+import project.hotelsystem.util.*;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -367,6 +369,8 @@ public class staffBookingController {
                 return;
             }
 
+            loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
+
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
             Stage owner = (Stage) logout.getScene().getWindow();
@@ -423,17 +427,19 @@ public class staffBookingController {
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
             cancelButton.setOnAction(e -> {
+                loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
                 modalStage.close();
             });
 
             confirmButton.setOnAction(e -> {
                 if (removeBookingFromDB(selectedBooking.getBooking_id(), selectedBooking.getRoom().getRoom_no())) {
-                    showAlert("Success", "Booking has been successfully cancelled.");
+                    modalStage.close();
+                    notificationManager.showNotification("Booking has been Cancelled","success",(Stage) logout.getScene().getWindow());
                     bookingTable.getItems().remove(selectedBooking);
+                    loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
                 } else {
-                    showAlert("Error", "Failed to cancel the booking.");
+                    notificationManager.showNotification("Failed to cancel booking","failure",modalStage);
                 }
-                modalStage.close();
             });
         }
 
@@ -448,6 +454,8 @@ public class staffBookingController {
                 showAlert("No Booking Selected", "Please select a booking.");
                 return;
             }
+
+            loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
 
             Stage modalStage = new Stage();
             modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -505,17 +513,20 @@ public class staffBookingController {
             modalStage.setY((owner.getY() + owner.getHeight() / 2d) - (modalScene.getHeight() / 2d));
 
             cancelButton.setOnAction(e -> {
+                loaderSettings.removeDimmingEffect((Stage) logout.getScene().getWindow());
                 modalStage.close();
             });
 
             confirmButton.setOnAction(e -> {
                 if (bookingController.arrived(selectedBooking.getBooking_id(), selectedBooking.getRoom().getRoom_no())) {
-                    showAlert("Success", "Successfully Checked-in.");
+                    modalStage.close();
+                    loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
+                    notificationManager.showNotification("Successfully Checked-In","success",(Stage) logout.getScene().getWindow());
                     bookingTable.getItems().remove(selectedBooking);
                 } else {
-                    showAlert("Error", "Failed.");
+                    notificationManager.showNotification("Failed to Check-In","failure",modalStage);
                 }
-                modalStage.close();
+
             });
         }
 

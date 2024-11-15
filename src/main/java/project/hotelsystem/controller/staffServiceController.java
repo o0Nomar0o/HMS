@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,8 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import project.hotelsystem.database.connection.DBConnection;
@@ -35,8 +32,8 @@ import project.hotelsystem.util.dropdownManager;
 import project.hotelsystem.util.notificationManager;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.sql.*;
 import java.util.*;
 
@@ -47,6 +44,7 @@ import java.util.*;
  * @author San Nyein Zaw
  * @author Zin Min Oo
  * @author Swun Saung
+ * @author Nomar
  */
 
 
@@ -129,6 +127,8 @@ public class staffServiceController {
     @FXML
     private Text totalCost;
     @FXML
+    private TabPane tab_root;
+    @FXML
     private Button txfRoomNo;
     @FXML
     private TextField txfServiceName;
@@ -188,58 +188,6 @@ public class staffServiceController {
         txfServiceName.clear();
     }
 
-    @FXML
-    private void handleCreateServiceButtonClick() {
-
-        Stage popupStage = new Stage();
-        popupStage.setTitle("Create Service");
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-
-        VBox vbox = new VBox(10);
-
-        TextField serviceIdField = new TextField();
-        serviceIdField.setPromptText("Service ID");
-
-        TextField serviceNameField = new TextField();
-        serviceNameField.setPromptText("Service Name");
-
-        TextField descriptionField = new TextField();
-        descriptionField.setPromptText("Description");
-
-        TextField priceField = new TextField();
-        priceField.setPromptText("Service Price");
-
-        Button btnSelectImage = new Button("Select Image");
-        Label selectedFileLabel = new Label();
-        final File[] selectedFile = new File[1];
-
-        btnSelectImage.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
-            File file = fileChooser.showOpenDialog(popupStage);
-            if (file != null) {
-                selectedFileLabel.setText(file.getName());
-                selectedFile[0] = file;
-            }
-        });
-        vbox.setStyle("-fx-background-color:black");
-
-
-        Button btnSave = new Button("Save");
-        btnSave.setOnAction(e -> {
-            String serviceName = serviceNameField.getText();
-            String description = descriptionField.getText();
-            double price = Double.parseDouble(priceField.getText());
-
-            serviceController.saveService(serviceName, description, price, selectedFile[0]);
-            popupStage.close();
-        });
-
-        vbox.getChildren().addAll(serviceIdField, serviceNameField, descriptionField, priceField, btnSelectImage, selectedFileLabel, btnSave);
-        Scene scene = new Scene(vbox, 300, 275);
-        popupStage.setScene(scene);
-        popupStage.showAndWait();
-    }
 
     @FXML
     void handleDeleteServiceButtonClick(ActionEvent event) {
@@ -310,22 +258,26 @@ public class staffServiceController {
 
     }
 
+    WeakReference<ImageView> weakImageView = null;
+
     public void createService(service s) {
         HBox hbox = new HBox(10);
         GridPane serviceRoot = new GridPane();
 
-        ImageView imageView = new ImageView();
         try {
             Image img = ImageLoader.loadImageFromBlob(s.getImage(), 200, 200);
 //            byte[] imgByte = s.getImage().getBytes(1, (int) s.getImage().length());
 //            Image img = new Image(new ByteArrayInputStream(imgByte));
+            ImageView imageView = new ImageView();
             imageView.setImage(img);
+            imageView.setFitHeight(100);
+            imageView.setFitWidth(100);
+
+            weakImageView = new WeakReference<>(imageView);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        imageView.setFitHeight(100);
-        imageView.setFitWidth(100);
 
         VBox vbox = new VBox(5);
         Label idLabel = new Label("Service ID: " + s.getId());
@@ -342,11 +294,18 @@ public class staffServiceController {
 
 
         vbox.getChildren().addAll(idLabel, nameLabel, descriptionLabel, priceLabel);
-        serviceRoot.add(imageView, 0, 0);
-        serviceRoot.add(vbox, 1, 0);
 
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setMinWidth(imageView.getFitWidth());
+
+        if (weakImageView != null) {
+            ImageView imageView = weakImageView.get();
+            if (imageView != null) {
+                serviceRoot.add(imageView, 0, 0);
+                col1.setMinWidth(imageView.getFitWidth());
+            }
+        }
+
+        serviceRoot.add(vbox, 1, 0);
 
         ColumnConstraints col2 = new ColumnConstraints();
         col2.setMinWidth(100);
@@ -498,6 +457,10 @@ public class staffServiceController {
 
     @FXML
     public void initialize() {
+        Tab targetTab = tab_root.getTabs().get(1);
+        tab_root.getSelectionModel().select(targetTab);
+        tab_root.getSelectionModel().select(0);
+
         ObservableList<room> ols = FXCollections.observableArrayList(roomController.getAllOccupiedRooms());
 
         Popup roomDp = dropdownManager.createRoomDropdown(txfRoomNo, ols);
@@ -602,12 +565,12 @@ public class staffServiceController {
 
             room r = (room) roomNo.getUserData();
 
-            if (roomNo.getUserData() == null || r == null||r.getRoom_no() == null || r.getRoom_no().isEmpty()) {
+            if (roomNo.getUserData() == null || r == null || r.getRoom_no() == null || r.getRoom_no().isEmpty()) {
                 notificationManager.showNotification("Please choose a room", "faliure", (Stage) logout.getScene().getWindow());
                 return;
             }
 
-            if(orderListContainer.getChildren().isEmpty()) {
+            if (orderListContainer.getChildren().isEmpty()) {
                 notificationManager.showNotification("Please select an item", "faliure", (Stage) logout.getScene().getWindow());
                 return;
             }
@@ -647,7 +610,7 @@ public class staffServiceController {
                 Label nameLabel = (Label) n.lookup("#nameLabel");
                 Label quantityLabel = (Label) n.lookup("#stockLabel");
                 String name = nameLabel.getText();
-                quantityLabel.setText(fns.get(name)+"");
+                quantityLabel.setText(fns.get(name) + "");
                 System.out.println(name);
             }
         }
@@ -1186,6 +1149,7 @@ public class staffServiceController {
 
             List<Node> nodesToRemoveFromFoodView = new ArrayList<>();
             List<Node> nodesToRemoveFromCatPane = new ArrayList<>();
+            List<Node> nodesToRemoveFromServicePane = new ArrayList<>();
 
             for (Node n : foodView.getChildren()) {
                 if (n instanceof Pane) {
@@ -1206,14 +1170,38 @@ public class staffServiceController {
                 }
             }
 
+            for (Node n : tilepaneServices.getChildren()) {
+                if (n instanceof GridPane) {
+                    for (Node p : ((GridPane) n).getChildren()) {
+                        if (p instanceof ImageView) ((ImageView) p).setImage(null);
+                    }
+                    nodesToRemoveFromServicePane.add(n);
+                }
+            }
+
             foodView.getChildren().removeAll(nodesToRemoveFromFoodView);
             catPane.getChildren().removeAll(nodesToRemoveFromCatPane);
+            tilepaneServices.getChildren().removeAll(nodesToRemoveFromServicePane);
 
             nodesToRemoveFromCatPane.clear();
             nodesToRemoveFromFoodView.clear();
-            allFood.clear();
 
-            System.gc();
+            allFood.clear();
+            imgView.setImage(null);
+
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(500);
+                    System.gc();
+                    Thread.sleep(300);
+                    Runtime runtime = Runtime.getRuntime();
+                    System.out.println("Memory used after GC: " + ((runtime.totalMemory() - runtime.freeMemory()) / 1024.0) / 1024.0);
+                } catch (InterruptedException er) {
+                    er.printStackTrace();
+                }
+            }).start();
+
         });
 
     }

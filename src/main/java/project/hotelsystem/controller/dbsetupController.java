@@ -121,13 +121,13 @@ public class dbsetupController {
     void go_back(ActionEvent event) {
         try {
 
-            URL path = new File("src/main/resources/project/hotelsystem/login.fxml").toURI().toURL();
+            URL path = getClass().getResource("/project/hotelsystem/login.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(path);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Parent root = fxmlLoader.load();
 
-            path = new File("src/main/resources/project/hotelsystem/css/login.css").toURI().toURL();
+            path = getClass().getResource("/project/hotelsystem/css/login.css");
             root.getStylesheets().add(path.toExternalForm());
 
             stage.getScene().setRoot(root);

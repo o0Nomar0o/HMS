@@ -86,14 +86,14 @@
                   </HBox>
                   <HBox alignment="CENTER" layoutX="826.0" layoutY="10.0" style="-fx-spacing: 10px;">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Filter by Action" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Filter by Action" visible="false" />
                         <Button fx:id="dropdownAction" mnemonicParsing="false" text="All  ▼" />
                      </children>
                   </HBox>
                   <Button fx:id="esc" mnemonicParsing="false" onAction="#switchtosettings" style="-fx-background-radius: 2em;" text="X" />
                </children>
             </HBox>
-            <ScrollPane fitToHeight="false" fitToWidth="true" vvalue="1.0" VBox.vgrow="ALWAYS" fx:id="audit_scroll_pane">
+            <ScrollPane fx:id="audit_scroll_pane" fitToHeight="false" fitToWidth="true" vvalue="1.0" VBox.vgrow="ALWAYS">
                <content>
                   <VBox fx:id="audit_view" alignment="TOP_CENTER" style="-fx-padding: 20px; -fx-spacing: 25px;" VBox.vgrow="ALWAYS" />
                </content>

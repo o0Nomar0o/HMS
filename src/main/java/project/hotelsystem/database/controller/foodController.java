@@ -3,6 +3,7 @@ package project.hotelsystem.database.controller;
 import project.hotelsystem.database.connection.DBConnection;
 import project.hotelsystem.database.models.food;
 
+import java.lang.ref.WeakReference;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,34 @@ public class foodController {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public static List<WeakReference<food>> getAllFood_wr() {
+        List<WeakReference<food>> allFood = new ArrayList<>();
+        String sql = "SELECT f.food_name, f.food_price, f.food_image, f.current_stock, fc.food_category, f.stock_status " +
+                "FROM food f " +
+                "JOIN food_category fc ON f.category_id = fc.category_id;";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement psmt = con.prepareStatement(sql);
+             ResultSet rs = psmt.executeQuery()) {
+
+            while (rs.next()) {
+                String name = rs.getString(1);
+                double price = rs.getDouble(2);
+                Blob img = rs.getBlob(3);
+                int stock = rs.getInt(4);
+                String cat = rs.getString(5);
+                String status = rs.getString(6);
+                if (status.matches("NIL")) continue;
+                food newFood = new food(name, price, img, stock, cat);
+                allFood.add(new WeakReference<>(newFood));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return allFood;
     }
 
     public static List<food> getAllFood() {

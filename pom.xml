@@ -79,8 +79,6 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
-
-
     </dependencies>
 
     <build>
@@ -130,6 +128,9 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
+                <configuration>
+                    <mainClass>project.hotelsystem.Main</mainClass>
+                </configuration>
                 <executions>
                     <execution>
                         <id>default-cli</id>
