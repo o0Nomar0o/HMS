@@ -53,7 +53,7 @@
                         <Font size="12.0" />
                     </font>
                 </Button>
-                <Button id="currentPage" fx:id="services" layoutX="57.0" layoutY="397.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-color: #F3D0D7; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Services" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="392.0">
+                <Button id="currentPage" fx:id="services" layoutX="53.0" layoutY="314.0" mnemonicParsing="false" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-color: #F3D0D7; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Services" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="314.0">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>
@@ -61,7 +61,7 @@
                         <Font size="18.0" />
                     </font>
                 </Button>
-                <Button id="buttons" fx:id="setting" layoutX="56.0" layoutY="477.0" mnemonicParsing="false" onAction="#switchtosetting" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Settings" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="471.0">
+                <Button id="buttons" fx:id="setting" layoutX="53.0" layoutY="393.0" mnemonicParsing="false" onAction="#switchtosetting" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px;" text="Settings" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="393.0">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>
@@ -69,7 +69,7 @@
                         <Font size="18.0" />
                     </font>
                 </Button>
-                <Button id="buttons" fx:id="orders_button" mnemonicParsing="false" onAction="#switchToorders" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px; -fx-font-size: 18px;" text="Orders" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
+                <Button id="buttons" fx:id="orders_button" mnemonicParsing="false" onAction="#switchToorders" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px; -fx-font-size: 18px;" text="Orders" visible="false" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>
@@ -88,45 +88,51 @@
                                 <children>
                                     <AnchorPane>
                                         <children>
-                                            <Label id="lblTitle" fx:id="lblTitle" layoutX="32.0" layoutY="38.0" prefHeight="88.0" prefWidth="230.0" text="Laundry">
-                                                <font>
-                                                    <Font size="40.0" />
-                                                </font>
-                                            </Label>
-                                            <Label id="lblDiscription" fx:id="lblDiscription" layoutX="32.0" layoutY="117.0" prefHeight="103.0" prefWidth="231.0" text="Label">
-                                                <font>
-                                                    <Font size="16.0" />
-                                                </font>
-                                            </Label>
-                                            <Label id="lblPrice" fx:id="lblPrice" layoutX="32.0" layoutY="211.5" prefHeight="68.0" prefWidth="229.0" text="\$20">
-                                                <font>
-                                                    <Font size="20.0" />
-                                                </font>
-                                            </Label>
-                                            <Button id="btnLeft" fx:id="btnLeft" layoutY="142.0" minWidth="36.0" mnemonicParsing="false" onAction="#previousService" prefHeight="30.0" prefWidth="36.0" text="&lt;" AnchorPane.leftAnchor="0.0" />
-                                            <Button id="btnRight" fx:id="btnRight" layoutX="589.0" layoutY="142.0" minHeight="-Infinity" minWidth="35.0" mnemonicParsing="false" onAction="#nextService" prefHeight="30.0" prefWidth="35.0" text="&gt;" AnchorPane.rightAnchor="0.0" />
-                                            <Label layoutX="32.0" prefHeight="40.0" prefWidth="247.0" text="Most Popular Services">
-                                                <font>
-                                                    <Font name="System Bold" size="20.0" />
-                                                </font>
-                                                <textFill>
-                                                    <LinearGradient endY="0.3791469194312796" startY="1.0">
-                                                        <stops>
-                                                            <Stop>
-                                                                <color>
-                                                                    <Color green="1.0" blue="0.6476190686225891" />
-                                                                </color>
-                                                            </Stop>
-                                                            <Stop offset="1.0">
-                                                                <color>
-                                                                    <Color red="1.0" green="0.6805555820465088" blue="0.9361110925674438" />
-                                                                </color>
-                                                            </Stop>
-                                                        </stops>
-                                                    </LinearGradient>
-                                                </textFill>
-                                            </Label>
-                                            <ImageView fx:id="imgView" fitHeight="238.0" fitWidth="349.0" layoutX="238.0" layoutY="38.0" pickOnBounds="true" />
+                                 <ImageView fx:id="imgView" fitHeight="238.0" fitWidth="608.0" layoutX="44.5" layoutY="49.0" pickOnBounds="true" />
+                                 <Label id="lblTitle" fx:id="lblTitle" layoutX="52.0" layoutY="48.0" prefHeight="88.0" prefWidth="594.0" style="-fx-effect: dropshadow(gaussian, white, 3, 1, 0, 0);" text="Laundry">
+                                    <font>
+                                       <Font size="40.0" />
+                                    </font>
+                                 </Label>
+                                 <Label id="lblDiscription" fx:id="lblDiscription" layoutX="67.0" layoutY="114.0" prefHeight="103.0" prefWidth="559.0" style="-fx-effect: dropshadow(gaussian, white, 3, 1, 0, 0);" text="Label">
+                                    <font>
+                                       <Font size="16.0" />
+                                    </font>
+                                 </Label>
+                                 <Label id="lblPrice" fx:id="lblPrice" layoutX="67.0" layoutY="166.0" prefHeight="68.0" prefWidth="229.0" style="-fx-effect: dropshadow(gaussian, white, 3, 1, 0, 0);" text="\$20">
+                                    <font>
+                                       <Font name="System Bold Italic" size="20.0" />
+                                    </font>
+                                 </Label>
+                                 <Button id="btnLeft" fx:id="btnLeft" layoutX="10.0" layoutY="152.0" minWidth="36.0" mnemonicParsing="false" onAction="#previousService" prefHeight="30.0" prefWidth="36.0" style="-fx-background-color: transparent;" text="&lt;">
+                                    <font>
+                                       <Font name="System Bold Italic" size="18.0" />
+                                    </font></Button>
+                                 <Button id="btnRight" fx:id="btnRight" layoutX="658.0" layoutY="152.0" minHeight="-Infinity" minWidth="35.0" mnemonicParsing="false" onAction="#nextService" prefHeight="30.0" prefWidth="35.0" style="-fx-background-color: transparent;" text="&gt;" AnchorPane.rightAnchor="31.0">
+                                    <font>
+                                       <Font name="System Bold" size="18.0" />
+                                    </font></Button>
+                                 <Label layoutX="42.0" layoutY="10.0" prefHeight="40.0" prefWidth="247.0" text="Most Popular Services">
+                                    <font>
+                                       <Font name="System Bold" size="20.0" />
+                                    </font>
+                                    <textFill>
+                                       <LinearGradient endY="0.3791469194312796" startY="1.0">
+                                          <stops>
+                                             <Stop>
+                                                <color>
+                                                   <Color green="1.0" blue="0.6476190686225891" />
+                                                </color>
+                                             </Stop>
+                                             <Stop offset="1.0">
+                                                <color>
+                                                   <Color red="1.0" green="0.6805555820465088" blue="0.9361110925674438" />
+                                                </color>
+                                             </Stop>
+                                          </stops>
+                                       </LinearGradient>
+                                    </textFill>
+                                 </Label>
                                         </children>
                                     </AnchorPane>
                                     <HBox prefHeight="30.0" prefWidth="206.0" spacing="5.0" />

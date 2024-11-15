@@ -25,7 +25,7 @@
                <image>
                   <Image url="@../../images/hotel_7499247.png" />
                </image></ImageView>
-            <Button id="buttons" fx:id="orders_button" layoutX="52.0" layoutY="158.0" mnemonicParsing="false" onAction="#switchToorders" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px; -fx-font-size: 18px;" text="Orders" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
+            <Button id="buttons" fx:id="orders_button" layoutX="52.0" layoutY="158.0" mnemonicParsing="false" onAction="#switchToorders" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-border-radius: 2em 0 0 2em; -fx-border-width: 1px 0 1px 1px; -fx-font-size: 18px;" text="Orders" visible="false" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="313.0">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -57,7 +57,7 @@
                   <Font size="12.0" />
                </font>
             </Button>
-            <Button id="buttons" fx:id="services_button" layoutX="57.0" layoutY="397.0" mnemonicParsing="false" onAction="#switchToservices" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px;" text="Services" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="392.0">
+            <Button id="buttons" fx:id="services_button" layoutX="51.0" layoutY="314.0" mnemonicParsing="false" onAction="#switchToservices" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px;" text="Services" AnchorPane.leftAnchor="51.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="314.0">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -65,7 +65,7 @@
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button id="buttons" fx:id="settings" layoutX="56.0" layoutY="477.0" mnemonicParsing="false" onAction="#switchTosettings" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px;" text="Settings" AnchorPane.leftAnchor="52.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="471.0">
+            <Button id="buttons" fx:id="settings" layoutX="51.0" layoutY="393.0" mnemonicParsing="false" onAction="#switchTosettings" prefHeight="75.0" prefWidth="164.0" style="-fx-background-radius: 2em 0 0 2em; -fx-font-size: 18px;" text="Settings" AnchorPane.leftAnchor="51.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="393.0">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

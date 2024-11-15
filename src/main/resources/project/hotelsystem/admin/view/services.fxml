@@ -89,7 +89,7 @@
                         <children>
                            <AnchorPane>
                               <children>
-                                          <Label id="lblTitle" fx:id="lblTitle" layoutX="32.0" layoutY="38.0" prefHeight="88.0" prefWidth="230.0" text="Laundry">
+                                          <Label id="lblTitle" fx:id="lblTitle" layoutX="32.0" layoutY="38.0" prefHeight="88.0" prefWidth="477.0" text="Laundry">
                                               <font>
                                                   <Font size="40.0" />
                                               </font>
@@ -127,7 +127,7 @@
                                                 </LinearGradient>
                                             </textFill>
                                         </Label>
-                                        <ImageView fx:id="imgView" fitHeight="238.0" fitWidth="349.0" layoutX="238.0" layoutY="38.0" pickOnBounds="true" />
+                                        <ImageView fx:id="imgView" fitHeight="238.0" fitWidth="381.0" layoutX="527.0" layoutY="44.0" pickOnBounds="true" preserveRatio="true" />
                               </children>
                            </AnchorPane>
                                   <HBox alignment="TOP_RIGHT" prefHeight="30.0" prefWidth="206.0" spacing="5.0">

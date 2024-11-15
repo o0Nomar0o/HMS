@@ -16,7 +16,7 @@
 
 <AnchorPane id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="1202.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.hotelsystem.controller.settingsController">
     <children>
-      <AnchorPane id="navbar" layoutX="21.0" layoutY="32.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
+      <AnchorPane id="navbar" fx:id="navbar" layoutX="21.0" layoutY="32.0" prefHeight="727.0" prefWidth="172.0" style="-fx-background-radius: 1.25em;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="20.0">
          <children>
             <ImageView fitHeight="142.0" fitWidth="139.0" layoutX="16.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0">
                <image>

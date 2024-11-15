@@ -387,6 +387,7 @@ public class adminServiceController {
 
         HBox btns = new HBox(btnClose, btnSave);
         btns.setStyle("-fx-padding: 15px; -fx-spacing: 20px;");
+        btns.setAlignment(Pos.CENTER);
         vbox.getChildren().addAll(serviceNameField, descriptionField, priceField, btnSelectImage, selectedFileLabel, btns);
 
         Scene scene = new Scene(vbox, 400, 350);

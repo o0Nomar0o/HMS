@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -49,6 +50,9 @@ public class settingsController implements Initializable {
 
     @FXML
     private Button bottomButton;
+
+    @FXML
+    private AnchorPane navbar;
 
     @FXML
     private Button cancel;
@@ -209,13 +213,8 @@ public class settingsController implements Initializable {
                     ex.printStackTrace();
                 }
             });
-            bottomButton.setOnAction(e -> {
-                try {
-                    sc.switchtoOrders(e);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            });
+            bottomButton.setVisible(false);
+
             services.setOnAction(e -> {
                 try {
                     switchtoservices(e);
@@ -223,6 +222,8 @@ public class settingsController implements Initializable {
                     ex.printStackTrace();
                 }
             });
+            AnchorPane.setTopAnchor(services, 313.0);
+            AnchorPane.setTopAnchor(setting, 392.0);
 
 
         }
