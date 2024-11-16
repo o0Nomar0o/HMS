@@ -27,6 +27,10 @@ public class databaseSettings {
     private String cloud_user;
     private String cloud_password;
 
+    private static final String MODE_KEY = "MODE";
+
+    private String performance = "no";
+
     public static databaseSettings getInstance() {
         if (instance == null) {
             instance = new databaseSettings();
@@ -36,6 +40,14 @@ public class databaseSettings {
 
     public String getLocal_url() {
         return local_url;
+    }
+
+    public String getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(String performance) {
+        this.performance = performance;
     }
 
     public void setLocal_url(String local_url) {
@@ -140,6 +152,14 @@ public class databaseSettings {
 
         preferences.put(WEB_URL_KEY, web_url);
 
+    }
+
+    public void saveMode(String mode){
+        Preferences preferences = Preferences.userRoot().node(PREFERENCE_NODE_NAME);
+
+        this.performance = mode;
+
+        preferences.put(MODE_KEY, performance);
     }
 
 

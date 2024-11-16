@@ -4,9 +4,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -136,6 +139,30 @@
                            </children>
                         </VBox>
                      </content>
+                  </Tab>
+                  <Tab text="Settings">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <HBox layoutX="24.0" layoutY="70.0" style="-fx-spacing: 20px;">
+                                 <children>
+                                    <RadioButton fx:id="OnPerformance" mnemonicParsing="false" text="On">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="pmode" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="OffPerformance" mnemonicParsing="false" text="Off" toggleGroup="$pmode" />
+                                 </children>
+                              </HBox>
+                              <Text layoutX="24.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Performance Mode" />
+                              <Button layoutX="132.0" layoutY="33.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="26.0" style="-fx-background-radius: 2em; -fx-background-color: transparent; -fx-border-color: #DFDFDF; -fx-border-radius: 2.5em;" text="?">
+                                 <tooltip>
+                                    <Tooltip text="Images are disabled for better memory usage" />
+                                 </tooltip>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                    </content>
                   </Tab>
                </tabs>
             </TabPane>

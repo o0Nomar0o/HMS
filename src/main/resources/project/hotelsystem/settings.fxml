@@ -163,7 +163,7 @@
                                           <Font size="24.0" />
                                        </font>
                                     </Text>
-                                    <Button id="importantButtons" fx:id="audit_view" mnemonicParsing="false" onAction="#viewAudit" text="View">
+                                    <Button id="importantButtons" fx:id="audit_view" mnemonicParsing="false" onAction="#viewAudit" style="-fx-background-radius: 2.5em; -fx-background-color: #4CAF50;" text="View">
                                        <font>
                                           <Font size="14.0" />
                                        </font>

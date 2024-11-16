@@ -6,14 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import project.hotelsystem.settings.databaseSettings;
 import project.hotelsystem.util.notificationManager;
 
-import java.io.File;
 import java.net.URL;
 
 /**
@@ -24,6 +21,13 @@ import java.net.URL;
 
 public class dbsetupController {
 
+    @FXML
+    private ToggleGroup pmode;
+    @FXML
+    private RadioButton OffPerformance;
+
+    @FXML
+    private RadioButton OnPerformance;
     @FXML
     private PasswordField cloud_pw;
 
@@ -56,6 +60,12 @@ public class dbsetupController {
     @FXML
     void initialize() {
 
+        String t = dbs.getPerformance();
+        if (t.matches("on"))
+            OnPerformance.setSelected(true);
+        else
+            OffPerformance.setSelected(true);
+
         save_local.setCursor(Cursor.HAND);
         save_cloud.setCursor(Cursor.HAND);
 
@@ -76,7 +86,7 @@ public class dbsetupController {
     @FXML
     void save_cloud_db(ActionEvent event) {
 
-        String url = cloud_url.getText().replaceAll("\\s+","");
+        String url = cloud_url.getText().replaceAll("\\s+", "");
 
         dbs.saveWebSettings(url);
 
@@ -91,20 +101,20 @@ public class dbsetupController {
     @FXML
     void save_local_db(ActionEvent event) {
 
-        if(local_url.getText().isEmpty()||
-                local_user.getText().isEmpty()||
-                local_pw.getText().isEmpty()){
+        if (local_url.getText().isEmpty() ||
+                local_user.getText().isEmpty() ||
+                local_pw.getText().isEmpty()) {
 
             notificationManager.showNotification(
                     "Please fill all the fields",
                     "failure",
-                    (Stage)go_back.getScene().getWindow()
+                    (Stage) go_back.getScene().getWindow()
             );
             return;
         }
 
 
-        String url = local_url.getText().replaceAll("\\s+","");
+        String url = local_url.getText().replaceAll("\\s+", "");
         String user = local_user.getText();
         String pw = local_pw.getText();
 
@@ -120,6 +130,12 @@ public class dbsetupController {
     @FXML
     void go_back(ActionEvent event) {
         try {
+
+            String type;
+            if (OnPerformance.isSelected()) type = "on";
+            else type = "off";
+
+            dbs.saveMode(type);
 
             URL path = getClass().getResource("/project/hotelsystem/login.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(path);

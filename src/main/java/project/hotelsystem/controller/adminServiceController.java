@@ -384,7 +384,14 @@ public class adminServiceController {
             notificationManager.showNotification("Successfully added a new service", "success", owner);
             popupStage.close();
             dump_service_pane();
-            generateService();
+            try {
+                Thread.sleep(200);
+                Platform.runLater(()->{
+                    generateService();
+                });
+            }catch (InterruptedException err){
+                err.printStackTrace();
+            }
         });
 
         HBox btns = new HBox(btnClose, btnSave);
@@ -470,8 +477,10 @@ public class adminServiceController {
 
         ImageView imageView = new ImageView();
         try {
-            byte imgByte[] = s.getImage().getBytes(1, (int) s.getImage().length());
-            Image img = new Image(new ByteArrayInputStream(imgByte));
+//            byte imgByte[] = s.getImage().getBytes(1, (int) s.getImage().length());
+//            Image img = new Image(new ByteArrayInputStream(imgByte));
+            Image img = ImageLoader.loadImageFromBlob(s.getImage(), 200, 200);
+
             imageView.setImage(img);
         } catch (Exception e) {
             e.printStackTrace();
@@ -509,6 +518,8 @@ public class adminServiceController {
 
         Button editbtn = new Button("Edit");
         editbtn.setUserData(s);
+        editbtn.setStyle(" -fx-background-color: #4CAF50;" +
+                "-fx-text-fill: white;");
         Button delbtn = new Button("Delete");
         delbtn.setUserData(s);
         editbtn.setOnAction(e -> {
@@ -520,6 +531,8 @@ public class adminServiceController {
             loaderSettings.applyDimmingEffect((Stage) logout.getScene().getWindow());
             removeService(e);
         });
+        delbtn.setStyle(" -fx-background-color: #F44336;" +
+                "    -fx-text-fill: white;");
 
         VBox actionbox = new VBox(editbtn, delbtn);
         actionbox.setAlignment(Pos.CENTER_RIGHT);
@@ -1623,5 +1636,8 @@ public class adminServiceController {
 
     }
 
+    private void disable_images(){
+
+    }
 
 }
